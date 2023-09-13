@@ -1,7 +1,0 @@
-.env
-.flake8
-.vscode/
-pyproject.toml
-venv/
-setting.json
-.pre-commit-config.yaml
