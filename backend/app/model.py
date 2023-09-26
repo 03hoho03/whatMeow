@@ -16,8 +16,8 @@ class User(BaseMin, Base):
 
     name = Column(String(10), nullable=False)
     nickname = Column(String(20), nullable=True, unique=True)
-    email = Column(String(30), nullable=False, unique=True)
-    username = Column(String(20), nullable=False, unique=True)
+    email = Column(String(30), nullable=True, unique=True)  # 네이버 로그인 때문에;
+    username = Column(String(50), nullable=False, unique=True)
     password = Column(String(255), nullable=True)
     gender = Column(String(5), nullable=True)
     explain = Column(String(50), nullable=True)
@@ -27,6 +27,7 @@ class User(BaseMin, Base):
     posts = relationship("Post", back_populates="post_owner")
     comments = relationship("Comment", back_populates="comment_owner")
     likes = relationship("Like", back_populates="like_owner")
+    refresh_tokens = relationship("RefreshToken", back_populates="user")
     # Auth Type
 
     """
@@ -57,7 +58,7 @@ class Post(BaseMin, Base):
 
     title = Column(String(50), nullable=False)
 
-    owner_id = Column(Integer, ForeignKey("user.id"))
+    uploader = Column(Integer, ForeignKey("user.id"))
 
     likes = relationship("Like", back_populates="like_post_owner")
     comments = relationship("Comment", back_populates="comment_post_owner")
@@ -70,9 +71,8 @@ class Post(BaseMin, Base):
 class Comment(BaseMin, Base):
     __tablename__ = "comment"
 
-    detail = Column(String(255), nullable=False)
-
-    owner_id = Column(Integer, ForeignKey("user.id"))
+    comment = Column(String(255), nullable=False)
+    uploader = Column(Integer, ForeignKey("user.id"))
     post_id = Column(Integer, ForeignKey("post.id"))
 
     comment_post_owner = relationship("Post", back_populates="comments")
@@ -103,3 +103,4 @@ class RefreshToken(BaseMin, Base):
 
     refresh_token = Column(String(255))
     user_id = Column(Integer, ForeignKey("user.id"))
+    user = relationship("User", back_populates="refresh_tokens")

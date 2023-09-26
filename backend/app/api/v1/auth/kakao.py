@@ -1,5 +1,5 @@
 from datetime import timedelta
-from fastapi import Depends, APIRouter
+from fastapi import Depends, APIRouter, HTTPException, status
 from fastapi.responses import RedirectResponse
 import httpx
 from sqlalchemy.orm.session import Session
@@ -83,4 +83,4 @@ async def kakao_login(
                 user = db.query(model.User).filter(model.User.username == user_row.username).first()
                 return await auth_utils.social_create_access_token(user, db, exp=timedelta(minutes=720))
             except IntegrityError:
-                return {"error": "Email Duplicated."}
+                raise HTTPException(status_cod=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Email Duplicated")
