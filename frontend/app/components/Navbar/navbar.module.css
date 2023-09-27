@@ -1,0 +1,26 @@
+.main {
+  display: flex;
+  justify-content: space-between;
+  background-color: white;
+  padding: 0 10px;
+  padding: 12px 20px;
+}
+
+.headerIcons {
+  display: flex;
+}
+
+.iconBtn {
+  margin-left: 8px;
+}
+
+
+
+.icon {
+  width: 24px;
+  height: 24px;
+}
+
+.logo {
+  cursor:pointer;
+}
