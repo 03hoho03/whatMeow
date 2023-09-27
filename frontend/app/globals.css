@@ -1,0 +1,45 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: black;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  width: 360px;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+button {
+  background: inherit;
+  border:none;
+  box-shadow:none;
+  border-radius:0;
+  padding:0;
+  overflow:visible;
+  cursor:pointer
+}
+
+a { 
+  text-decoration: none; color: black; 
+}
+a:visited { text-decoration: none; }
+a:hover { text-decoration: none; }
+a:focus { text-decoration: none; }
+a:hover, a:active { text-decoration: none; }
+
+.main {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  background-color: white;
+}
