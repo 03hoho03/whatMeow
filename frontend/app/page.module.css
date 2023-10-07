@@ -1,20 +1,8 @@
-.month_cats {
+.main {
   display: flex;
   flex-direction: column;
+  position: relative;
   width: 100%;
-  align-items: center;
+  height: 200vh;
+  background-color: white;
 }
-
-.month_cats .month_cats_img_div {
-  width: 100%;
-  text-align: center;
-}
-
-.month_cats .month_cats_img_div img{
-  width: 100%;
-}
-
-/* .list {
-  width: 40px;
-  height: 40px;
-} */
