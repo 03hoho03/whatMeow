@@ -1,0 +1,34 @@
+.main {
+  padding: 24px 0;
+  width: 100%;
+  user-select: none;
+  padding: 0 24px;
+  cursor: grab;
+}
+
+.title {
+  font-size: 20px;
+}
+
+.bookMarkList {
+  display: flex;
+  padding: 0;
+  overflow: hidden;
+}
+
+.bookMarkItem {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 101.5px;
+  height: 74px;
+  background-color: white;
+  border: 1px solid #999999;
+  border-radius: 10px;
+  margin-right: 12px;
+  font-size: 14px;
+  cursor: pointer;
+  
+}
