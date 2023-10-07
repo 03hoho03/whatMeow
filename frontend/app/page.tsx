@@ -1,18 +1,15 @@
 // import cn from 'classnames'
-import Carousel from './components/Carousel'
+import BookMarkList from './_components/BookMarkList'
+import MonthlyCats from './_components/MonthlyCats'
+import Navbar2 from './_components/Navbar2'
 import style from './page.module.css'
 
-export default function Home() {
-  const monthCatsImages = ['./logo.svg', './logo2.svg', './cat.jpg']
+export default async function Home() {
   return (
-    <div>
-      <div className={style.month_cats}>
-        <h3>이달의 고양이들</h3>
-        <Carousel carouselList={monthCatsImages} autoPlay />
-        <div className={style.month_cats_img_div}>
-          <img src="./cat.jpg" alt="best-cat" />
-        </div>
-      </div>
+    <div className={style.main}>
+      <Navbar2 />
+      <MonthlyCats />
+      <BookMarkList />
     </div>
   )
 }
