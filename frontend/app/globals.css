@@ -1,5 +1,8 @@
+@import url(//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css);
+
 * {
   box-sizing: border-box;
+  font-family: 'Spoqa Han Sans Neo', 'sans-serif';
 }
 
 html {
@@ -11,10 +14,11 @@ html {
 }
 
 body {
+  position: relative;
   margin: 0;
   padding: 0;
   display: flex;
-  width: 360px;
+  width:360px;
   flex-direction: column;
   box-sizing: border-box;
 }
@@ -42,4 +46,9 @@ a:hover, a:active { text-decoration: none; }
   width: 100%;
   min-height: 100vh;
   background-color: white;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
 }
