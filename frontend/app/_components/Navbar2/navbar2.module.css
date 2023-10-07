@@ -1,0 +1,22 @@
+.main {
+  display: flex;
+  justify-content: space-between;
+  position: fixed;
+  width: 360px;
+  z-index: 10;
+  /* background:linear-gradient(#00000041,#ffffff00); */
+  background-color: transparent;
+  color: white;
+  padding: 8px 24px;
+}
+.scrolled {
+  background-color: rgba(255,255,255,0.8);
+  color: black;
+}
+.navBtn {
+  background-color: white;
+  color: black;
+  border-radius: 15px;
+  padding: 4px 8px;
+  font-size: 14px;
+}
