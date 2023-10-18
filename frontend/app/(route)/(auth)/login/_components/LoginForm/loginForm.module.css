@@ -1,0 +1,46 @@
+.main_wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+.input_container {
+  width: 100%;
+}
+.outer {
+  width: 100%;
+  border: 1px solid #cccccc;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+}
+.outer:focus-within{
+  border: 1px solid #000000;
+}
+.inner {
+  display: flex;
+  flex-direction: column;
+}
+.inner_label {
+  font-size: 10px;
+  color: #999999;
+}
+.inner_input {
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
+.login_btn_container {
+  width: 100%;
+}
+.login_btn {
+  width: 100%;
+  height: 40px;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 0, 0.3);
+  cursor:not-allowed
+}
+.is_login_enabled{
+  background-color: rgba(255, 255, 0, 0.8);
+  cursor: pointer;
+}
