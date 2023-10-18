@@ -2,12 +2,11 @@ import './globals.css'
 import '@fortawesome/fontawesome-svg-core/styles.css'
 import { config } from '@fortawesome/fontawesome-svg-core'
 import React from 'react'
-import BottomMenu from '@/app/_common/BottomMenu'
 import Recoil from './_store/Recoil'
 
 config.autoAddCss = false
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
@@ -15,10 +14,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Recoil>
-          <div className="main">{children}</div>
-          <BottomMenu />
-        </Recoil>
+        <Recoil>{children}</Recoil>
       </body>
     </html>
   )
