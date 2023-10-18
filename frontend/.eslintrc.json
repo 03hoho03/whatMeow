@@ -39,6 +39,17 @@
         "endOfLine":"auto"
       }
     ],
-    "linebreak-style":"off"
+    "linebreak-style":"off",
+    "no-use-before-define":"off",
+    "@typescript-eslint/no-use-before-define": "off",
+    "import/prefer-default-export": "off",
+    "jsx-a11y/label-has-associated-control": [
+      2,
+      {
+        "labelAttributes": ["htmlFor"]
+      }
+    ],
+    "no-unused-vars":"warn",
+    "operator-linebreak":"off",
   }
 }
