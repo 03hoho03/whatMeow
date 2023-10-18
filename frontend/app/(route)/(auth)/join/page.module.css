@@ -1,6 +1,4 @@
-.main {
+.main_wrapper {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  padding: 24px;
 }

@@ -41,14 +41,13 @@ a:hover { text-decoration: none; }
 a:focus { text-decoration: none; }
 a:hover, a:active { text-decoration: none; }
 
-.main {
-  display: flex;
-  width: 100%;
-  min-height: 100vh;
-  background-color: white;
-}
-
 ul {
   list-style-type: none;
   padding: 0;
+}
+h3 {
+  margin: 0;
+}
+p {
+  margin: 0;
 }
