@@ -1,5 +1,5 @@
 from datetime import timedelta
-from fastapi import Depends, APIRouter, HTTPException, status
+from fastapi import Depends, APIRouter, HTTPException, status, Response
 from fastapi.security import OAuth2PasswordRequestForm, HTTPAuthorizationCredentials, HTTPBearer
 import bcrypt
 from sqlalchemy.orm.session import Session
@@ -31,11 +31,14 @@ async def add_user(data: user_schema.GeneralUserAdd, db: Session = Depends(get_d
 
 
 @router.post("/login")
-async def issue_token(data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+async def issue_token(response: Response, data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = db.query(model.User).filter(model.User.username == data.username).first()
     if bcrypt.checkpw(data.password.encode(), user.password.encode()):  # bcrypt.checkpw가 자동으로 salt값 추출 후 서로 비교해줌
-        return await auth_utils.general_create_access_token(user, db, exp=timedelta(minutes=720))
-    raise HTTPException(401)
+        token_info = await auth_utils.social_create_access_token(user, db, exp=timedelta(minutes=720))
+        response = auth_utils.set_cookie(response, token_info)
+
+        return response
+    raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Wrong Information")
 
 
 @router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)

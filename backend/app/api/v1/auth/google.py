@@ -50,7 +50,7 @@ async def google_login(
             url=f"https://oauth2.googleapis.com/tokeninfo?id_token={id_token}",
         )
         result = result.json()
-        db_user_info = auth_utils.get_username(db, "google_" + str(result.get("iat")))
+        db_user_info = auth_utils.get_username(db, str(result.get("email")))
 
         if db_user_info:
             return await auth_utils.social_create_access_token(db_user_info, db, exp=timedelta(minutes=720))
@@ -73,4 +73,4 @@ async def google_login(
                 user = db.query(model.User).filter(model.User.username == user_row.username).first()
                 return await auth_utils.social_create_access_token(user, db, exp=timedelta(minutes=720))
             except IntegrityError:
-                raise HTTPException(status_cod=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Email duplicated")
+                raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Email duplicated")

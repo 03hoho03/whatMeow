@@ -9,8 +9,8 @@ from jose.exceptions import ExpiredSignatureError
 from app import model
 
 
-def get_username(db, username):
-    user = db.query(model.User).filter(model.User.username == username).first()
+def get_username(db, email):
+    user = db.query(model.User).filter(model.User.email == email).first()
 
     if not user:
         return None
@@ -42,7 +42,7 @@ async def general_create_access_token(
     db.add(row)
     db.commit()
 
-    return {"access_token": access_token, "refresh_token": refresh_token, "expire": access_expire}
+    return {"access_token": access_token, "refresh_token": refresh_token}
 
 
 async def social_create_access_token(
@@ -71,7 +71,7 @@ async def social_create_access_token(
     db.add(row)
     db.commit()
 
-    return {"access_token": access_token, "refresh_token": refresh_token, "expire": access_expire}
+    return {"access_token": access_token, "refresh_token": refresh_token}
 
 
 async def verify_access_token(cred):
