@@ -1,7 +1,14 @@
-.main {
+.main_wrapper {
   width: 100%;
+  background-color: rgba(255, 141, 35, 0.705);
+  margin-bottom: 24px;
 }
-.carouselContainer {
+.data_wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+}
+.carousel_container {
   position: relative;
   width: 100%;
   overflow: hidden;
@@ -25,7 +32,7 @@
 .carouselItems {
   display: flex;
   position: relative;
-  height: 100%;
+  max-height: 440px;
   padding: 0;
   margin: 0;
 }
@@ -33,20 +40,23 @@
   display: flex;
   flex: none;
   width: 100%;
+  min-height: 300px;
   align-items: center;
   justify-content: center;
   overflow: hidden;
 }
-.carouselTextContainer {
+.carousel_text_container {
   position: absolute;
   width: 100%;
   bottom: 0;
   background: linear-gradient(rgba(255, 255, 255, 0),rgba(255, 0, 0, 0.3));
   padding: 0 24px;
 }
-.carouselText {
+.carousel_text {
   margin: 0;
-  color: white;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
 }
 .carouselImage {
   width: 100%;
@@ -68,4 +78,37 @@
 }
 .monthlyCatText {
   margin-bottom: 12px;
+}
+/* @media (min-width:481px) {
+  .main_wrapper {
+    display: hidden;
+  }
+} */
+@media (min-width:601px) {
+  .main_wrapper {
+    height: 302px;
+    margin-bottom: 100px;
+  }
+  .data_wrapper {
+    position: absolute;
+    top: 80px;
+    justify-content: center;
+    align-items: center;
+    padding: 0 40px;
+  }
+  .carousel_container {
+    min-width: 268px;
+    flex: 1;
+    max-width: 560px;
+    height: 284px;
+    border-radius: 20px;
+  }
+  .carousel_text_container {
+    position: relative;
+    background:none;
+    flex-shrink: 0;
+    width: 236px;
+    height:206px;
+    padding: 24px;
+  }
 }

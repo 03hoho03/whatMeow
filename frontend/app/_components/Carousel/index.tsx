@@ -78,48 +78,51 @@ function Carousel({ carouselList }: CarouselProps) {
   }, 5000)
 
   return (
-    <div className={style.main}>
-      <div className={style.carouselContainer}>
-        <FaChevronCircleLeft
-          size={20}
-          color="#000000"
-          opacity={0.5}
-          className={cn(style.moveBtn, style.left)}
-          onClick={() => handleSwipe(-1)}
-        />
-        <FaChevronCircleRight
-          size={20}
-          color="#000000"
-          opacity={0.5}
-          className={cn(style.moveBtn, style.right)}
-          onClick={() => handleSwipe(1)}
-        />
-        <ul className={style.carouselItems} ref={carouselRef}>
-          {currList?.map((image, idx) => {
-            const key = `${image.url}-${idx}`
-            return (
-              <li key={key} className={style.carouselItem}>
-                <img
-                  src={image.url}
-                  alt="carousel-img"
-                  className={style.carouselImage}
-                />
-              </li>
-            )
-          })}
-        </ul>
-        <div className={style.carouselTextContainer}>
+    <section className={style.main_wrapper}>
+      <div className={style.data_wrapper}>
+        <div className={style.carousel_container}>
+          <FaChevronCircleLeft
+            size={20}
+            color="#000000"
+            opacity={0.5}
+            className={cn(style.moveBtn, style.left)}
+            onClick={() => handleSwipe(-1)}
+          />
+          <FaChevronCircleRight
+            size={20}
+            color="#000000"
+            opacity={0.5}
+            className={cn(style.moveBtn, style.right)}
+            onClick={() => handleSwipe(1)}
+          />
+          <ul className={style.carouselItems} ref={carouselRef}>
+            {currList?.map((image, idx) => {
+              const key = `${image.url}-${idx}`
+              return (
+                <li key={key} className={style.carouselItem}>
+                  <img
+                    src={image.url}
+                    alt="carousel-img"
+                    className={style.carouselImage}
+                  />
+                </li>
+              )
+            })}
+          </ul>
+        </div>
+        <div className={style.carousel_text_container}>
           <div className={style.monthlyCatBadge}>이달의 고양이</div>
           <div className={style.monthlyCatText}>
             {currList[currIndex]?.text.split('\n').map((line) => (
-              <p className={style.carouselText} key={line}>
+              <p className={style.carousel_text} key={line}>
                 {line}
               </p>
             ))}
           </div>
         </div>
       </div>
-    </div>
+      
+    </section>
   )
 }
 
