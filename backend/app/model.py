@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, DateTime, func, String
+from sqlalchemy import Column, Integer, DateTime, func, String, Table
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.orm import relationship
 
@@ -16,7 +16,7 @@ class User(BaseMin, Base):
 
     name = Column(String(10), nullable=False)
     nickname = Column(String(20), nullable=True, unique=True)
-    email = Column(String(30), nullable=True, unique=True)  # 네이버 로그인 때문에;
+    email = Column(String(30), nullable=False, unique=True)
     username = Column(String(50), nullable=False, unique=True)
     password = Column(String(255), nullable=True)
     gender = Column(String(5), nullable=True)
@@ -53,19 +53,44 @@ class Cat(BaseMin, Base):
     """
 
 
+post_hashtags = Table(
+    "post_hashtags",
+    Base.metadata,
+    Column("post_id", Integer, ForeignKey("post.id"), primary_key=True),
+    Column("hashtag_id", Integer, ForeignKey("hashtag.id"), primary_key=True),
+)
+
+
 class Post(BaseMin, Base):
     __tablename__ = "post"
 
     title = Column(String(50), nullable=False)
-
     uploader = Column(Integer, ForeignKey("user.id"))
 
     likes = relationship("Like", back_populates="like_post_owner")
     comments = relationship("Comment", back_populates="comment_post_owner")
     post_owner = relationship("User", back_populates="posts")
+    hashtags = relationship("HashTag", secondary=post_hashtags, back_populates="posts")
+    images = relationship("Image", back_populates="post")
     """
     images
     """
+
+
+class Image(BaseMin, Base):
+    __tablename__ = "image"
+
+    url = Column(String(100), nullable=False)
+    post_id = Column(Integer, ForeignKey("post.id"))  # 게시물과의 관계 설정
+
+    post = relationship("Post", back_populates="images")
+
+
+class HashTag(BaseMin, Base):
+    __tablename__ = "hashtag"
+
+    hashtag = Column(String(50), nullable=False, unique=True)
+    posts = relationship("Post", secondary=post_hashtags, back_populates="hashtags")
 
 
 class Comment(BaseMin, Base):
