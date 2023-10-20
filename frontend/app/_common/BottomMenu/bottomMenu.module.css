@@ -1,11 +1,18 @@
-.main {
-  background-color: white;
+.main_wrapper {
+  width: 100%;
   display: flex;
-  width: 360px;
-  border-top: 1px solid #999999;
+  justify-content: center;
+  align-items: center;
+}
+.util_wrapper {
+  background-color: #fff;
+  display: flex;
+  width: 100%;
+  max-width: 700px;
   position: fixed;
   z-index: 100;
   bottom: 0;
+  margin: auto;
 }
 .link {
   flex: 1;
@@ -16,13 +23,17 @@
 .button {
   display: flex;
   flex-direction: column;
-  padding: 8px 0;
+  padding: 4px 0;
   align-items: center;
   color: #999999;
   color:#ff5757;
 }
-
 .icon {
   width: 24px;
   height: 24px;
+}
+@media (min-width:1001px) {
+  .main_wrapper {
+    display: none;
+  }
 }
