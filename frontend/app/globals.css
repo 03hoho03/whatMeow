@@ -4,7 +4,6 @@
   box-sizing: border-box;
   font-family: 'Spoqa Han Sans Neo', 'sans-serif';
 }
-
 body {
   position: relative;
   margin: 0;
@@ -13,7 +12,6 @@ body {
   flex-direction: column;
   box-sizing: border-box;
 }
-
 button {
   background: inherit;
   border:none;
@@ -23,7 +21,6 @@ button {
   overflow:visible;
   cursor:pointer
 }
-
 a { 
   text-decoration: none; color: black; 
 }
@@ -31,14 +28,20 @@ a:visited { text-decoration: none; }
 a:hover { text-decoration: none; }
 a:focus { text-decoration: none; }
 a:hover, a:active { text-decoration: none; }
-
 ul {
   list-style-type: none;
   padding: 0;
+  margin: 0;
 }
 h3 {
   margin: 0;
 }
 p {
   margin: 0;
+}
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
 }
