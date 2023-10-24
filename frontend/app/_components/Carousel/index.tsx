@@ -121,7 +121,6 @@ function Carousel({ carouselList }: CarouselProps) {
           </div>
         </div>
       </div>
-      
     </section>
   )
 }
