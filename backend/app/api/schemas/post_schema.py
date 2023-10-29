@@ -1,9 +1,9 @@
 from pydantic import BaseModel
+from typing import List
+from fastapi import UploadFile
 
 
 class PostUpload(BaseModel):
     title: str
-
-
-class HashTagUpload(BaseModel):
-    hashtag: list
+    hashtag: str
+    images: List[UploadFile]
