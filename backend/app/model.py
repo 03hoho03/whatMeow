@@ -56,7 +56,7 @@ class Cat(BaseMin, Base):
 post_hashtags = Table(
     "post_hashtags",
     Base.metadata,
-    Column("post_id", Integer, ForeignKey("post.id"), primary_key=True),
+    Column("post_id", Integer, ForeignKey("post.id", ondelete="CASCADE"), primary_key=True),
     Column("hashtag_id", Integer, ForeignKey("hashtag.id"), primary_key=True),
 )
 
@@ -65,13 +65,13 @@ class Post(BaseMin, Base):
     __tablename__ = "post"
 
     title = Column(String(50), nullable=False)
-    uploader = Column(Integer, ForeignKey("user.id"))
+    uploader = Column(Integer, ForeignKey("user.id", ondelete="CASCADE"))
 
-    likes = relationship("Like", back_populates="like_post_owner")
-    comments = relationship("Comment", back_populates="comment_post_owner")
+    likes = relationship("Like", back_populates="like_post_owner", cascade="all,delete")
+    comments = relationship("Comment", back_populates="comment_post_owner", cascade="all,delete")
     post_owner = relationship("User", back_populates="posts")
     hashtags = relationship("HashTag", secondary=post_hashtags, back_populates="posts")
-    images = relationship("Image", back_populates="post")
+    images = relationship("Image", back_populates="post", cascade="all,delete")
     """
     images
     """
@@ -81,7 +81,7 @@ class Image(BaseMin, Base):
     __tablename__ = "image"
 
     url = Column(String(100), nullable=False)
-    post_id = Column(Integer, ForeignKey("post.id"))  # 게시물과의 관계 설정
+    post_id = Column(Integer, ForeignKey("post.id", ondelete="CASCADE"))  # 게시물과의 관계 설정
 
     post = relationship("Post", back_populates="images")
 
@@ -97,8 +97,8 @@ class Comment(BaseMin, Base):
     __tablename__ = "comment"
 
     comment = Column(String(255), nullable=False)
-    uploader = Column(Integer, ForeignKey("user.id"))
-    post_id = Column(Integer, ForeignKey("post.id"))
+    uploader = Column(Integer, ForeignKey("user.id", ondelete="CASCADE"))
+    post_id = Column(Integer, ForeignKey("post.id", ondelete="CASCADE"))
 
     comment_post_owner = relationship("Post", back_populates="comments")
     comment_owner = relationship("User", back_populates="comments")
@@ -107,8 +107,8 @@ class Comment(BaseMin, Base):
 class Like(BaseMin, Base):
     __tablename__ = "like"
 
-    owner_id = Column(Integer, ForeignKey("user.id"))
-    post_id = Column(Integer, ForeignKey("post.id"))
+    owner_id = Column(Integer, ForeignKey("user.id", ondelete="CASCADE"))
+    post_id = Column(Integer, ForeignKey("post.id", ondelete="CASCADE"))
 
     like_post_owner = relationship("Post", back_populates="likes")
     # 내가 좋아요 눌러놓은 목록들이 필요하면 사용

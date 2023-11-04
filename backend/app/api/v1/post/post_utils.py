@@ -2,6 +2,8 @@
 # hashtag_id_list 반환하는 함수 작성하기
 import os
 
+from fastapi import HTTPException
+
 from app import model
 
 image_dir = os.path.join(os.getcwd(), "images")
@@ -46,3 +48,14 @@ def save_images(db, username, image_lst, row_id):
         db.add(row)
 
     db.commit()
+
+
+def post_delete(db, post_id):
+    # DB에서 Post 관련 row 지우기
+    post_row = db.query(model.Post).filter_by(id=post_id).first()
+    if post_row is None:
+        raise HTTPException(status_code=404, detail="Post Not Found.")
+    db.delete(post_row)
+    db.commit()
+
+    return True

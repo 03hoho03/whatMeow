@@ -12,7 +12,7 @@ from app.database import get_db
 from app.api.v1.auth import auth_utils
 
 
-router = APIRouter()
+router = APIRouter(tags=["Basic Auth"])
 security = HTTPBearer()
 
 

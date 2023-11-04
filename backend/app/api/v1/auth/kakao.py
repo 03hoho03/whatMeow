@@ -11,7 +11,7 @@ from app import model
 from app.database import get_db
 
 
-router = APIRouter()
+router = APIRouter(tags=["Kakao"])
 
 
 @router.get("/kakao")

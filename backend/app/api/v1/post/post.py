@@ -10,14 +10,14 @@ from app.database import get_db
 from app.api.v1.auth import auth_utils
 from app.api.v1.post import post_utils
 
-router = APIRouter()
+router = APIRouter(tags=["Post"])
 security = HTTPBearer()
 
 
-@router.post("/post_upload", status_code=status.HTTP_201_CREATED)
+@router.post("/upload", status_code=status.HTTP_201_CREATED)
 async def post_upload(
     title: str = Form(...),
-    hashtag: List[str] = Form(...),
+    hashtag: str = Form(...),
     images: List[UploadFile] = File(...),
     cred: HTTPAuthorizationCredentials = Depends(security),
     db: Session = Depends(get_db),
@@ -27,9 +27,8 @@ async def post_upload(
     """
     decoded_dict = await auth_utils.verify_access_token(cred)
     if decoded_dict:
-        # hashtag가 담겨져 있는 list
-        hashtag_id_lst = post_utils.return_hashtag_ids(db, hashtag)
-
+        # hashtag ID가 담겨져 있는 list
+        hashtag_id_lst = post_utils.return_hashtag_ids(db, hashtag.split(","))
         row = model.Post(title=title, uploader=decoded_dict["id"])
         db.add(row)
         db.commit()
@@ -38,16 +37,19 @@ async def post_upload(
         post_utils.insert_posthashtags(db, hashtag_id_lst, row.id)
 
         # images 테이블에 추가 및 스토리지에 저장
-        post_utils.save_image(db, decoded_dict.get("username"), images, row.id)
-        # db.execute(model.post_hashtags.insert().values(post_id=row.id,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     eeeeeeeeeeeee hashtag_id=hashtag_id))
-        # db.commit()
+        post_utils.save_images(db, decoded_dict.get("username"), images, row.id)
 
         return {"success": True}
 
 
-@router.post("/post_delete", status_code=status.HTTP_202_ACCEPTED)
-async def image_upload(cred: HTTPAuthorizationCredentials = Depends(security), db: Session = Depends(get_db)):
-    return 1
+@router.get("/delete/{post_id}", status_code=status.HTTP_202_ACCEPTED)
+async def post_delete(
+    post_id: int, cred: HTTPAuthorizationCredentials = Depends(security), db: Session = Depends(get_db)
+):
+    decoded_dict = await auth_utils.verify_access_token(cred)
+    if decoded_dict:
+        if post_utils.post_delete(db, post_id):
+            return {"Success": True}
 
 
 # @router.post("/update", status_code=status.HTTP_202_ACCEPTED)
