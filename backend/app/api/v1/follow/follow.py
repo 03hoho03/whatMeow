@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, HTTPException
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm.session import Session
 
@@ -24,7 +24,21 @@ async def add_follower(
         if await follow_utils.add_follow(data.to_follow, decoded_dict.get("id"), db):
             return {"success": True}
         else:
-            return {"success": False}
+            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Failed to follow")
+
+
+@router.get("/unfollow", status_code=status.HTTP_202_ACCEPTED)
+async def delete_follower(
+    data: follow_schema.delete_follow = Depends(),
+    db: Session = Depends(get_db),
+    cred: HTTPAuthorizationCredentials = Depends(security),
+):
+    decoded_dict = await auth_utils.verify_access_token(cred)
+    if decoded_dict:
+        if await follow_utils.delete_follow(data.to_unfollow, decoded_dict.get("id"), db):
+            return {"success": True}
+        else:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Follower Not Found")
 
 
 # Follower, Following 리스트 확인용 엔드포인트
