@@ -86,6 +86,8 @@ async def verify_access_token(cred):
             return jwt_dict
     except ExpiredSignatureError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Expired")
+    except Exception:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="An Error Occured")
 
 
 async def return_user_from_refresh_token(cred, db):
