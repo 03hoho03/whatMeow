@@ -11,6 +11,14 @@ class BaseMin:
     updated_at = Column(DateTime, nullable=False, default=func.utc_timestamp(), onupdate=func.utc_timestamp())
 
 
+followers = Table(
+    "followers",
+    Base.metadata,
+    Column("follower_id", Integer, ForeignKey("user.id")),
+    Column("following_id", Integer, ForeignKey("user.id")),
+)
+
+
 class User(BaseMin, Base):
     __tablename__ = "user"
 
@@ -28,10 +36,22 @@ class User(BaseMin, Base):
     comments = relationship("Comment", back_populates="comment_owner")
     likes = relationship("Like", back_populates="like_owner")
     refresh_tokens = relationship("RefreshToken", back_populates="user")
-    # Auth Type
+    following = relationship(
+        "User",
+        secondary=followers,
+        primaryjoin="User.id == followers.c.follower_id",
+        secondaryjoin="User.id == followers.c.following_id",
+        backref="follower_lst",
+    )
+    follower = relationship(
+        "User",
+        secondary=followers,
+        primaryjoin="User.id == followers.c.following_id",
+        secondaryjoin="User.id == followers.c.follower_id",
+        backref="following_lst",
+    )
 
     """
-    images
     followers
     followings
     """
@@ -112,14 +132,6 @@ class Like(BaseMin, Base):
     like_post_owner = relationship("Post", back_populates="likes")
     # 내가 좋아요 눌러놓은 목록들이 필요하면 사용
     like_owner = relationship("User", back_populates="likes")
-
-
-class Followers(BaseMin, Base):
-    __tablename__ = "followers"
-
-
-class Followings(BaseMin, Base):
-    __tablename__ = "followings"
 
 
 class RefreshToken(BaseMin, Base):
