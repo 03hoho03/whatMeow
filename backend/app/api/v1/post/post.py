@@ -4,7 +4,6 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm.session import Session
 from typing import List
 
-# from app.api.schemas import post_schema
 from app import model
 from app.database import get_db
 from app.api.v1.auth import auth_utils
@@ -26,7 +25,6 @@ async def post_upload(
     입력받을 데이터 => 게시글, 해시태그, (고양이 품종)
     """
     decoded_dict = await auth_utils.verify_access_token(cred)
-    print(decoded_dict)
     if decoded_dict:
         # hashtag ID가 담겨져 있는 list
         hashtag_id_lst = post_utils.return_hashtag_ids(db, hashtag.split(","))
@@ -51,16 +49,3 @@ async def post_delete(
     if decoded_dict:
         if post_utils.post_delete(db, post_id):
             return {"Success": True}
-
-
-# @router.post("/update", status_code=status.HTTP_202_ACCEPTED)
-# async def post_update(
-#     data: post_schema.PostUpload, cred: HTTPAuthorizationCredentials = Depends(security), db: Session = Depends(get_db)
-# ):
-#     """
-#     입력받을 데이터 => 이미지, 게시글, 해시태그, (고양이 품종?)
-#     """
-#     a = 1
-
-
-# @router.post("/delete")
