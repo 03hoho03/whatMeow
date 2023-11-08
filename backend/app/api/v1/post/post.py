@@ -27,16 +27,16 @@ async def post_upload(
     decoded_dict = await auth_utils.verify_access_token(cred)
     if decoded_dict:
         # hashtag ID가 담겨져 있는 list
-        hashtag_id_lst = post_utils.return_hashtag_ids(db, hashtag.split(","))
+        hashtag_id_lst = await post_utils.return_hashtag_ids(db, hashtag.split(","))
         row = model.Post(title=title, uploader_name=decoded_dict["username"])
         db.add(row)
         db.commit()
 
         # post_hashtags 테이블에 연결 정보 추가
-        post_utils.insert_posthashtags(db, hashtag_id_lst, row.id)
+        await post_utils.insert_posthashtags(db, hashtag_id_lst, row.id)
 
         # images 테이블에 추가 및 스토리지에 저장
-        post_utils.save_images(db, decoded_dict.get("username"), images, row.id)
+        await post_utils.save_images(db, decoded_dict.get("username"), images, row.id)
 
         return {"success": True}
 
@@ -47,5 +47,5 @@ async def post_delete(
 ):
     decoded_dict = await auth_utils.verify_access_token(cred)
     if decoded_dict:
-        if post_utils.post_delete(db, post_id):
+        if await post_utils.post_delete(db, post_id):
             return {"Success": True}

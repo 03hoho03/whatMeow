@@ -4,7 +4,7 @@ import base64
 import io
 
 
-def return_post_by_hashtag(db, lst):
+async def return_post_by_hashtag(db, lst):
     post_lst = []
     for post_id, _ in lst:
         post_item = db.query(model.Post).filter_by(id=post_id).first()
@@ -20,7 +20,7 @@ def return_post_by_hashtag(db, lst):
     return post_lst
 
 
-def return_post_by_name(lst):
+async def return_post_by_name(lst):
     post_lst = []
     for post_item in lst:
         img = Image.open(post_item.images[0].url)

@@ -27,7 +27,7 @@ async def get_hashtag_result(data: search_schema.SearchHashTag = Depends(), db: 
         .all()
     )
 
-    post_lst = search_utils.return_post_by_hashtag(db, result)
+    post_lst = await search_utils.return_post_by_hashtag(db, result)
     return JSONResponse(content=post_lst)
 
 
@@ -41,5 +41,5 @@ async def get_name_result(data: search_schema.SearchName = Depends(), db: Sessio
         db.query(model.Post).filter(model.Post.uploader_name == data.name).offset(data.start).limit(data.limit).all()
     )
     print(result)
-    post_lst = search_utils.return_post_by_name(result)
+    post_lst = await search_utils.return_post_by_name(result)
     return JSONResponse(content=post_lst)
