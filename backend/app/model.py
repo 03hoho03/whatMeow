@@ -65,8 +65,7 @@ class Post(BaseMin, Base):
     __tablename__ = "post"
 
     title = Column(String(50), nullable=False)
-    uploader = Column(Integer, ForeignKey("user.id", ondelete="CASCADE"))
-
+    uploader_name = Column(String(50), ForeignKey("user.username", ondelete="CASCADE"))
     likes = relationship("Like", back_populates="like_post_owner", cascade="all,delete")
     comments = relationship("Comment", back_populates="comment_post_owner", cascade="all,delete")
     post_owner = relationship("User", back_populates="posts")

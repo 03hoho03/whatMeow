@@ -26,10 +26,11 @@ async def post_upload(
     입력받을 데이터 => 게시글, 해시태그, (고양이 품종)
     """
     decoded_dict = await auth_utils.verify_access_token(cred)
+    print(decoded_dict)
     if decoded_dict:
         # hashtag ID가 담겨져 있는 list
         hashtag_id_lst = post_utils.return_hashtag_ids(db, hashtag.split(","))
-        row = model.Post(title=title, uploader=decoded_dict["id"])
+        row = model.Post(title=title, uploader_name=decoded_dict["username"])
         db.add(row)
         db.commit()
 

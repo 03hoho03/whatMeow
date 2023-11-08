@@ -9,3 +9,5 @@ class SearchHashTag(BaseModel):
 
 class SearchName(BaseModel):
     name: str
+    start: int
+    limit: int

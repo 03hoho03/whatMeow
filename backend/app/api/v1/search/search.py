@@ -31,9 +31,15 @@ async def get_hashtag_result(data: search_schema.SearchHashTag = Depends(), db: 
     return JSONResponse(content=post_lst)
 
 
-@router.get("username", status_code=status.HTTP_200_OK)
-async def get_name_result(name: str, db: Session = Depends(get_db)):
+@router.get("/username", status_code=status.HTTP_200_OK)
+async def get_name_result(data: search_schema.SearchName = Depends(), db: Session = Depends(get_db)):
     """
     검색한 사용자 닉네임에 해당하는 결과 return
     """
-    return 1
+
+    result = (
+        db.query(model.Post).filter(model.Post.uploader_name == data.name).offset(data.start).limit(data.limit).all()
+    )
+    print(result)
+    post_lst = search_utils.return_post_by_name(result)
+    return JSONResponse(content=post_lst)
