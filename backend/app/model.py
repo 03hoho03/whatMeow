@@ -24,7 +24,7 @@ class User(BaseMin, Base):
 
     name = Column(String(10), nullable=False)
     nickname = Column(String(20), nullable=True, unique=True)
-    email = Column(String(30), nullable=False, unique=True)
+    email = Column(String(30), nullable=False)
     username = Column(String(50), nullable=False, unique=True)
     password = Column(String(255), nullable=True)
     gender = Column(String(5), nullable=True)
@@ -42,6 +42,7 @@ class User(BaseMin, Base):
         primaryjoin="User.id == followers.c.follower_id",
         secondaryjoin="User.id == followers.c.following_id",
         backref="follower_lst",
+        overlaps="follower_lst",
     )
     follower = relationship(
         "User",
@@ -49,6 +50,7 @@ class User(BaseMin, Base):
         primaryjoin="User.id == followers.c.following_id",
         secondaryjoin="User.id == followers.c.follower_id",
         backref="following_lst",
+        overlaps="following_lst",
     )
 
     """
