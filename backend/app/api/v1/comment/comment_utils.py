@@ -2,6 +2,7 @@ from app import model
 from sqlalchemy.orm.exc import NoResultFound
 
 
+# Comment 작성 함수 구현
 async def upload_comment(comment, post_id, user_id, db):
     try:
         row = model.Comment(comment=comment, uploader=user_id, post_id=post_id)
@@ -12,6 +13,7 @@ async def upload_comment(comment, post_id, user_id, db):
         return False
 
 
+# Comment 삭제 함수 구현
 async def delete_comment(comment_id, post_id, user_id, db):
     try:
         c_row = db.query(model.Comment).filter_by(id=comment_id, post_id=post_id, uploader=user_id).first()
@@ -22,6 +24,7 @@ async def delete_comment(comment_id, post_id, user_id, db):
         return False
 
 
+# Comment 업데이트 함수 구현
 async def update_comment(new_comment, comment_id, post_id, user_id, db):
     try:
         c_row = db.query(model.Comment).filter_by(id=comment_id, post_id=post_id, uploader=user_id).first()

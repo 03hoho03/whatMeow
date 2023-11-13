@@ -19,7 +19,6 @@ async def comment_upload(
 ):
     decoded_dict = await auth_utils.verify_access_token(cred)
     if decoded_dict:
-        # Comment 추가 함수 구현
         if await comment_utils.upload_comment(data.comment, data.post_id, decoded_dict.get("id"), db):
             return {"success": True}
     else:
@@ -34,7 +33,6 @@ async def comment_delete(
 ):
     decoded_dict = await auth_utils.verify_access_token(cred)
     if decoded_dict:
-        # Comment 삭제 함수 구현
         if await comment_utils.delete_comment(data.comment_id, data.post_id, decoded_dict.get("id"), db):
             return {"success": True}
         else:
@@ -49,7 +47,6 @@ async def comment_update(
 ):
     decoded_dict = await auth_utils.verify_access_token(cred)
     if decoded_dict:
-        # Comment 업데이트 함수 구현
         if await comment_utils.update_comment(
             data.new_comment, data.comment_id, data.post_id, decoded_dict.get("id"), db
         ):
