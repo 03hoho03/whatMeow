@@ -1,0 +1,32 @@
+.main_wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+.input_container {
+  width: 100%;
+}
+.outer {
+  width: 100%;
+  border: 1px solid #cccccc;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+}
+.outer:focus-within{
+  border: 1px solid #000000;
+}
+.inner {
+  display: flex;
+  flex-direction: column;
+}
+.inner_label {
+  font-size: 10px;
+  color: #999999;
+}
+.inner_input {
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
