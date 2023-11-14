@@ -48,4 +48,4 @@ async def post_delete(
     decoded_dict = await auth_utils.verify_access_token(cred)
     if decoded_dict:
         if await post_utils.post_delete(db, post_id):
-            return {"Success": True}
+            return {"success": True}
