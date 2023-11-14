@@ -53,11 +53,6 @@ class User(BaseMin, Base):
         overlaps="following_lst",
     )
 
-    """
-    followers
-    followings
-    """
-
 
 class Cat(BaseMin, Base):
     __tablename__ = "cat"
@@ -93,9 +88,6 @@ class Post(BaseMin, Base):
     post_owner = relationship("User", back_populates="posts")
     hashtags = relationship("HashTag", secondary=post_hashtags, back_populates="posts")
     images = relationship("Image", back_populates="post", cascade="all,delete")
-    """
-    images
-    """
 
 
 class Image(BaseMin, Base):
