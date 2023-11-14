@@ -13,6 +13,11 @@ class KaKaoUserAdd(BaseModel):
     username: str
 
 
+class UserLogin(BaseModel):
+    email: str
+    password: str
+
+
 class User(KaKaoUserAdd):
     id: int
 

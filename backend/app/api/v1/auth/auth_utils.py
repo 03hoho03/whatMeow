@@ -9,6 +9,10 @@ from jose.exceptions import ExpiredSignatureError
 from app import model
 
 
+def create_user_dict(user):
+    return {"email": user.email, "username": user.username, "name": user.name, "profile_image": user.profile_image}
+
+
 def get_username(db, email):
     user = db.query(model.User).filter(model.User.email == email).first()
 
@@ -33,7 +37,8 @@ async def general_create_access_token(
     refresh_token = jwt.encode(user_refresh_info.dict(), settings.SECRET_REFRESH_KEY, algorithm=settings.ALGORITHM)
 
     existing_user = db.query(model.RefreshToken).filter_by(user_id=user_access_info.id).first()
-
+    user = db.query(model.User).filter_by(id=user_access_info.id).first()
+    user_dict = create_user_dict(user)
     if existing_user:
         db.delete(existing_user)
         db.commit()
@@ -42,7 +47,7 @@ async def general_create_access_token(
     db.add(row)
     db.commit()
 
-    return {"access_token": access_token, "refresh_token": refresh_token}
+    return {"access_token": access_token, "refresh_token": refresh_token, "user": user_dict}
 
 
 async def social_create_access_token(
@@ -62,7 +67,8 @@ async def social_create_access_token(
     refresh_token = jwt.encode(user_refresh_info.dict(), settings.SECRET_REFRESH_KEY, algorithm=settings.ALGORITHM)
 
     existing_user = db.query(model.RefreshToken).filter_by(user_id=user_access_info.id).first()
-
+    user = db.query(model.User).filter_by(id=user_access_info.id).first()
+    user_dict = create_user_dict(user)
     if existing_user:
         db.delete(existing_user)
         db.commit()
@@ -71,7 +77,7 @@ async def social_create_access_token(
     db.add(row)
     db.commit()
 
-    return {"access_token": access_token, "refresh_token": refresh_token}
+    return {"access_token": access_token, "refresh_token": refresh_token, "user": user_dict}
 
 
 async def verify_access_token(cred):

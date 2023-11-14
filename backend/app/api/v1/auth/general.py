@@ -1,6 +1,6 @@
 from datetime import timedelta
 from fastapi import Depends, APIRouter, HTTPException, status, Response
-from fastapi.security import OAuth2PasswordRequestForm, HTTPAuthorizationCredentials, HTTPBearer
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 import bcrypt
 from sqlalchemy.orm.session import Session
 from sqlalchemy.exc import IntegrityError
@@ -25,19 +25,17 @@ async def add_user(data: user_schema.GeneralUserAdd, db: Session = Depends(get_d
         db.add(row)
         db.commit()
     except IntegrityError:
-        raise HTTPException(status_cod=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Email Duplicated")
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Email Duplicated")
 
     return row
 
 
 @router.post("/login")
-async def issue_token(response: Response, data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    user = db.query(model.User).filter(model.User.username == data.username).first()
+async def issue_token(response: Response, data: user_schema.UserLogin, db: Session = Depends(get_db)):
+    user = db.query(model.User).filter(model.User.email == data.email).first()
     if bcrypt.checkpw(data.password.encode(), user.password.encode()):  # bcrypt.checkpw가 자동으로 salt값 추출 후 서로 비교해줌
-        token_info = await auth_utils.social_create_access_token(user, db, exp=timedelta(minutes=720))
-        response = auth_utils.set_cookie(response, token_info)
-
-        return response
+        token_info = await auth_utils.general_create_access_token(user, db, exp=timedelta(minutes=720))
+        return token_info
     raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Wrong Information")
 
 
