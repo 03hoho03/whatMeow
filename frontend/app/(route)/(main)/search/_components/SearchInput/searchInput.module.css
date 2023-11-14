@@ -1,0 +1,17 @@
+.main_wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.search_form {
+  width: 80%;
+}
+.search_input {
+  padding: 8px 12px;
+  background-color: gray;
+  border: none;
+  border-radius: 16px;
+  width: 100%;
+}

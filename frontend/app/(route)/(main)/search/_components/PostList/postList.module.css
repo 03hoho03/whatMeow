@@ -1,0 +1,13 @@
+.card_list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.card_wrapper {
+  flex-basis: calc(33.33% - 4px);
+  background-color: whitesmoke;
+  margin-bottom: 8px;
+}
+.card_wrapper:hover {
+  cursor: pointer;
+}

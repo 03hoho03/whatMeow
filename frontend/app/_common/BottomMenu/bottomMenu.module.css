@@ -1,0 +1,39 @@
+.main_wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.util_wrapper {
+  background-color: #fff;
+  display: flex;
+  width: 100%;
+  max-width: 700px;
+  position: fixed;
+  z-index: 100;
+  bottom: 0;
+  margin: auto;
+}
+.link {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.button {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 0;
+  align-items: center;
+  color: #999999;
+  color:#ff5757;
+}
+.icon {
+  width: 24px;
+  height: 24px;
+}
+@media (min-width:1001px) {
+  .main_wrapper {
+    display: none;
+  }
+}

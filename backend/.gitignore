@@ -1,4 +1,0 @@
-.env
-venv/
-setting.json
-.pre-commit-config.yaml
