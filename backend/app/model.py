@@ -1,8 +1,13 @@
+import warnings
+
 from sqlalchemy import Column, Integer, DateTime, func, String, Table
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.orm import relationship
 
 from app.database import Base
+from sqlalchemy.exc import SAWarning
+
+warnings.simplefilter("ignore", SAWarning)
 
 
 class BaseMin:
@@ -25,7 +30,6 @@ class User(BaseMin, Base):
     name = Column(String(10), nullable=False)
     nickname = Column(String(20), nullable=True, unique=True)
     email = Column(String(30), nullable=True)
-    username = Column(String(50), nullable=False, unique=True)
     password = Column(String(255), nullable=True)
     gender = Column(String(5), nullable=True)
     explain = Column(String(50), nullable=True)
@@ -42,7 +46,7 @@ class User(BaseMin, Base):
         primaryjoin="User.id == followers.c.follower_id",
         secondaryjoin="User.id == followers.c.following_id",
         backref="follower_lst",
-        overlaps="follower_lst",
+        overlaps="follower_lst.follower_lst",
     )
     follower = relationship(
         "User",
@@ -50,7 +54,7 @@ class User(BaseMin, Base):
         primaryjoin="User.id == followers.c.following_id",
         secondaryjoin="User.id == followers.c.follower_id",
         backref="following_lst",
-        overlaps="following_lst",
+        overlaps="following_lst.following_lst",
     )
 
 
@@ -82,10 +86,11 @@ class Post(BaseMin, Base):
     __tablename__ = "post"
 
     title = Column(String(50), nullable=False)
-    uploader_name = Column(String(50), ForeignKey("user.username", ondelete="CASCADE"))
+    uploader_id = Column(Integer, ForeignKey("user.id"))
+
     likes = relationship("Like", back_populates="like_post_owner", cascade="all,delete")
     comments = relationship("Comment", back_populates="comment_post_owner", cascade="all,delete")
-    post_owner = relationship("User", back_populates="posts")
+    post_owner = relationship("User", back_populates="posts", foreign_keys=[uploader_id])
     hashtags = relationship("HashTag", secondary=post_hashtags, back_populates="posts")
     images = relationship("Image", back_populates="post", cascade="all,delete")
 
