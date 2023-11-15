@@ -1,6 +1,6 @@
 from datetime import timedelta
-from fastapi import Depends, APIRouter, HTTPException, status
-from fastapi.responses import RedirectResponse
+from fastapi import Depends, APIRouter, HTTPException, status, Response
+from fastapi.responses import RedirectResponse, JSONResponse
 import httpx
 from sqlalchemy.orm.session import Session
 from sqlalchemy.exc import IntegrityError
@@ -21,6 +21,7 @@ def google():
 
 @router.get("/google_login")
 async def google_login(
+    cookie_response: Response,
     code: str | None = None,
     db: Session = Depends(get_db),
 ):
@@ -42,9 +43,6 @@ async def google_login(
             },
         )
         response = response.json()
-        # print(response)
-        # print(response.get("access_token"))
-        # access_token = response.get(  "access_token")
         id_token = response.get("id_token")
         result = await client.get(
             url=f"https://oauth2.googleapis.com/tokeninfo?id_token={id_token}",
@@ -63,14 +61,18 @@ async def google_login(
                         "name": result.get("name"),
                         "email": result.get("email"),
                         "profile_image": result.get("picture"),
-                        "nickname": await auth_utils.get_random_nickname(),
+                        "nickname": await auth_utils.get_random_nickname(db),
                     }
                 )
 
                 db.add(user_row)
                 db.commit()
 
-                user = db.query(model.User).filter(model.User.username == user_row.username).first()
-                return await auth_utils.social_create_access_token(user, db, exp=timedelta(minutes=720))
+                user = db.query(model.User).filter(model.User.nickname == user_row.nickname).first()
+                token_info = await auth_utils.social_create_access_token(user, db, exp=timedelta(minutes=720))
+                cookie_response = JSONResponse(content=token_info.get("user"))
+                cookie_response = await auth_utils.set_cookie_response(cookie_response, token_info)
+
+                return cookie_response
             except IntegrityError:
                 raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Email duplicated")

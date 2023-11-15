@@ -5,7 +5,7 @@ from typing import Optional
 from fastapi import HTTPException, status
 from jose import jwt
 from jose.exceptions import ExpiredSignatureError
-import secrets
+import random
 
 from app import model
 
@@ -20,14 +20,16 @@ async def set_cookie_response(response, token_info):
     return response
 
 
-async def get_random_nickname():
-    # 일단 이렇게 해두고 나중에는 db에서 겹치는 닉네임이 있는지 확인해보고 리턴해주기
-    random_constant = secrets.token_hex(4)
-    return str("집사" + random_constant)
+async def get_random_nickname(db):
+    while True:
+        random_constant = random.randint(10000000, 99999999)
+        random_nickname = "집사_" + str(random_constant)
+        if not db.query(model.User).filter_by(nickname=random_nickname).first():
+            return random_nickname
 
 
 async def create_user_dict(user):
-    return {"email": user.email, "username": user.username, "name": user.name, "profile_image": user.profile_image}
+    return {"email": user.email, "nickname": user.nickname, "name": user.name, "profile_image": user.profile_image}
 
 
 def get_username(db, email):
