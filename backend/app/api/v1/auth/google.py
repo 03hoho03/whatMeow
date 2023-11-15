@@ -61,9 +61,9 @@ async def google_login(
                 user_row = model.User(
                     **{
                         "name": result.get("name"),
-                        "username": "google_" + str(result.get("iat")),
                         "email": result.get("email"),
                         "profile_image": result.get("picture"),
+                        "nickname": await auth_utils.get_random_nickname(),
                     }
                 )
 

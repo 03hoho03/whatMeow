@@ -1,5 +1,4 @@
-from fastapi import APIRouter, Depends, status, HTTPException
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from fastapi import APIRouter, Depends, status, HTTPException, Request
 from sqlalchemy.orm.session import Session
 
 from app.api.v1.auth import auth_utils
@@ -8,16 +7,16 @@ from app.api.schemas import like_schema
 from app.database import get_db
 
 router = APIRouter(tags=["Like"])
-security = HTTPBearer()
 
 
 @router.get("/like", status_code=status.HTTP_202_ACCEPTED)
 async def like(
+    request: Request,
     data: like_schema.like = Depends(),
     db: Session = Depends(get_db),
-    cred: HTTPAuthorizationCredentials = Depends(security),
 ):
-    decoded_dict = await auth_utils.verify_access_token(cred)
+    access_token = request.cookies.get("accessToken")
+    decoded_dict = await auth_utils.verify_access_token(access_token)
     if decoded_dict:
         if await like_utils.add_like(data.post_id, decoded_dict.get("id"), db):
             return {"success": True}
@@ -27,11 +26,12 @@ async def like(
 
 @router.get("/unlike", status_code=status.HTTP_202_ACCEPTED)
 async def unlike(
+    request: Request,
     data: like_schema.like = Depends(),
     db: Session = Depends(get_db),
-    cred: HTTPAuthorizationCredentials = Depends(security),
 ):
-    decoded_dict = await auth_utils.verify_access_token(cred)
+    access_token = request.cookies.get("accessToken")
+    decoded_dict = await auth_utils.verify_access_token(access_token)
     if decoded_dict:
         if await like_utils.unlike(data.post_id, decoded_dict.get("id"), db):
             return {"success": True}

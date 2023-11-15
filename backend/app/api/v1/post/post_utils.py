@@ -32,8 +32,8 @@ async def insert_posthashtags(db, hashtag_id_lst, row_id):
         db.commit()
 
 
-async def save_images(db, username, image_lst, row_id):
-    target_dir = os.path.join(image_dir, username)
+async def save_images(db, nickname, image_lst, row_id):
+    target_dir = os.path.join(image_dir, nickname)
     post_dir = os.path.join(target_dir, str(row_id))
     if not os.path.exists(target_dir):
         os.makedirs(target_dir)

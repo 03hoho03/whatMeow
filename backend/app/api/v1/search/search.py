@@ -1,7 +1,6 @@
 from fastapi import Depends, status, APIRouter
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm.session import Session
-from fastapi.security import HTTPBearer
 
 from app.api.schemas import search_schema
 from app.api.v1.search import search_utils
@@ -9,7 +8,6 @@ from app import model
 from app.database import get_db
 
 router = APIRouter(tags=["Search"])
-security = HTTPBearer()
 
 
 # Pydantic 모델을 query parameter로 받을 때는 Depends() 사용할 것

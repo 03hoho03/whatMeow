@@ -20,5 +20,10 @@ class User(KaKaoUserAdd):
         from_attributes = True
 
 
+class LoginUser(BaseModel):
+    email: str
+    password: str
+
+
 class UserPayload(User):
     exp: datetime

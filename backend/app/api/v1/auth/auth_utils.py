@@ -5,8 +5,29 @@ from typing import Optional
 from fastapi import HTTPException, status
 from jose import jwt
 from jose.exceptions import ExpiredSignatureError
+import secrets
 
 from app import model
+
+
+async def set_cookie_response(response, token_info):
+    response.set_cookie(
+        key="accessToken", samesite="None", value=token_info.get("access_token"), httponly=True, secure=True
+    )
+    response.set_cookie(
+        key="refreshToken", samesite="None", value=token_info.get("refresh_token"), httponly=True, secure=True
+    )
+    return response
+
+
+async def get_random_nickname():
+    # 일단 이렇게 해두고 나중에는 db에서 겹치는 닉네임이 있는지 확인해보고 리턴해주기
+    random_constant = secrets.token_hex(4)
+    return str("집사" + random_constant)
+
+
+async def create_user_dict(user):
+    return {"email": user.email, "username": user.username, "name": user.name, "profile_image": user.profile_image}
 
 
 def get_username(db, email):
@@ -33,7 +54,8 @@ async def general_create_access_token(
     refresh_token = jwt.encode(user_refresh_info.dict(), settings.SECRET_REFRESH_KEY, algorithm=settings.ALGORITHM)
 
     existing_user = db.query(model.RefreshToken).filter_by(user_id=user_access_info.id).first()
-
+    user = db.query(model.User).filter_by(id=user_access_info.id).first()
+    user_dict = await create_user_dict(user)
     if existing_user:
         db.delete(existing_user)
         db.commit()
@@ -42,7 +64,7 @@ async def general_create_access_token(
     db.add(row)
     db.commit()
 
-    return {"access_token": access_token, "refresh_token": refresh_token}
+    return {"access_token": access_token, "refresh_token": refresh_token, "user": user_dict}
 
 
 async def social_create_access_token(
@@ -62,7 +84,8 @@ async def social_create_access_token(
     refresh_token = jwt.encode(user_refresh_info.dict(), settings.SECRET_REFRESH_KEY, algorithm=settings.ALGORITHM)
 
     existing_user = db.query(model.RefreshToken).filter_by(user_id=user_access_info.id).first()
-
+    user = db.query(model.User).filter_by(id=user_access_info.id).first()
+    user_dict = await create_user_dict(user)
     if existing_user:
         db.delete(existing_user)
         db.commit()
@@ -71,15 +94,14 @@ async def social_create_access_token(
     db.add(row)
     db.commit()
 
-    return {"access_token": access_token, "refresh_token": refresh_token}
+    return {"access_token": access_token, "refresh_token": refresh_token, "user": user_dict}
 
 
-async def verify_access_token(cred):
+async def verify_access_token(token):
     """
     입력한 액세스 토큰이 만료되었는지 아닌지 체크하는 함수
     만료되었다면 401 반환
     """
-    token = cred.credentials
     try:
         jwt_dict = jwt.decode(token, settings.SECRET_ACCESS_KEY, settings.ALGORITHM)
         if jwt_dict:
@@ -90,23 +112,21 @@ async def verify_access_token(cred):
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="An Error Occured")
 
 
-async def return_user_from_refresh_token(cred, db):
+async def return_user_from_refresh_token(token, db):
     """
     cred 정보를 받아 refresh_token 정보를 반환해주는 함수
     """
-    token = cred.credentials
     return db.query(model.RefreshToken).filter_by(refresh_token=token).first()
 
 
-async def verify_refesh_token(cred, db, exp: Optional[timedelta] = None):
+async def verify_refesh_token(token, db, exp: Optional[timedelta] = None):
     """
     입력한 리프레쉬 토큰이 만료되었는지 아닌지 체크하는 함수
     만료되지 않았다면 access_token 갱신해서 return
     만료되었다면 401 토큰 반환 후 refresh_token 삭제
     프론트측에서는 여기서 바로 로그인화면에서 redirect 해줌
     """
-    token = cred.credentials
-    rf_token = await return_user_from_refresh_token(cred, db)
+    rf_token = await return_user_from_refresh_token(token, db)
     try:
         if jwt.decode(token, settings.SECRET_REFRESH_KEY, settings.ALGORITHM):
             """
