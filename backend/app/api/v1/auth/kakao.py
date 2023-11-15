@@ -1,6 +1,6 @@
 from datetime import timedelta
-from fastapi import Depends, APIRouter, HTTPException, status
-from fastapi.responses import RedirectResponse
+from fastapi import Depends, APIRouter, HTTPException, status, Response
+from fastapi.responses import RedirectResponse, JSONResponse
 import httpx
 from sqlalchemy.orm.session import Session
 from sqlalchemy.exc import IntegrityError
@@ -22,6 +22,7 @@ def kakao():
 
 @router.get("/kakao_login")
 async def kakao_login(
+    cookie_response: Response,
     code: str | None = None,
     error: str | None = None,
     error_description: str | None = None,
@@ -73,14 +74,18 @@ async def kakao_login(
                         "email": _profile.get("email"),
                         "gender": _profile.get("gender"),
                         "profile_image": _property.get("profile_image"),
-                        "nickname": await auth_utils.get_random_nickname(),
+                        "nickname": await auth_utils.get_random_nickname(db),
                     }
                 )
 
                 db.add(user_row)
                 db.commit()
 
-                user = db.query(model.User).filter(model.User.username == user_row.username).first()
-                return await auth_utils.social_create_access_token(user, db, exp=timedelta(minutes=720))
+                user = db.query(model.User).filter(model.User.nickname == user_row.nickname).first()
+                token_info = await auth_utils.social_create_access_token(user, db, exp=timedelta(minutes=720))
+                cookie_response = JSONResponse(content=token_info.get("user"))
+                cookie_response = await auth_utils.set_cookie_response(cookie_response, token_info)
+
+                return cookie_response
             except IntegrityError:
                 raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Email Duplicated")

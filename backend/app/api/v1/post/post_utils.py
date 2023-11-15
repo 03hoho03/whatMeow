@@ -41,7 +41,6 @@ async def save_images(db, nickname, image_lst, row_id):
 
     for i, image in enumerate(image_lst):
         file_path = os.path.join(post_dir, str(i) + ".jpg")
-        print(file_path)
         with open(file_path, "wb") as f:
             f.write(image.file.read())
         row = model.Image(url=file_path, post_id=row_id)

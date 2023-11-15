@@ -1,5 +1,6 @@
 from fastapi import Depends, APIRouter, status
 from fastapi import File, UploadFile, Form, Request
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm.session import Session
 from typing import List
 
@@ -9,11 +10,13 @@ from app.api.v1.auth import auth_utils
 from app.api.v1.post import post_utils
 
 router = APIRouter(tags=["Post"])
+security = HTTPBearer()
 
 
 @router.post("/upload", status_code=status.HTTP_201_CREATED)
 async def post_upload(
-    request: Request,
+    # request: Request,
+    cred: HTTPAuthorizationCredentials = Depends(security),
     content: str = Form(...),
     tags: List[str] = Form(...),
     files: List[UploadFile] = File(...),
@@ -22,20 +25,20 @@ async def post_upload(
     """
     입력받을 데이터 => 게시글, 해시태그, (고양이 품종)
     """
-    access_token = request.cookies.get("accessToken")
+    # access_token = request.cookies.get("accessToken")
+    access_token = cred.credentials
     decoded_dict = await auth_utils.verify_access_token(access_token)
     if decoded_dict:
         # hashtag ID가 담겨져 있는 list
         hashtag_id_lst = await post_utils.return_hashtag_ids(db, tags[0].split(","))
-        row = model.Post(title=content, uploader_name=decoded_dict["username"])
+        row = model.Post(title=content, uploader_id=decoded_dict["id"])
         db.add(row)
         db.commit()
-
         # post_hashtags 테이블에 연결 정보 추가
         await post_utils.insert_posthashtags(db, hashtag_id_lst, row.id)
 
         # images 테이블에 추가 및 스토리지에 저장
-        await post_utils.save_images(db, decoded_dict.get("username"), files, row.id)
+        await post_utils.save_images(db, decoded_dict.get("nickname"), files, row.id)
 
         return {"success": True}
 

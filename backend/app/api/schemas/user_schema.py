@@ -5,12 +5,12 @@ from datetime import datetime
 class GeneralUserAdd(BaseModel):
     email: str
     name: str
-    username: str
+    nickname: str
     password: str
 
 
 class KaKaoUserAdd(BaseModel):
-    username: str
+    nickname: str
 
 
 class User(KaKaoUserAdd):
