@@ -12,7 +12,7 @@ from app.database import get_db
 from app.api.v1.auth import auth_utils
 
 
-router = APIRouter(tags=["Basic Auth"])
+router = APIRouter(tags=["Auth"])
 
 
 @router.post("/register", response_model=default.ResourceId, status_code=status.HTTP_201_CREATED)

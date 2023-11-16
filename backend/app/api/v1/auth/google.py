@@ -10,7 +10,7 @@ from app.config import settings
 from app import model
 from app.database import get_db
 
-router = APIRouter(tags=["Google"])
+router = APIRouter(tags=["Auth"])
 
 
 @router.get("/google")
