@@ -9,7 +9,7 @@ from app.database import get_db
 router = APIRouter(tags=["Like"])
 
 
-@router.get("/like", status_code=status.HTTP_202_ACCEPTED)
+@router.get("", status_code=status.HTTP_202_ACCEPTED)
 async def like(
     request: Request,
     data: like_schema.like = Depends(),
@@ -18,22 +18,10 @@ async def like(
     access_token = request.cookies.get("accessToken")
     decoded_dict = await auth_utils.verify_access_token(access_token)
     if decoded_dict:
-        if await like_utils.add_like(data.post_id, decoded_dict.get("id"), db):
-            return {"success": True}
+        stat = await like_utils.add_like(data.post_id, decoded_dict.get("id"), db)
+        if stat == "like":
+            return {"status": stat}
+        elif stat == "unlike":
+            return {"status": stat}
         else:
             raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Failed to like")
-
-
-@router.get("/unlike", status_code=status.HTTP_202_ACCEPTED)
-async def unlike(
-    request: Request,
-    data: like_schema.like = Depends(),
-    db: Session = Depends(get_db),
-):
-    access_token = request.cookies.get("accessToken")
-    decoded_dict = await auth_utils.verify_access_token(access_token)
-    if decoded_dict:
-        if await like_utils.unlike(data.post_id, decoded_dict.get("id"), db):
-            return {"success": True}
-        else:
-            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Failed to follow")
