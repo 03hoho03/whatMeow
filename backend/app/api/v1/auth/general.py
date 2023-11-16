@@ -59,7 +59,7 @@ async def logout(request: Request, db: Session = Depends(get_db)):
         raise HTTPException(status_cod=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Item Not Found")
 
 
-@router.get("/check_refresh_token")
+@router.get("/token/refresh")
 async def check_refresh_token(request: Request, db: Session = Depends(get_db)):
-    refresh_token = request.cookies.get("accessToken")
+    refresh_token = request.cookies.get("refreshToken")
     return {"new_token": await auth_utils.verify_refesh_token(refresh_token, db)}
