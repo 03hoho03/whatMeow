@@ -1,13 +1,8 @@
-import warnings
-
 from sqlalchemy import Column, Integer, DateTime, func, String, Table
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.orm import relationship
 
 from app.database import Base
-from sqlalchemy.exc import SAWarning
-
-warnings.simplefilter("ignore", SAWarning)
 
 
 class BaseMin:
@@ -46,7 +41,7 @@ class User(BaseMin, Base):
         primaryjoin="User.id == followers.c.follower_id",
         secondaryjoin="User.id == followers.c.following_id",
         backref="follower_lst",
-        overlaps="follower_lst.follower_lst",
+        overlaps="follower_lst,following_lst",
     )
     follower = relationship(
         "User",
@@ -54,7 +49,7 @@ class User(BaseMin, Base):
         primaryjoin="User.id == followers.c.following_id",
         secondaryjoin="User.id == followers.c.follower_id",
         backref="following_lst",
-        overlaps="following_lst.following_lst",
+        overlaps="following_lst,follower_lst",
     )
 
 
