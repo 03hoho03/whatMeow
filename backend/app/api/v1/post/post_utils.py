@@ -3,6 +3,8 @@
 import os
 
 from fastapi import HTTPException
+from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.orm import joinedload
 
 from app import model
 
@@ -58,3 +60,22 @@ async def post_delete(db, post_id):
     db.commit()
 
     return True
+
+
+async def return_detailed_post(db, post_id):
+    try:
+        post = (
+            db.query(model.Post)
+            .options(
+                joinedload(model.Post.likes),
+                joinedload(model.Post.comments),
+                joinedload(model.Post.post_owner),
+                joinedload(model.Post.hashtags),
+                joinedload(model.Post.images),
+            )
+            .filter_by(id=post_id)
+            .first()
+        )
+        return post
+    except NoResultFound:
+        return None
