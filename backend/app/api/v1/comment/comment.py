@@ -39,10 +39,10 @@ async def comment_delete(
             raise HTTPException(status_coce=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Failed to Delete Comment")
 
 
-@router.get("/update", status_code=status.HTTP_202_ACCEPTED)
+@router.put("/update", status_code=status.HTTP_202_ACCEPTED)
 async def comment_update(
     request: Request,
-    data: comment_schema.update_comment = Depends(),
+    data: comment_schema.update_comment,
     db: Session = Depends(get_db),
 ):
     access_token = request.cookies.get("accessToken")
