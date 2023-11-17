@@ -71,8 +71,8 @@ async def kakao_login(
                 user_row = model.User(
                     **{
                         "name": _property.get("nickname"),
-                        "email": _profile.get("email"),
-                        "gender": _profile.get("gender"),
+                        "email": _profile.get("email", None),
+                        "gender": _profile.get("gender", None),
                         "profile_image": _property.get("profile_image"),
                         "nickname": await auth_utils.get_random_nickname(db),
                     }
