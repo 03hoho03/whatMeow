@@ -11,6 +11,7 @@ class GeneralUserAdd(BaseModel):
 
 class KaKaoUserAdd(BaseModel):
     nickname: str
+    username: str
 
 
 class User(KaKaoUserAdd):

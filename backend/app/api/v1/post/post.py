@@ -36,7 +36,7 @@ async def post_upload(
         await post_utils.insert_posthashtags(db, hashtag_id_lst, row.id)
 
         # images 테이블에 추가 및 스토리지에 저장
-        await post_utils.save_images(db, decoded_dict.get("nickname"), files, row.id)
+        await post_utils.save_images(db, decoded_dict.get("username"), files, row.id)
 
         return {"success": True}
 
@@ -46,7 +46,7 @@ async def post_delete(request: Request, post_id: int, db: Session = Depends(get_
     access_token = request.cookies.get("accessToken")
     decoded_dict = await auth_utils.verify_access_token(access_token)
     if decoded_dict:
-        if await post_utils.post_delete(db, post_id):
+        if await post_utils.post_delete(db, decoded_dict.get("username"), post_id):
             return {"success": True}
 
 

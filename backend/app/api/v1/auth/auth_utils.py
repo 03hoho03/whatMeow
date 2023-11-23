@@ -24,7 +24,7 @@ async def set_cookie_response(response, token_info):
 async def get_random_username(db):
     letters = string.ascii_letters
     while True:
-        random_string = "".join(random.choices(letters) for _ in range(8))
+        random_string = "".join(random.choice(letters) for _ in range(8))
         if not db.query(model.User).filter_by(username=random_string).first():
             return random_string
 
