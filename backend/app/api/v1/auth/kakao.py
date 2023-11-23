@@ -75,6 +75,7 @@ async def kakao_login(
                         "gender": _profile.get("gender", None),
                         "profile_image": _property.get("profile_image"),
                         "nickname": await auth_utils.get_random_nickname(db),
+                        "username": await auth_utils.get_random_username(db),
                     }
                 )
 

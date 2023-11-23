@@ -23,7 +23,8 @@ class User(BaseMin, Base):
     __tablename__ = "user"
 
     name = Column(String(10), nullable=False)
-    nickname = Column(String(20), nullable=True, unique=True)
+    nickname = Column(String(20), nullable=False, unique=True)
+    username = Column(String(20), nullable=False, unique=True)
     email = Column(String(30), nullable=True)
     password = Column(String(255), nullable=True)
     gender = Column(String(5), nullable=True)

@@ -17,7 +17,14 @@ router = APIRouter(tags=["Auth"])
 
 @router.post("/register", response_model=default.ResourceId, status_code=status.HTTP_201_CREATED)
 async def add_user(data: user_schema.GeneralUserAdd, db: Session = Depends(get_db)):
-    row = model.User(**{"email": data.email, "nickname": data.nickname, "name": data.name})
+    row = model.User(
+        **{
+            "email": data.email,
+            "nickname": data.nickname,
+            "name": data.name,
+            "username": await auth_utils.get_random_username(db),
+        }
+    )
     salt_value = bcrypt.gensalt()
     row.password = bcrypt.hashpw(data.password.encode(), salt_value)
     try:
