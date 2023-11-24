@@ -1,8 +1,12 @@
 from sqlalchemy import Column, Integer, DateTime, func, String, Table
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.orm import relationship
+from sqlalchemy.exc import SAWarning
+import warnings
 
 from app.database import Base
+
+warnings.filterwarnings("ignore", category=SAWarning)
 
 
 class BaseMin:
@@ -23,7 +27,8 @@ class User(BaseMin, Base):
     __tablename__ = "user"
 
     name = Column(String(10), nullable=False)
-    nickname = Column(String(20), nullable=True, unique=True)
+    nickname = Column(String(20), nullable=False, unique=True)
+    username = Column(String(20), nullable=False, unique=True)
     email = Column(String(30), nullable=True)
     password = Column(String(255), nullable=True)
     gender = Column(String(5), nullable=True)
@@ -93,7 +98,7 @@ class Post(BaseMin, Base):
 class Image(BaseMin, Base):
     __tablename__ = "image"
 
-    url = Column(String(100), nullable=False)
+    url = Column(String(255), nullable=False)
     post_id = Column(Integer, ForeignKey("post.id", ondelete="CASCADE"))  # 게시물과의 관계 설정
 
     post = relationship("Post", back_populates="images")

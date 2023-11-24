@@ -1,4 +1,5 @@
 import os
+import boto3
 from functools import lru_cache
 
 
@@ -24,6 +25,16 @@ class Settings:
     GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
     GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
     GOOGLE_REDIRECT_URI = os.environ.get("GOOGLE_REDIRECT_URI")
+
+    # AWS Settings
+    BUCKET_NAME = os.environ.get("BUCKET_NAME")
+    s3 = boto3.client(
+        "s3",
+        region_name="ap-northeast-2",
+        aws_access_key_id=os.environ.get("AWS_ACCESS_KEY_ID"),
+        aws_secret_access_key=os.environ.get("AWS_SECRET_ACCESS_KEY"),
+        config=boto3.session.Config(signature_version="s3v4"),
+    )
 
     class Config:
         env_file = ".env"

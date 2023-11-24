@@ -6,6 +6,7 @@ from fastapi import HTTPException, status
 from jose import jwt
 from jose.exceptions import ExpiredSignatureError
 import random
+import string
 
 from app import model
 
@@ -18,6 +19,14 @@ async def set_cookie_response(response, token_info):
         key="refreshToken", samesite="None", value=token_info.get("refresh_token"), httponly=True, secure=True
     )
     return response
+
+
+async def get_random_username(db):
+    letters = string.ascii_letters
+    while True:
+        random_string = "".join(random.choice(letters) for _ in range(8))
+        if not db.query(model.User).filter_by(username=random_string).first():
+            return random_string
 
 
 async def get_random_nickname(db):

@@ -62,6 +62,7 @@ async def google_login(
                         "email": result.get("email"),
                         "profile_image": result.get("picture"),
                         "nickname": await auth_utils.get_random_nickname(db),
+                        "username": await auth_utils.get_random_username(db),
                     }
                 )
 
