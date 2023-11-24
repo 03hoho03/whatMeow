@@ -63,20 +63,33 @@ async def post_delete(db, username, post_id):
     return True
 
 
-async def return_detailed_post(db, post_id):
+async def return_detailed_post(db, nickname, post_id):
     try:
         post = (
             db.query(model.Post)
             .options(
                 joinedload(model.Post.likes),
-                joinedload(model.Post.comments),
-                joinedload(model.Post.post_owner),
                 joinedload(model.Post.hashtags),
                 joinedload(model.Post.images),
+                joinedload(model.Post.comments),
+                joinedload(model.Post.post_owner),
             )
             .filter_by(id=post_id)
             .first()
         )
-        return post
+        to_return = {
+            "nickname": post.post_owner.nickname,
+            "post_id": post_id,
+            "like_length": len(post.likes),
+            "content": post.title,
+            "created_at": post.created_at,
+            "images": [
+                f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/{image.url}" for image in post.images
+            ],
+            "hashtag": [hashtag.hashtag for hashtag in post.hashtags],
+            "comment": post.comments,
+        }
+
+        return to_return
     except NoResultFound:
         return None
