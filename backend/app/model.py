@@ -62,10 +62,10 @@ class Cat(BaseMin, Base):
     __tablename__ = "cat"
 
     catname = Column(String(20), nullable=False)
-    age = Column(Integer, nullable=False)
-    gender = Column(String(5), nullable=False)
-    explain = Column(String(255), nullable=False)
-    breed = Column(String(100), nullable=False)
+    age = Column(Integer, nullable=True)
+    gender = Column(String(5), nullable=True)
+    explain = Column(String(255), nullable=True)
+    breed = Column(String(100), nullable=True)
     owner_id = Column(Integer, ForeignKey("user.id"))
 
     cat_owner = relationship("User", back_populates="cats")
