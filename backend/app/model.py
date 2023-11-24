@@ -64,14 +64,12 @@ class Cat(BaseMin, Base):
     catname = Column(String(20), nullable=False)
     age = Column(Integer, nullable=True)
     gender = Column(String(5), nullable=True)
+    cat_hashtags = Column(String(50), nullable=True)
     explain = Column(String(255), nullable=True)
     breed = Column(String(100), nullable=True)
     owner_id = Column(Integer, ForeignKey("user.id"))
-
+    image = Column(String(100), nullable=False)
     cat_owner = relationship("User", back_populates="cats")
-    """
-    images
-    """
 
 
 post_hashtags = Table(
