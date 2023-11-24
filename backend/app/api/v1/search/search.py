@@ -1,5 +1,4 @@
 from fastapi import Depends, status, APIRouter, Request
-from fastapi.responses import JSONResponse
 from sqlalchemy.orm.session import Session
 
 from app.api.schemas import search_schema
@@ -26,8 +25,7 @@ async def get_hashtag_result(data: search_schema.SearchHashTag = Depends(), db: 
         .all()
     )
 
-    post_lst = await search_utils.return_post_by_hashtag(db, result)
-    return JSONResponse(content=post_lst)
+    return await search_utils.return_post_by_hashtag(db, result)
 
 
 @router.get("/nickname", status_code=status.HTTP_200_OK)
@@ -37,8 +35,7 @@ async def get_name_result(data: search_schema.SearchName = Depends(), db: Sessio
     """
     user = db.query(model.User).filter_by(nickname=data.name).first()
     result = db.query(model.Post).filter(model.Post.uploader_id == user.id).offset(data.start).limit(data.limit).all()
-    post_lst = await search_utils.return_post_by_name(result)
-    return JSONResponse(content=post_lst)
+    return await search_utils.return_post_by_name(result)
 
 
 @router.get("/main", status_code=status.HTTP_200_OK)
@@ -49,5 +46,3 @@ async def get_main_result(
     decoded_dict = await auth_utils.verify_access_token(access_token)
     if decoded_dict:
         return await search_utils.return_follow_posts(db, data.user_id, data.start, data.limit)
-
-    return 1
