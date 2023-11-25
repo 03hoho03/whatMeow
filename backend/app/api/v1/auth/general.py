@@ -5,7 +5,6 @@ import bcrypt
 from sqlalchemy.orm.session import Session
 from sqlalchemy.exc import IntegrityError
 
-
 from app.api.schemas import user_schema, default
 from app import model
 from app.database import get_db
@@ -17,12 +16,22 @@ router = APIRouter(tags=["Auth"])
 
 @router.post("/register", response_model=default.ResourceId, status_code=status.HTTP_201_CREATED)
 async def add_user(data: user_schema.GeneralUserAdd, db: Session = Depends(get_db)):
+    username = await auth_utils.get_random_username(db)
+    try:
+        url = await auth_utils.upload_default_image("images/default.jpg", username, data.nickname)
+    except Exception as e:
+        print(e)
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="An Error Occured while Uploading default Image",
+        )
     row = model.User(
         **{
             "email": data.email,
             "nickname": data.nickname,
             "name": data.name,
-            "username": await auth_utils.get_random_username(db),
+            "username": username,
+            "profile_image": url,
         }
     )
     salt_value = bcrypt.gensalt()
@@ -32,6 +41,11 @@ async def add_user(data: user_schema.GeneralUserAdd, db: Session = Depends(get_d
         db.commit()
     except IntegrityError:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Email Duplicated")
+    except Exception as e:
+        print(e)
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="An Error Occured while registering"
+        )
 
     return row
 

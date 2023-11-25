@@ -68,14 +68,24 @@ async def kakao_login(
             # 유저 정보가 존재하지 않는다면?
             # 유저 정보 저장
             try:
+                nickname = await auth_utils.get_random_nickname(db)
+                username = await auth_utils.get_random_username(db)
+                try:
+                    url = await auth_utils.upload_default_image("images/default.jpg", username, nickname)
+                except Exception as e:
+                    print(e)
+                    raise HTTPException(
+                        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                        detail="An Error Occured while Uploading default Image",
+                    )
                 user_row = model.User(
                     **{
                         "name": _property.get("nickname"),
                         "email": _profile.get("email", None),
                         "gender": _profile.get("gender", None),
-                        "profile_image": _property.get("profile_image"),
-                        "nickname": await auth_utils.get_random_nickname(db),
-                        "username": await auth_utils.get_random_username(db),
+                        "profile_image": url,
+                        "nickname": nickname,
+                        "username": username,
                     }
                 )
 

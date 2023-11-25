@@ -1,13 +1,15 @@
+import random
+import string
+
 from datetime import datetime, timedelta
-from app.config import settings
-from app.api.schemas import user_schema
 from typing import Optional
 from fastapi import HTTPException, status
 from jose import jwt
 from jose.exceptions import ExpiredSignatureError
-import random
-import string
 
+
+from app.config import settings
+from app.api.schemas import user_schema
 from app import model
 
 
@@ -155,3 +157,9 @@ async def verify_refesh_token(token, db, exp: Optional[timedelta] = None):
         db.commit()
 
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Expired")
+
+
+async def upload_default_image(image, username, nickname):
+    obj_path = f"{username}/{nickname}.jpg"
+    settings.s3.upload_file(image, settings.BUCKET_NAME, obj_path, ExtraArgs={"ContentType": "image/jpeg"})
+    return obj_path
