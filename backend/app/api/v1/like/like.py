@@ -19,9 +19,9 @@ async def like(
     decoded_dict = await auth_utils.verify_access_token(access_token)
     if decoded_dict:
         stat = await like_utils.add_like(post_id, decoded_dict.get("id"), db)
-        if stat == "like":
+        if stat == "LIKE":
             return {"status": stat}
-        elif stat == "unlike":
+        elif stat == "UNLIKE":
             return {"status": stat}
         else:
             raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Failed to like")
