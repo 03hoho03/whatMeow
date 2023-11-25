@@ -39,6 +39,14 @@ async def comment_delete(
             raise HTTPException(status_coce=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Failed to Delete Comment")
 
 
+@router.get("/{post_id}", status_code=status.HTTP_200_OK)
+async def return_comments(post_id: int, request: Request, db: Session = Depends(get_db)):
+    access_token = request.cookies.get("accessToken")
+    decoded_dict = await auth_utils.verify_access_token(access_token)
+    if decoded_dict:
+        return await comment_utils.return_comments_utils(post_id, db)
+
+
 @router.put("/update", status_code=status.HTTP_202_ACCEPTED)
 async def comment_update(
     request: Request,
