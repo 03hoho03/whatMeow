@@ -11,16 +11,16 @@ async def add_like(post_id, user_id, db):
                 like_row = db.query(model.Like).filter_by(owner_id=user_id).first()
                 db.delete(like_row)
                 db.commit()
-                return "UNLIKE"
+                return "UNLIKE", len(post_row.likes)
 
         like_row = model.Like(owner_id=user_id, post_id=post_id)
         db.add(like_row)
         db.commit()
 
-        return "LIKE"
+        return "LIKE", len(post_row.likes)
     except Exception as e:
         print(f"An error occured : {e}")
-        return "FAIL"
+        return "FAIL", 0
 
 
 async def is_like(post_id, user_id, db):
