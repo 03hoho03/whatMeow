@@ -62,8 +62,17 @@ async def update_user_info(image, data, user_id, db):
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="An Error Occured")
 
 
-async def load_mypage_utils(user_id, db):
+async def load_mypage_utils(user_id, my_id, db):
     try:
+        my_row = db.query(model.User).filter_by(id=my_id).first()
+        if user_id == my_id:
+            relation = "ME"
+        else:
+            relation = "UNFOLLOW"
+            for following in my_row.following:
+                if user_id == following.id:
+                    relation = "FOLLOW"
+
         user_row = (
             db.query(model.User)
             .options(
@@ -91,6 +100,7 @@ async def load_mypage_utils(user_id, db):
                 }
                 for post in user_row.posts
             ],
+            "relation": relation,
         }
 
         return to_return_dict

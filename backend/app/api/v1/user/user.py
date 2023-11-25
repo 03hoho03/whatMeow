@@ -35,9 +35,9 @@ async def update_userdata(
             return {"success": True}
 
 
-@router.get("/mypage", status_code=status.HTTP_200_OK)
-async def load_mypage(request: Request, db: Session = Depends(get_db)):
+@router.get("/profile/{user_id}", status_code=status.HTTP_200_OK)
+async def load_mypage(user_id: int, request: Request, db: Session = Depends(get_db)):
     access_token = request.cookies.get("accessToken")
     decoded_dict = await auth_utils.verify_access_token(access_token)
     if decoded_dict:
-        return await user_utils.load_mypage_utils(decoded_dict.get("id"), db)
+        return await user_utils.load_mypage_utils(user_id, decoded_dict.get("id"), db)
