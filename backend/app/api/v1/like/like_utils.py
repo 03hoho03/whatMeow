@@ -1,3 +1,5 @@
+from fastapi import HTTPException
+
 from app import model
 
 
@@ -24,12 +26,12 @@ async def add_like(post_id, user_id, db):
 async def is_like(post_id, user_id, db):
     try:
         post_row = db.query(model.Post).filter_by(id=post_id).first()
-        status = "NO"
+        status = False
         for like in post_row.likes:
             if like.owner_id == user_id:
-                status = "YES"
+                status = True
 
         return status
     except Exception as e:
         print(e)
-        return "FAIL"
+        raise HTTPException(422)

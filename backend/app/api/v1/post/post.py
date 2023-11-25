@@ -11,6 +11,7 @@ from app.database import get_db
 from app.api.schemas import post_schema
 from app.api.v1.auth import auth_utils
 from app.api.v1.post import post_utils
+from app.api.v1.like import like_utils
 
 router = APIRouter(tags=["Post"])
 
@@ -60,13 +61,14 @@ async def post_detail(request: Request, data: post_schema.PostDetail = Depends()
         return await post_utils.return_detailed_post(db, decoded_dict.get("nickname"), data.post_id)
 
 
-async def make_dict_from_follow_posts(latest_posts):
+async def make_dict_from_follow_posts(latest_posts, user_id, db):
     to_return_lst = []
     for post in latest_posts:
+        stat = await like_utils.is_like(post.id, user_id, db)
         to_return_lst.append(
             {
                 "nickname": post.post_owner.nickname,
-                "likeLength": len(post.likes),
+                "like": {"count": len(post.likes), "isLike": stat},
                 "createdAt": post.created_at,
                 "content": post.title,
                 "postId": post.id,
@@ -93,4 +95,4 @@ async def post_test(request: Request, start: int, limit: int, db: Session = Depe
             .all()
         )
 
-        return await make_dict_from_follow_posts(post_row)
+        return await make_dict_from_follow_posts(post_row, decoded_dict.get("id"), db)
