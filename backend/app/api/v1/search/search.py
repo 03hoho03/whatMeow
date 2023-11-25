@@ -20,7 +20,7 @@ async def get_hashtag_result(data: search_schema.SearchHashTag = Depends(), db: 
     result = (
         db.query(model.post_hashtags)
         .filter(model.post_hashtags.c.hashtag_id == hashtag_obj.id)
-        .offset(data.start)
+        .offset(data.start * data.limit)
         .limit(data.limit)
         .all()
     )
@@ -34,7 +34,13 @@ async def get_name_result(data: search_schema.SearchName = Depends(), db: Sessio
     검색한 사용자 닉네임에 해당하는 결과 return
     """
     user = db.query(model.User).filter_by(nickname=data.name).first()
-    result = db.query(model.Post).filter(model.Post.uploader_id == user.id).offset(data.start).limit(data.limit).all()
+    result = (
+        db.query(model.Post)
+        .filter(model.Post.uploader_id == user.id)
+        .offset(data.start * data.limit)
+        .limit(data.limit)
+        .all()
+    )
     return await search_utils.return_post_by_name(result)
 
 
@@ -45,4 +51,4 @@ async def get_main_result(
     access_token = request.cookies.get("accessToken")
     decoded_dict = await auth_utils.verify_access_token(access_token)
     if decoded_dict:
-        return await search_utils.return_follow_posts(db, data.user_id, data.start, data.limit)
+        return await search_utils.return_follow_posts(db, data.user_id, data.start * data.limit, data.limit)
