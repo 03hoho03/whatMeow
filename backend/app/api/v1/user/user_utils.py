@@ -112,17 +112,17 @@ async def load_mypage_utils(nickname, my_id, db):
         )
 
         to_return_dict = {
-            "user_id": user_row.id,
+            "userId": user_row.id,
             "nickname": user_row.nickname,
-            "profile_image": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/{user_row.profile_image}",
-            "post_length": len(user_row.posts),
-            "follower_length": len(user_row.follower),
-            "following_length": len(user_row.following),
-            "cats": [{"catname": cat.catname, "image": cat.image} for cat in user_row.cats],
+            "profileImage": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/{user_row.profile_image}",
+            "postCount": len(user_row.posts),
+            "followerCount": len(user_row.follower),
+            "followingCount": len(user_row.following),
+            "cats": [{"catName": cat.catname, "thumnail": cat.image} for cat in user_row.cats],
             "posts": [
                 {
-                    "post_id": post.id,
-                    "image": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/{post.images[0].url}",
+                    "postId": post.id,
+                    "thumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/{post.images[0].url}",
                 }
                 for post in user_row.posts
             ],
