@@ -9,7 +9,7 @@ router = APIRouter(tags=["Like"])
 
 
 # 좋아요 누르는 엔드포인트
-@router.post("/{post_id}", status_code=status.HTTP_202_ACCEPTED)
+@router.post("/like/{post_id}", status_code=status.HTTP_202_ACCEPTED)
 async def like(
     request: Request,
     post_id: int,
@@ -27,7 +27,7 @@ async def like(
             raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Failed to like")
 
 
-@router.get("/{post_id}", status_code=status.HTTP_200_OK)
+@router.get("/like/{post_id}", status_code=status.HTTP_200_OK)
 async def is_like(
     request: Request,
     post_id: int,
