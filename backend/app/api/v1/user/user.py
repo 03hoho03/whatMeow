@@ -1,9 +1,7 @@
-from fastapi import Depends, APIRouter, status, UploadFile, File, Form, Request
-from typing import Optional
+from fastapi import Depends, APIRouter, status, UploadFile, File, Request
 from sqlalchemy.orm.session import Session
 
 from app.database import get_db
-
 from app.api.v1.auth import auth_utils
 from app.api.v1.user import user_utils
 
@@ -18,20 +16,43 @@ async def is_duplicated(nickname: str, db: Session = Depends(get_db)):
         return False
 
 
-@router.put("/update", status_code=status.HTTP_202_ACCEPTED)
+@router.put("/update/nickname", status_code=status.HTTP_202_ACCEPTED)
 async def update_userdata(
     request: Request,
-    nickname: Optional[str] = Form(None),
-    name: Optional[str] = Form(None),
-    explain: Optional[str] = Form(None),
-    file: Optional[UploadFile] = File(None),
+    nickname: str,
     db: Session = Depends(get_db),
 ):
     access_token = request.cookies.get("accessToken")
     decoded_dict = await auth_utils.verify_access_token(access_token)
     if decoded_dict:
-        _dict = {"nickname": nickname, "name": name, "explain": explain}
-        if await user_utils.update_user_info(file, _dict, decoded_dict.get("id"), db):
+        if await user_utils.update_nickname(decoded_dict.get("id"), nickname, db):
+            return {"success": True}
+
+
+@router.put("/update/name", status_code=status.HTTP_202_ACCEPTED)
+async def update_name(request: Request, name: str, db: Session = Depends(get_db)):
+    access_token = request.cookies.get("accessToken")
+    decoded_dict = await auth_utils.verify_access_token(access_token)
+    if decoded_dict:
+        if await user_utils.update_name(decoded_dict.get("id"), name, db):
+            return {"success": True}
+
+
+@router.put("/update/explain", status_code=status.HTTP_202_ACCEPTED)
+async def update_explain(request: Request, explain: str, db: Session = Depends(get_db)):
+    access_token = request.cookies.get("accessToken")
+    decoded_dict = await auth_utils.verify_access_token(access_token)
+    if decoded_dict:
+        if await user_utils.update_explain(decoded_dict.get("id"), explain, db):
+            return {"success": True}
+
+
+@router.put("/update/image", status_code=status.HTTP_202_ACCEPTED)
+async def update_image(request: Request, file: UploadFile = File(), db: Session = Depends(get_db)):
+    access_token = request.cookies.get("accessToken")
+    decoded_dict = await auth_utils.verify_access_token(access_token)
+    if decoded_dict:
+        if await user_utils.update_image(decoded_dict.get("id"), file, db):
             return {"success": True}
 
 

@@ -30,36 +30,62 @@ async def save_user_image(image, username, nickname):
         )
 
 
-async def update_user_info(image, data, user_id, db):
+async def update_image(user_id, image, db):
+    user_row = db.query(model.User).filter_by(id=user_id).first()
+    try:
+        settings.s3.delete_object(Bucket=settings.BUCKET_NAME, Key=f"{user_row.username}/{user_row.nickname}.jpg")
+    except Exception as e:
+        print(e)
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Error Occured while deleting cat pic"
+        )
+    try:
+        new_url = await save_user_image(image, user_row.username, user_row.nickname)
+        user_row.profile_image = new_url
+    except Exception as e:
+        print(e)
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Error Occured while uploading cat pic"
+        )
+    db.commit()
+
+    return True
+
+
+async def update_nickname(user_id, nickname, db):
     try:
         user_row = db.query(model.User).filter_by(id=user_id).first()
-        if image is not None:
-            try:
-                settings.s3.delete_object(
-                    Bucket=settings.BUCKET_NAME, Key=f"{user_row.username}/{user_row.nickname}.jpg"
-                )
-            except Exception as e:
-                print(e)
-                raise HTTPException(
-                    status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Error Occured while deleting cat pic"
-                )
-            try:
-                nickname = user_row.nickname if data["nickname"] is None else data["nickname"]
-                new_url = await save_user_image(image, user_row.username, nickname)
-                user_row.profile_image = new_url
-            except Exception as e:
-                print(e)
-                raise HTTPException(
-                    status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Error Occured while uploading cat pic"
-                )
-        for key, value in data.items():
-            if value is not None:
-                setattr(user_row, key, value)
+        user_row.nickname = nickname
         db.commit()
+
         return True
     except Exception as e:
         print(e)
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="An Error Occured")
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f"Error {e} occured")
+
+
+async def update_name(user_id, name, db):
+    try:
+        user_row = db.query(model.User).filter_by(id=user_id).first()
+        user_row.name = name
+        db.commit()
+
+        return True
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f"Error {e} occured")
+
+
+async def update_explain(user_id, explain, db):
+    try:
+        user_row = db.query(model.User).filter_by(id=user_id).first()
+        user_row.explain = explain
+        db.commit()
+
+        return True
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f"Error {e} Occured")
 
 
 async def load_mypage_utils(nickname, my_id, db):
