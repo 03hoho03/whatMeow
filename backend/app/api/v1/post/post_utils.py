@@ -3,6 +3,7 @@ from fastapi import HTTPException
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm import joinedload
 
+from app.api.v1.like import like_utils
 from app.config import settings
 from app import model
 
@@ -62,7 +63,7 @@ async def post_delete(db, username, post_id):
     return True
 
 
-async def return_detailed_post(db, nickname, post_id):
+async def return_detailed_post(db, user_id, post_id):
     try:
         post = (
             db.query(model.Post)
@@ -76,17 +77,19 @@ async def return_detailed_post(db, nickname, post_id):
             .filter_by(id=post_id)
             .first()
         )
+        stat = await like_utils.is_like(post.id, user_id, db)
+
         to_return = {
             "nickname": post.post_owner.nickname,
-            "post_id": post_id,
-            "like_length": len(post.likes),
+            "postId": post_id,
+            "like": {"count": len(post.likes), "isLike": stat},
             "content": post.title,
-            "created_at": post.created_at,
+            "createdAt": post.created_at,
             "images": [
                 f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/{image.url}" for image in post.images
             ],
-            "hashtag": [hashtag.hashtag for hashtag in post.hashtags],
-            "comment": post.comments,
+            "hashtags": [hashtag.hashtag for hashtag in post.hashtags],
+            "comments": post.comments,
         }
 
         return to_return

@@ -58,7 +58,7 @@ async def post_detail(request: Request, data: post_schema.PostDetail = Depends()
     access_token = request.cookies.get("accessToken")
     decoded_dict = await auth_utils.verify_access_token(access_token)
     if decoded_dict:
-        return await post_utils.return_detailed_post(db, decoded_dict.get("nickname"), data.post_id)
+        return await post_utils.return_detailed_post(db, decoded_dict.get("id"), data.post_id)
 
 
 async def make_dict_from_follow_posts(latest_posts, user_id, db):
