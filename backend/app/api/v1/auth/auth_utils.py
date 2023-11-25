@@ -40,7 +40,13 @@ async def get_random_nickname(db):
 
 
 async def create_user_dict(user):
-    return {"email": user.email, "nickname": user.nickname, "name": user.name, "profile_image": user.profile_image}
+    return {
+        "email": user.email,
+        "nickname": user.nickname,
+        "name": user.name,
+        "profile_image": user.profile_image,
+        "id": user.id,
+    }
 
 
 def get_username(db, email):
