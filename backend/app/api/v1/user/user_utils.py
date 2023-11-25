@@ -84,6 +84,13 @@ async def load_mypage_utils(user_id, db):
             "follower_length": len(user_row.follower),
             "following_length": len(user_row.following),
             "cats": [{"catname": cat.catname, "image": cat.image} for cat in user_row.cats],
+            "posts": [
+                {
+                    "post_id": post.id,
+                    "image": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/{post.images[0].url}",
+                }
+                for post in user_row.posts
+            ],
         }
 
         return to_return_dict
