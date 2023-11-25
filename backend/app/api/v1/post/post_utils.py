@@ -52,14 +52,13 @@ async def post_delete(db, username, post_id):
     if post_row is None:
         raise HTTPException(status_code=404, detail="Post Not Found.")
     db.delete(post_row)
-    db.commit()
 
     # S3에서 객체 지우기
     objects_to_del = settings.s3.list_objects(Bucket=settings.BUCKET_NAME, Prefix=f"{username}/{post_id}/")
     if "Contents" in objects_to_del:
         for obj in objects_to_del["Contents"]:
             settings.s3.delete_object(Bucket=settings.BUCKET_NAME, Key=obj["Key"])
-
+    db.commit()
     return True
 
 
