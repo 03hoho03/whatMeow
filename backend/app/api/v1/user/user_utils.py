@@ -77,6 +77,7 @@ async def load_mypage_utils(user_id, db):
         )
 
         to_return_dict = {
+            "user_id": user_row.id,
             "nickname": user_row.nickname,
             "profile_image": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/{user_row.profile_image}",
             "post_length": len(user_row.posts),
