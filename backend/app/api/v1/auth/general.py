@@ -18,7 +18,7 @@ router = APIRouter(tags=["Auth"])
 async def add_user(data: user_schema.GeneralUserAdd, db: Session = Depends(get_db)):
     username = await auth_utils.get_random_username(db)
     try:
-        url = await auth_utils.upload_default_image("images/default.jpg", username, data.nickname)
+        url = await auth_utils.upload_default_image(username)
     except Exception as e:
         print(e)
         raise HTTPException(

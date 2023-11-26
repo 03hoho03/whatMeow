@@ -11,5 +11,11 @@ class CatAdd(BaseModel):
     hashtag: List[str] = None
 
 
-class CatUpdate(CatAdd):
+class CatUpdateName(BaseModel):
     cat_id: int
+    catname: str
+
+
+class CatUpdateExplain(BaseModel):
+    cat_id: int
+    explain: str

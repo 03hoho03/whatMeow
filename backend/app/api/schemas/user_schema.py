@@ -28,3 +28,15 @@ class LoginUser(BaseModel):
 
 class UserPayload(User):
     exp: datetime
+
+
+class UpdateNickname(BaseModel):
+    nickname: str
+
+
+class UpdateName(BaseModel):
+    name: str
+
+
+class UpdateExplain(BaseModel):
+    explain: str

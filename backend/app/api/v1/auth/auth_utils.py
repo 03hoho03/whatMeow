@@ -165,7 +165,13 @@ async def verify_refesh_token(token, db, exp: Optional[timedelta] = None):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Expired")
 
 
-async def upload_default_image(image, username, nickname):
-    obj_path = f"{username}/{nickname}.jpg"
-    settings.s3.upload_file(image, settings.BUCKET_NAME, obj_path, ExtraArgs={"ContentType": "image/jpeg"})
+async def upload_default_image(username):
+    obj_path = f"{username}/user.jpg"
+    thumnail_path = f"thumnail/{username}/user.jpg"
+    settings.s3.upload_file(
+        "images/default.jpg", settings.BUCKET_NAME, obj_path, ExtraArgs={"ContentType": "image/jpeg"}
+    )
+    settings.s3.upload_file(
+        "images/default_thumnail.jpg", settings.BUCKET_NAME, thumnail_path, ExtraArgs={"ContentType": "image/jpeg"}
+    )
     return obj_path

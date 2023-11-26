@@ -2,9 +2,16 @@ import io
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm import joinedload
 from fastapi import HTTPException, status
+from PIL import Image
 
 from app.config import settings
 from app import model
+
+
+async def image_to_thumnail(image):
+    image = Image.open(image.file)
+    resized_image = image.resize((200, 200))
+    return resized_image
 
 
 async def check_duplication(nickname, db):
@@ -15,10 +22,28 @@ async def check_duplication(nickname, db):
         return True
 
 
-async def save_user_image(image, username, nickname):
+async def save_thumnail_image(image, username, user_id):
     content_type = image.content_type
     if content_type.startswith("image/"):
-        obj_path = f"{username}/{nickname}.jpg"
+        thumnail_path = f"thumnail/{username}/user.jpg"
+        resized_image = await image_to_thumnail(image)
+        in_mem_file = io.BytesIO()
+        resized_image.save(in_mem_file, format="jpeg")
+        in_mem_file.seek(0)
+        settings.s3.upload_fileobj(
+            in_mem_file, settings.BUCKET_NAME, thumnail_path, ExtraArgs={"ContentType": "image/jpeg"}
+        )
+        return thumnail_path
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Failed to Upload Thumnail User Image to Bucket"
+        )
+
+
+async def save_user_image(image, username, user_id):
+    content_type = image.content_type
+    if content_type.startswith("image/"):
+        obj_path = f"{username}/user.jpg"
         content = await image.read()
         settings.s3.upload_fileobj(
             io.BytesIO(content), settings.BUCKET_NAME, obj_path, ExtraArgs={"ContentType": "image/jpeg"}
@@ -26,26 +51,28 @@ async def save_user_image(image, username, nickname):
         return obj_path
     else:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Failed to Upload Cat Image to Bucket"
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Failed to Upload User Image to Bucket"
         )
 
 
 async def update_image(user_id, image, db):
     user_row = db.query(model.User).filter_by(id=user_id).first()
     try:
-        settings.s3.delete_object(Bucket=settings.BUCKET_NAME, Key=f"{user_row.username}/{user_row.nickname}.jpg")
+        settings.s3.delete_object(Bucket=settings.BUCKET_NAME, Key=f"thumnail/{user_row.username}/user.jpg")
+        settings.s3.delete_object(Bucket=settings.BUCKET_NAME, Key=f"{user_row.username}/user.jpg")
     except Exception as e:
         print(e)
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Error Occured while deleting cat pic"
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Error Occured while deleting user pic"
         )
     try:
-        new_url = await save_user_image(image, user_row.username, user_row.nickname)
+        new_url = await save_user_image(image, user_row.username, user_id)
+        await save_thumnail_image(image, user_row.username, user_id)
         user_row.profile_image = new_url
     except Exception as e:
         print(e)
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Error Occured while uploading cat pic"
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Error Occured while uploading user pic"
         )
     db.commit()
 
@@ -114,7 +141,7 @@ async def load_mypage_utils(nickname, my_id, db):
         to_return_dict = {
             "userId": user_row.id,
             "nickname": user_row.nickname,
-            "profileImage": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/{user_row.profile_image}",
+            "profileImage": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/thumnail/{user_row.profile_image}",
             "postCount": len(user_row.posts),
             "followerCount": len(user_row.follower),
             "followingCount": len(user_row.following),
@@ -122,7 +149,7 @@ async def load_mypage_utils(nickname, my_id, db):
             "posts": [
                 {
                     "postId": post.id,
-                    "thumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/{post.images[0].url}",
+                    "thumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/thumnail/{user_row.username}/{post.id}.jpg",
                 }
                 for post in user_row.posts
             ],

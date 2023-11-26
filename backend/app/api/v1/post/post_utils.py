@@ -3,6 +3,7 @@ from fastapi import HTTPException
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm import joinedload
 
+from app.api.v1.user import user_utils
 from app.api.v1.like import like_utils
 from app.config import settings
 from app import model
@@ -31,10 +32,27 @@ async def insert_posthashtags(db, hashtag_id_lst, row_id):
         db.commit()
 
 
+async def save_thumnail(username, file_obj, row_id):
+    thumnail_path = f"thumnail/{username}/{row_id}.jpg"
+    resized_image = await user_utils.image_to_thumnail(file_obj)
+    in_mem_file = io.BytesIO()
+    resized_image.save(in_mem_file, format="jpeg")
+    in_mem_file.seek(0)
+    settings.s3.upload_fileobj(
+        in_mem_file, settings.BUCKET_NAME, thumnail_path, ExtraArgs={"ContentType": "image/jpeg"}
+    )
+
+
 async def save_images(db, username, image_lst, row_id):
     # S3에 객체 업로드
     for i, file_obj in enumerate(image_lst):
         content_type = file_obj.content_type
+        if i == 0:
+            try:
+                await save_thumnail(username, file_obj, row_id)
+            except Exception as e:
+                print(e)
+                raise HTTPException(422, detail=f"An Error {e} Occured while uploading Post Thumnail")
         if content_type.startswith("image/"):
             obj_path = f"{username}/{row_id}/{i}.jpg"
             content = await file_obj.read()
@@ -81,6 +99,7 @@ async def return_detailed_post(db, user_id, post_id):
 
         to_return = {
             "nickname": post.post_owner.nickname,
+            "writerThumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/thumnail/{post.post_owner.profile_image}",
             "postId": post_id,
             "like": {"count": len(post.likes), "isLike": stat},
             "content": post.title,
@@ -93,7 +112,7 @@ async def return_detailed_post(db, user_id, post_id):
                 {
                     "comment": comment.comment,
                     "nickname": comment.comment_owner.nickname,
-                    "thumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/{comment.comment_owner.profile_image}",
+                    "thumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/thumnail/{comment.comment_owner.profile_image}",
                 }
                 for comment in post.comments
             ],

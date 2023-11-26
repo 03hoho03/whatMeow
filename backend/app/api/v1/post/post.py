@@ -1,17 +1,14 @@
 from fastapi import Depends, APIRouter, status
 from fastapi import File, UploadFile, Form, Request
 
-from sqlalchemy.orm import joinedload
 from sqlalchemy.orm.session import Session
 from typing import List
 
-from app.config import settings
 from app import model
 from app.database import get_db
 from app.api.schemas import post_schema
 from app.api.v1.auth import auth_utils
 from app.api.v1.post import post_utils
-from app.api.v1.like import like_utils
 
 router = APIRouter(tags=["Post"])
 
@@ -59,40 +56,3 @@ async def post_detail(request: Request, data: post_schema.PostDetail = Depends()
     decoded_dict = await auth_utils.verify_access_token(access_token)
     if decoded_dict:
         return await post_utils.return_detailed_post(db, decoded_dict.get("id"), data.post_id)
-
-
-async def make_dict_from_follow_posts(latest_posts, user_id, db):
-    to_return_lst = []
-    for post in latest_posts:
-        stat = await like_utils.is_like(post.id, user_id, db)
-        to_return_lst.append(
-            {
-                "nickname": post.post_owner.nickname,
-                "like": {"count": len(post.likes), "isLike": stat},
-                "createdAt": post.created_at,
-                "content": post.title,
-                "postId": post.id,
-                "images": [f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/{post.images[0].url}"],
-            }
-        )
-
-    return to_return_lst
-
-
-@router.get("/test")
-async def post_test(request: Request, start: int, limit: int, db: Session = Depends(get_db)):
-    access_token = request.cookies.get("accessToken")
-    decoded_dict = await auth_utils.verify_access_token(access_token)
-    if decoded_dict:
-        post_row = (
-            db.query(model.Post)
-            .options(
-                joinedload(model.Post.likes),
-                joinedload(model.Post.hashtags),
-                joinedload(model.Post.images),
-                joinedload(model.Post.post_owner),
-            )
-            .all()
-        )
-
-        return await make_dict_from_follow_posts(post_row, decoded_dict.get("id"), db)

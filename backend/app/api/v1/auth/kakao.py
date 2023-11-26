@@ -71,7 +71,7 @@ async def kakao_login(
                 nickname = await auth_utils.get_random_nickname(db)
                 username = await auth_utils.get_random_username(db)
                 try:
-                    url = await auth_utils.upload_default_image("images/default.jpg", username, nickname)
+                    url = await auth_utils.upload_default_image(username)
                 except Exception as e:
                     print(e)
                     raise HTTPException(

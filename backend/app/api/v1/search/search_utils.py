@@ -14,7 +14,7 @@ async def return_post_by_hashtag(db, lst):
         post_lst.append(
             {
                 "postId": post_item.id,
-                "thumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/{post_item.images[0].url}",
+                "thumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/thumnail/{post_item.post_owner.username}/{post_item.id}.jpg",
             }
         )
 
@@ -27,7 +27,7 @@ async def return_post_by_name(lst):
         post_lst.append(
             {
                 "postId": post_item.id,
-                "thumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/{post_item.images[0].url}",
+                "thumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/thumnail/{post_item.post_owner.username}/{post_item.id}.jpg",
             }
         )
 
@@ -49,6 +49,7 @@ async def make_dict_from_follow_posts(latest_posts, user_id, db):
         to_return_lst.append(
             {
                 "nickname": post.post_owner.nickname,
+                "writerThumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/thumnail/{post.post_owner.profile_image}",
                 "like": {"count": len(post.likes), "isLike": stat},
                 "createdAt": post.created_at,
                 "content": post.title,
