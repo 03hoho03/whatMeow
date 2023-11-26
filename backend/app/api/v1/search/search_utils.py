@@ -6,12 +6,6 @@ from app import model
 from app.api.v1.like import like_utils
 from app.config import settings
 
-"""
-반환해줘야할 것
-    - post_id
-    - thumnail
-"""
-
 
 async def return_post_by_hashtag(db, lst):
     post_lst = []
