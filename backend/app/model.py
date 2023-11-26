@@ -58,6 +58,14 @@ class User(BaseMin, Base):
     )
 
 
+post_cats = Table(
+    "post_cats",
+    Base.metadata,
+    Column("post_id", Integer, ForeignKey("post.id", ondelete="CASCADE"), primary_key=True),
+    Column("cat_id", Integer, ForeignKey("cat.id", ondelete="CASCADE"), primary_key=True),
+)
+
+
 class Cat(BaseMin, Base):
     __tablename__ = "cat"
 
@@ -69,6 +77,8 @@ class Cat(BaseMin, Base):
     breed = Column(String(100), nullable=True)
     owner_id = Column(Integer, ForeignKey("user.id"))
     image = Column(String(100), nullable=False)
+
+    posts = relationship("Post", secondary=post_cats, back_populates="cats")
     cat_owner = relationship("User", back_populates="cats")
 
 
@@ -86,6 +96,7 @@ class Post(BaseMin, Base):
     title = Column(String(50), nullable=False)
     uploader_id = Column(Integer, ForeignKey("user.id"))
 
+    cats = relationship("Cat", secondary=post_cats, back_populates="posts")
     likes = relationship("Like", back_populates="like_post_owner", cascade="all,delete")
     comments = relationship("Comment", back_populates="comment_post_owner", cascade="all,delete")
     post_owner = relationship("User", back_populates="posts", foreign_keys=[uploader_id])

@@ -47,12 +47,6 @@ async def save_images(db, username, image_lst, row_id):
     # S3에 객체 업로드
     for i, file_obj in enumerate(image_lst):
         content_type = file_obj.content_type
-        if i == 0:
-            try:
-                await save_thumnail(username, file_obj, row_id)
-            except Exception as e:
-                print(e)
-                raise HTTPException(422, detail=f"An Error {e} Occured while uploading Post Thumnail")
         if content_type.startswith("image/"):
             obj_path = f"{username}/{row_id}/{i}.jpg"
             content = await file_obj.read()
@@ -121,3 +115,9 @@ async def return_detailed_post(db, user_id, post_id):
         return to_return
     except NoResultFound:
         return None
+
+
+async def insert_postcats(db, cat_id_lst, post_id):
+    for cat_id in cat_id_lst:
+        db.execute(model.post_cats.insert().values(post_id=post_id, cat_id=cat_id))
+        db.commit()

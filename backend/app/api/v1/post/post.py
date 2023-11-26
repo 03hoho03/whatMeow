@@ -17,7 +17,8 @@ router = APIRouter(tags=["Post"])
 async def post_upload(
     request: Request,
     content: str = Form(...),
-    tags: List[str] = Form(...),
+    tags: List[str] = Form(None),
+    cat_ids: List[int] = Form(None),
     files: List[UploadFile] = File(...),
     db: Session = Depends(get_db),
 ):
@@ -26,17 +27,24 @@ async def post_upload(
     """
     access_token = request.cookies.get("accessToken")
     decoded_dict = await auth_utils.verify_access_token(access_token)
+
     if decoded_dict:
         # hashtag ID가 담겨져 있는 list
-        hashtag_id_lst = await post_utils.return_hashtag_ids(db, tags[0].split(","))
+        if tags:
+            hashtag_id_lst = await post_utils.return_hashtag_ids(db, tags)
         row = model.Post(title=content, uploader_id=decoded_dict["id"])
         db.add(row)
         db.commit()
         # post_hashtags 테이블에 연결 정보 추가
-        await post_utils.insert_posthashtags(db, hashtag_id_lst, row.id)
+        if tags:
+            await post_utils.insert_posthashtags(db, hashtag_id_lst, row.id)
 
+        # post_cats 테이블에 연결 정보 추가
+        if cat_ids:
+            await post_utils.insert_postcats(db, cat_ids, row.id)
         # images 테이블에 추가 및 스토리지에 저장
         await post_utils.save_images(db, decoded_dict.get("username"), files, row.id)
+        await post_utils.save_thumnail(decoded_dict.get("username"), files[0], row.id)
 
         return {"success": True}
 
