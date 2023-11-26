@@ -1,47 +1,28 @@
-from fastapi import APIRouter, Depends, status, HTTPException, Request
+from fastapi import APIRouter, Depends, status, Request
 from sqlalchemy.orm.session import Session
 
 from app import model
 from app.api.v1.auth import auth_utils
 from app.api.v1.follow import follow_utils
-from app.api.schemas import follow_schema
 from app.database import get_db
 
 router = APIRouter(tags=["Follow"])
 
 
-@router.get("/follow", status_code=status.HTTP_202_ACCEPTED)
+@router.post("/follow/{toFollow}", status_code=status.HTTP_202_ACCEPTED)
 async def add_follower(
     request: Request,
-    data: follow_schema.add_follow = Depends(),
+    toFollow: str,
     db: Session = Depends(get_db),
 ):
     access_token = request.cookies.get("accessToken")
     decoded_dict = await auth_utils.verify_access_token(access_token)
     if decoded_dict:
-        # 여기에 팔로우 추가하는 함수 utils 에서 구현
-        if await follow_utils.add_follow(data.to_follow, decoded_dict.get("id"), db):
-            return {"success": True}
+        stat, count = await follow_utils.add_follow(toFollow, decoded_dict.get("id"), db)
+        if stat == "FOLLOW":
+            return {"follow": {"isFollowing": True, "count": count}}
         else:
-            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Failed to follow")
-
-
-@router.get("/unfollow", status_code=status.HTTP_202_ACCEPTED)
-async def delete_follower(
-    request: Request,
-    data: follow_schema.delete_follow = Depends(),
-    db: Session = Depends(get_db),
-):
-    access_token = request.cookies.get("accessToken")
-    decoded_dict = await auth_utils.verify_access_token(access_token)
-    if decoded_dict:
-        if await follow_utils.delete_follow(data.to_unfollow, decoded_dict.get("id"), db):
-            return {"success": True}
-        else:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Follower Not Found")
-
-
-# Follower, Following 리스트 확인용 엔드포인트
+            return {"follow": {"isFollowing": False, "count": count}}
 
 
 @router.get("/following", status_code=status.HTTP_200_OK)

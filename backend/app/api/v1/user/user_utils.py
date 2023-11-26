@@ -90,15 +90,6 @@ async def update_explain(user_id, explain, db):
 
 async def load_mypage_utils(nickname, my_id, db):
     try:
-        my_row = db.query(model.User).filter_by(id=my_id).first()
-        if nickname == my_id:
-            relation = "ME"
-        else:
-            relation = "UNFOLLOW"
-            for following in my_row.following:
-                if nickname == following.id:
-                    relation = "FOLLOW"
-
         user_row = (
             db.query(model.User)
             .options(
@@ -110,6 +101,15 @@ async def load_mypage_utils(nickname, my_id, db):
             .filter_by(nickname=nickname)
             .first()
         )
+
+        my_row = db.query(model.User).filter_by(id=my_id).first()
+        if user_row.id == my_id:
+            relation = "ME"
+        else:
+            relation = "UNFOLLOW"
+            for following in my_row.following:
+                if user_row.id == following.id:
+                    relation = "FOLLOW"
 
         to_return_dict = {
             "userId": user_row.id,
