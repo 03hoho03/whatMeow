@@ -63,3 +63,12 @@ async def load_mypage(nickname: str, request: Request, db: Session = Depends(get
     decoded_dict = await auth_utils.verify_access_token(access_token)
     if decoded_dict:
         return await user_utils.load_mypage_utils(nickname, decoded_dict.get("id"), db)
+
+
+@router.get("/cat", status_code=status.HTTP_200_OK)
+async def send_catInfo(request: Request, db: Session = Depends(get_db)):
+    access_token = request.cookies.get("accessToken")
+    decoded_dict = await auth_utils.verify_access_token(access_token)
+    if decoded_dict:
+        # 고양이 이름, 고양이 식별 아이디
+        return await user_utils.send_catInfo(decoded_dict.get("id"), db)

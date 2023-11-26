@@ -162,3 +162,9 @@ async def load_mypage_utils(nickname, my_id, db):
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="An error occured while returning user my page"
         )
+
+
+async def send_catInfo(user_id, db):
+    user_row = db.query(model.User).filter_by(id=user_id).first()
+    to_return = [{"cat": {"name": cat.catname, "id": cat.id}} for cat in user_row.cats]
+    return to_return
