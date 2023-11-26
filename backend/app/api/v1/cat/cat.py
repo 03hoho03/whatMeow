@@ -55,3 +55,11 @@ async def cat_update_explain(request: Request, data: cat_schema.CatUpdateExplain
     if decoded_dict:
         if await cat_utils.update_explain(data.cat_id, data.explain, db):
             return {"success": True}
+
+
+@router.get("/{cat_id}", status_code=status.HTTP_200_OK)
+async def cat_info(request: Request, cat_id: int, db: Session = Depends(get_db)):
+    access_token = request.cookies.get("accessToken")
+    decoded_dict = await auth_utils.verify_access_token(access_token)
+    if decoded_dict:
+        return await cat_utils.cat_info(cat_id, decoded_dict.get("username"), db)

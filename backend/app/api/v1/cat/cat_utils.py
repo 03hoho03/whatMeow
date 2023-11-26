@@ -109,3 +109,25 @@ async def update_explain(cat_id, explain, db):
     except Exception as e:
         print(e)
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f"An Error {e} Occured.")
+
+
+async def cat_info(cat_id, username, db):
+    try:
+        cat_row = db.query(model.Cat).filter_by(id=cat_id).first()
+        to_return_dict = {
+            "name": cat_row.catname,
+            "explain": cat_row.explain,
+            "image": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/{username}/{cat_row.catname}.jpg",
+            "posts": [
+                {
+                    "post_id": post.id,
+                    "thumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/thumnail/{username}/{post.id}.jpg",
+                }
+                for post in cat_row.posts
+            ],
+        }
+
+        return to_return_dict
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f"An Error {e} Occured.")
