@@ -17,6 +17,14 @@ async def is_duplicated(nickname: str, db: Session = Depends(get_db)):
         return False
 
 
+@router.get("/update/profile", status_code=status.HTTP_200_OK)
+async def update_profile_info(request: Request, db: Session = Depends(get_db)):
+    access_token = request.cookies.get("accessToken")
+    decoded_dict = await auth_utils.verify_access_token(access_token)
+    if decoded_dict:
+        return await user_utils.update_profile_info(decoded_dict.get("id"), db)
+
+
 @router.put("/update/nickname", status_code=status.HTTP_202_ACCEPTED)
 async def update_nickname(
     request: Request,

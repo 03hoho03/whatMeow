@@ -168,3 +168,19 @@ async def send_catInfo(user_id, db):
     user_row = db.query(model.User).filter_by(id=user_id).first()
     to_return = [{"cat": {"name": cat.catname, "id": cat.id}} for cat in user_row.cats]
     return to_return
+
+
+async def update_profile_info(user_id, db):
+    try:
+        user_row = db.query(model.User).filter_by(id=user_id).first()
+        to_return_dict = {
+            "name": user_row.name,
+            "nickname": user_row.nickname,
+            "explain": user_row.explain,
+            "image": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/thumnail/{user_row.profile_image}",
+        }
+
+        return to_return_dict
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f"An Error {e} Occured")
