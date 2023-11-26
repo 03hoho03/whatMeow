@@ -16,7 +16,7 @@ from app.api.v1.like import like_utils
 router = APIRouter(tags=["Post"])
 
 
-@router.post("/upload", status_code=status.HTTP_201_CREATED)
+@router.post("", status_code=status.HTTP_201_CREATED)
 async def post_upload(
     request: Request,
     content: str = Form(...),
@@ -44,7 +44,7 @@ async def post_upload(
         return {"success": True}
 
 
-@router.get("/delete/{post_id}", status_code=status.HTTP_202_ACCEPTED)
+@router.delete("/{post_id}", status_code=status.HTTP_202_ACCEPTED)
 async def post_delete(request: Request, post_id: int, db: Session = Depends(get_db)):
     access_token = request.cookies.get("accessToken")
     decoded_dict = await auth_utils.verify_access_token(access_token)
@@ -53,7 +53,7 @@ async def post_delete(request: Request, post_id: int, db: Session = Depends(get_
             return {"success": True}
 
 
-@router.get("/detail")
+@router.get("/{post_id}")
 async def post_detail(request: Request, data: post_schema.PostDetail = Depends(), db: Session = Depends(get_db)):
     access_token = request.cookies.get("accessToken")
     decoded_dict = await auth_utils.verify_access_token(access_token)

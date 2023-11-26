@@ -89,7 +89,14 @@ async def return_detailed_post(db, user_id, post_id):
                 f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/{image.url}" for image in post.images
             ],
             "hashtags": [hashtag.hashtag for hashtag in post.hashtags],
-            "comments": post.comments,
+            "comments": [
+                {
+                    "comment": comment.comment,
+                    "nickname": comment.comment_owner.nickname,
+                    "thumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/{comment.comment_owner.profile_image}",
+                }
+                for comment in post.comments
+            ],
         }
 
         return to_return
