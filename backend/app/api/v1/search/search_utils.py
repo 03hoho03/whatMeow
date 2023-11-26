@@ -3,6 +3,7 @@ from sqlalchemy import desc
 from sqlalchemy.orm import joinedload
 
 from app import model
+from app.api.v1.like import like_utils
 from app.config import settings
 
 """
@@ -18,7 +19,7 @@ async def return_post_by_hashtag(db, lst):
         post_item = db.query(model.Post).options(joinedload(model.Post.images)).filter_by(id=post_id).first()
         post_lst.append(
             {
-                "post_id": post_item.id,
+                "postId": post_item.id,
                 "thumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/{post_item.images[0].url}",
             }
         )
@@ -31,7 +32,7 @@ async def return_post_by_name(lst):
     for post_item in lst:
         post_lst.append(
             {
-                "post_id": post_item.id,
+                "postId": post_item.id,
                 "thumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/{post_item.images[0].url}",
             }
         )
@@ -47,17 +48,18 @@ async def append_following_ids(followings):
     return following_ids
 
 
-async def make_dict_from_follow_posts(latest_posts):
+async def make_dict_from_follow_posts(latest_posts, user_id, db):
     to_return_lst = []
     for post in latest_posts:
+        stat = await like_utils.is_like(post.id, user_id, db)
         to_return_lst.append(
             {
                 "nickname": post.post_owner.nickname,
-                "like_length": len(post.likes),
-                "created_at": post.created_at,
+                "like": {"count": len(post.likes), "isLike": stat},
+                "createdAt": post.created_at,
                 "content": post.title,
-                "post_id": post.id,
-                "thumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/{post.images[0].url}",
+                "postId": post.id,
+                "images": [f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/{post.images[0].url}"],
             }
         )
 
@@ -83,6 +85,6 @@ async def return_follow_posts(db, user_id, start, limit):
             .all()
         )
 
-        return await make_dict_from_follow_posts(latest_posts)
+        return await make_dict_from_follow_posts(latest_posts, user_id, db)
     except Exception:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY)
