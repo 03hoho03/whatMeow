@@ -3,6 +3,7 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
+  margin-bottom: 24px;
 }
 .input_container {
   width: 100%;
