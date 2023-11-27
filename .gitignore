@@ -5,6 +5,7 @@ venv/
 *.pyc
 images/
 *.pth
+*.pt
 
 # FrontEnd
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
