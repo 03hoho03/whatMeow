@@ -3,7 +3,7 @@ import '@fortawesome/fontawesome-svg-core/styles.css'
 import { config } from '@fortawesome/fontawesome-svg-core'
 import React from 'react'
 import Recoil from './_store/Recoil'
-import Providers from './_utils/provider' 
+import Providers from './_utils/provider'
 
 config.autoAddCss = false
 
@@ -16,9 +16,7 @@ export default async function RootLayout({
     <html lang="en">
       <body>
         <Providers>
-          <Recoil>
-            {children}
-            </Recoil>
+          <Recoil>{children}</Recoil>
         </Providers>
       </body>
     </html>
