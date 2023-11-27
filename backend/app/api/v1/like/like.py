@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, status, HTTPException, Request
 from sqlalchemy.orm.session import Session
 
-from app.api.v1.auth import auth_utils
 from app.api.v1.like import like_utils
 from app.database import get_db
 
@@ -15,8 +14,7 @@ async def like(
     post_id: int,
     db: Session = Depends(get_db),
 ):
-    access_token = request.cookies.get("accessToken")
-    decoded_dict = await auth_utils.verify_access_token(access_token)
+    decoded_dict = request.state.decoded_dict
     if decoded_dict:
         stat, count = await like_utils.add_like(post_id, decoded_dict.get("id"), db)
         if stat == "LIKE":
@@ -25,3 +23,5 @@ async def like(
             return {"like": {"isLike": False, "count": count}}
         else:
             raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Failed to like")
+    else:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, detail="There isn't token")

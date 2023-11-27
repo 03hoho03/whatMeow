@@ -1,4 +1,4 @@
-from fastapi import Depends, APIRouter, status
+from fastapi import Depends, APIRouter, status, HTTPException
 from fastapi import File, UploadFile, Form, Request
 
 from sqlalchemy.orm.session import Session
@@ -7,7 +7,6 @@ from typing import List
 from app import model
 from app.database import get_db
 from app.api.schemas import post_schema
-from app.api.v1.auth import auth_utils
 from app.api.v1.post import post_utils
 
 router = APIRouter(tags=["Post"])
@@ -25,8 +24,7 @@ async def post_upload(
     """
     입력받을 데이터 => 게시글, 해시태그, (고양이 품종)
     """
-    access_token = request.cookies.get("accessToken")
-    decoded_dict = await auth_utils.verify_access_token(access_token)
+    decoded_dict = request.state.decoded_dict
 
     if decoded_dict:
         # hashtag ID가 담겨져 있는 list
@@ -47,20 +45,24 @@ async def post_upload(
         await post_utils.save_thumnail(decoded_dict.get("username"), files[0], row.id)
 
         return {"success": True}
+    else:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, detail="There isn't token")
 
 
 @router.delete("/{post_id}", status_code=status.HTTP_202_ACCEPTED)
 async def post_delete(request: Request, post_id: int, db: Session = Depends(get_db)):
-    access_token = request.cookies.get("accessToken")
-    decoded_dict = await auth_utils.verify_access_token(access_token)
+    decoded_dict = request.state.decoded_dict
     if decoded_dict:
         if await post_utils.post_delete(db, decoded_dict.get("username"), post_id):
             return {"success": True}
+    else:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, detail="There isn't token")
 
 
 @router.get("/{post_id}")
 async def post_detail(request: Request, data: post_schema.PostDetail = Depends(), db: Session = Depends(get_db)):
-    access_token = request.cookies.get("accessToken")
-    decoded_dict = await auth_utils.verify_access_token(access_token)
+    decoded_dict = request.state.decoded_dict
     if decoded_dict:
         return await post_utils.return_detailed_post(db, decoded_dict.get("id"), data.post_id)
+    else:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, detail="There isn't token")

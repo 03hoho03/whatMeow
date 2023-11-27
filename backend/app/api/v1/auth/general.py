@@ -52,8 +52,6 @@ async def add_user(data: user_schema.GeneralUserAdd, db: Session = Depends(get_d
 
 @router.post("/login")
 async def issue_token(response: Response, data: user_schema.LoginUser, db: Session = Depends(get_db)):
-    print(data.email)
-    print(data.password)
     user = db.query(model.User).filter(model.User.email == data.email).first()
     if bcrypt.checkpw(data.password.encode(), user.password.encode()):  # bcrypt.checkpw가 자동으로 salt값 추출 후 서로 비교해줌
         token_info = await auth_utils.social_create_access_token(user, db, exp=timedelta(minutes=720))
@@ -67,20 +65,27 @@ async def issue_token(response: Response, data: user_schema.LoginUser, db: Sessi
 @router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
 async def logout(request: Request, db: Session = Depends(get_db)):
     """
+    refeshToken 보내줘야함
     refresh_token을 db에서 삭제 -> 더 이상 access_token 갱신 불가
     front 쪽에서도 access_token과 refresh_token 정보를 제거 후 로그인 화면으로 redirect해야함
     """
-    access_token = request.cookies.get("accessToken")
-    row = db.query(model.RefreshToken).filter_by(refresh_token=access_token).first()
-    if row:
-        db.delete(row)
-        db.commit()
-        return row.user_id
+    decoded_dict = request.state.decoded_dict
+    if decoded_dict:
+        row = db.query(model.RefreshToken).filter_by(user_id=decoded_dict.get("id")).first()
+        if row:
+            db.delete(row)
+            db.commit()
+            return row.user_id
+        else:
+            raise HTTPException(status_cod=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Item Not Found")
     else:
-        raise HTTPException(status_cod=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Item Not Found")
+        raise HTTPException(status.HTTP_403_FORBIDDEN, detail="There isn't token")
 
 
 @router.get("/token/refresh")
 async def check_refresh_token(request: Request, db: Session = Depends(get_db)):
-    refresh_token = request.cookies.get("refreshToken")
-    return {"new_token": await auth_utils.verify_refesh_token(refresh_token, db)}
+    decoded_dict = request.state.decoded_dict
+    if decoded_dict:
+        return {"new_token": await auth_utils.verify_refesh_token(decoded_dict.get("id"), db)}
+    else:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, detail="There isn't token")
