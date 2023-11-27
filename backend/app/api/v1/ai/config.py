@@ -30,7 +30,7 @@ transformer = transforms.Compose(
     ]
 )
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
-model = models.resnet101()
+model = models.resnet18()
 num_features = model.fc.in_features
 model.fc = nn.Linear(num_features, num_classes)
 model.load_state_dict(torch.load("model_state_dict.pth", map_location=torch.device("cpu")))
