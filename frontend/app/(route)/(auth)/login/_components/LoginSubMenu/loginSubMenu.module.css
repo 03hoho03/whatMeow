@@ -3,13 +3,14 @@
   justify-content: center;
   font-size: 16px;
   align-items: center;
+  margin-bottom: 12px;
 }
 .subMenu_separator {
   width: 1px;
   height: 12px;
   background-color: black;
   margin: 0 8px;
-  display: inline-block; /* 인라인 요소로 설정하여 다른 내용과 함께 표시됩니다. */
-  content: ''; /* ::after 유사 요소와 유사하게 내용을 추가합니다. */
-  position: relative; /* 부모 요소 내에서의 위치를 설정합니다. */
+  display: inline-block;
+  content: '';
+  position: relative;
 }
