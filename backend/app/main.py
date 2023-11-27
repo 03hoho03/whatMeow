@@ -14,6 +14,9 @@ async def modify_enpoint(request: Request, call_next):
     if "/search/main" in request.scope["path"]:
         if not request.state.decoded_dict:
             request.scope["path"] = str(request.url.path).replace("main", "test")
+    if "/profile/" in request.scope["path"]:
+        if not request.state.decoded_dict:
+            request.scope["path"] = str(request.url.path).replace("profile", "notlogined")
     response = await call_next(request)
     return response
 
@@ -27,6 +30,8 @@ async def tag_ifLogined(request: Request, call_next):
             token = access_token if access_token is not None else refresh_token
             if token:
                 request.state.decoded_dict = await auth_utils.verify_access_token(token)
+            else:
+                request.state.decoded_dict = None
         response = await call_next(request)
         return response
     except HTTPException as e:

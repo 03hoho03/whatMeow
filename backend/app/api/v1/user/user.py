@@ -69,6 +69,11 @@ async def update_image(request: Request, file: UploadFile = File(), db: Session 
         raise HTTPException(status.HTTP_403_FORBIDDEN, detail="There isn't token")
 
 
+@router.get("/notlogined/{nickname}", status_code=status.HTTP_200_OK)
+async def load_mypage_nologin(nickname: str, db: Session = Depends(get_db)):
+    return await user_utils.load_mypage_utils(nickname, 0, db)
+
+
 @router.get("/profile/{nickname}", status_code=status.HTTP_200_OK)
 async def load_mypage(nickname: str, request: Request, db: Session = Depends(get_db)):
     decoded_dict = request.state.decoded_dict

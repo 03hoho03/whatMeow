@@ -130,22 +130,30 @@ async def load_mypage_utils(nickname, my_id, db):
         )
 
         my_row = db.query(model.User).filter_by(id=my_id).first()
-        if user_row.id == my_id:
-            relation = "ME"
-        else:
-            relation = "UNFOLLOW"
-            for following in my_row.following:
-                if user_row.id == following.id:
-                    relation = "FOLLOW"
+        if my_id:
+            if user_row.id == my_id:
+                relation = "ME"
+            else:
+                relation = "UNFOLLOW"
+                for following in my_row.following:
+                    if user_row.id == following.id:
+                        relation = "FOLLOW"
 
         to_return_dict = {
             "userId": user_row.id,
             "nickname": user_row.nickname,
-            "profileImage": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/thumnail/{user_row.profile_image}",
+            "profileThumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/thumnail/{user_row.profile_image}",
             "postCount": len(user_row.posts),
+            "explain": user_row.explain if user_row.explain is not None else "",
             "followerCount": len(user_row.follower),
             "followingCount": len(user_row.following),
-            "cats": [{"catName": cat.catname, "thumnail": cat.image} for cat in user_row.cats],
+            "cats": [
+                {
+                    "catName": cat.catname,
+                    "thumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/thumnail/{user_row.username}/{cat.image}",
+                }
+                for cat in user_row.cats
+            ],
             "posts": [
                 {
                     "postId": post.id,
@@ -153,7 +161,7 @@ async def load_mypage_utils(nickname, my_id, db):
                 }
                 for post in user_row.posts
             ],
-            "relation": relation,
+            "relation": relation if my_id else "UNFOLLOW",
         }
 
         return to_return_dict
