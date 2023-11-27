@@ -141,23 +141,23 @@ async def verify_access_token(token):
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="An Error Occured")
 
 
-async def return_user_from_refresh_token(token, db):
+async def return_user_from_refresh_token(user_id, db):
     """
     cred 정보를 받아 refresh_token 정보를 반환해주는 함수
     """
-    return db.query(model.RefreshToken).filter_by(refresh_token=token).first()
+    return db.query(model.RefreshToken).filter_by(id=user_id).first()
 
 
-async def verify_refesh_token(token, db, exp: Optional[timedelta] = None):
+async def verify_refesh_token(user_id, db, exp: Optional[timedelta] = None):
     """
     입력한 리프레쉬 토큰이 만료되었는지 아닌지 체크하는 함수
     만료되지 않았다면 access_token 갱신해서 return
     만료되었다면 401 토큰 반환 후 refresh_token 삭제
     프론트측에서는 여기서 바로 로그인화면에서 redirect 해줌
     """
-    rf_token = await return_user_from_refresh_token(token, db)
+    rf_token = await return_user_from_refresh_token(user_id, db)
     try:
-        if jwt.decode(token, settings.SECRET_REFRESH_KEY, settings.ALGORITHM):
+        if jwt.decode(settings.SECRET_REFRESH_KEY, settings.ALGORITHM):
             """
             Access Token 갱신 후에 Access Token 반환
             """

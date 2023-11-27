@@ -1,13 +1,11 @@
-from fastapi import Depends, status, APIRouter, Request
+from fastapi import Depends, status, APIRouter, Request, HTTPException
 from sqlalchemy.orm.session import Session
-
+from sqlalchemy import desc
 from sqlalchemy.orm import joinedload
 
 from app.config import settings
 from app.api.schemas import search_schema
 from app.api.v1.search import search_utils
-from app.api.v1.like import like_utils
-from app.api.v1.auth import auth_utils
 from app import model
 from app.database import get_db
 
@@ -52,21 +50,21 @@ async def get_name_result(data: search_schema.SearchName = Depends(), db: Sessio
 async def get_main_result(
     request: Request, data: search_schema.SearchFollower = Depends(), db: Session = Depends(get_db)
 ):
-    access_token = request.cookies.get("accessToken")
-    decoded_dict = await auth_utils.verify_access_token(access_token)
+    decoded_dict = request.state.decoded_dict
     if decoded_dict:
         return await search_utils.return_follow_posts(db, data.user_id, data.start * data.limit, data.limit)
+    else:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, detail="There's no Token")
 
 
-async def make_dict_from_follow_posts(latest_posts, user_id, db):
+async def make_dict_from_follow_posts(latest_posts):
     to_return_lst = []
     for post in latest_posts:
-        stat = await like_utils.is_like(post.id, user_id, db)
         to_return_lst.append(
             {
                 "nickname": post.post_owner.nickname,
                 "writerThumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/thumnail/{post.post_owner.profile_image}",
-                "like": {"count": len(post.likes), "isLike": stat},
+                "like": {"count": len(post.likes), "isLike": False},
                 "createdAt": post.created_at,
                 "content": post.title,
                 "postId": post.id,
@@ -82,8 +80,7 @@ async def make_dict_from_follow_posts(latest_posts, user_id, db):
 
 @router.get("/test")
 async def post_test(request: Request, start: int, limit: int, db: Session = Depends(get_db)):
-    access_token = request.cookies.get("accessToken")
-    decoded_dict = await auth_utils.verify_access_token(access_token)
+    decoded_dict = request.state.decoded_dict
     if decoded_dict:
         post_row = (
             db.query(model.Post)
@@ -93,6 +90,9 @@ async def post_test(request: Request, start: int, limit: int, db: Session = Depe
                 joinedload(model.Post.images),
                 joinedload(model.Post.post_owner),
             )
+            .order_by(desc(model.Post.created_at))
+            .offset(start)
+            .limit(limit)
             .all()
         )
 
