@@ -150,7 +150,7 @@ async def load_mypage_utils(nickname, my_id, db):
             "follow": {
                 "followerCount": len(user_row.follower),
                 "followingCount": len(user_row.following),
-                "isfollowing": follow,
+                "isFollowing": follow,
             },
             "cats": [
                 {
