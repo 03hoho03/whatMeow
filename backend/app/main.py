@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 
@@ -19,13 +20,16 @@ async def modify_enpoint(request: Request, call_next):
 
 @app.middleware("http")
 async def tag_ifLogined(request: Request, call_next):
-    access_token = request.cookies.get("accessToken")
-    refresh_token = request.cookies.get("refreshToken")
-    token = access_token if access_token is not None else refresh_token
-    if token:
-        request.state.decoded_dict = await auth_utils.verify_access_token(token)
-    response = await call_next(request)
-    return response
+    try:
+        access_token = request.cookies.get("accessToken")
+        refresh_token = request.cookies.get("refreshToken")
+        token = access_token if access_token is not None else refresh_token
+        if token:
+            request.state.decoded_dict = await auth_utils.verify_access_token(token)
+        response = await call_next(request)
+        return response
+    except HTTPException as e:
+        return JSONResponse(content={"error": e.detail}, status_code=e.status_code)
 
 
 app.add_middleware(SessionMiddleware, secret_key="ff29aadd726675a2671da921a53d72e36ec043cdc80056f2f40e602107e6b0f7")
