@@ -21,11 +21,12 @@ async def modify_enpoint(request: Request, call_next):
 @app.middleware("http")
 async def tag_ifLogined(request: Request, call_next):
     try:
-        access_token = request.cookies.get("accessToken")
-        refresh_token = request.cookies.get("refreshToken")
-        token = access_token if access_token is not None else refresh_token
-        if token:
-            request.state.decoded_dict = await auth_utils.verify_access_token(token)
+        if "/api/v1/" in request.scope["path"]:
+            access_token = request.cookies.get("accessToken")
+            refresh_token = request.cookies.get("refreshToken")
+            token = access_token if access_token is not None else refresh_token
+            if token:
+                request.state.decoded_dict = await auth_utils.verify_access_token(token)
         response = await call_next(request)
         return response
     except HTTPException as e:

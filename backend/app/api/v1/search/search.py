@@ -96,4 +96,4 @@ async def post_test(request: Request, start: int, limit: int, db: Session = Depe
             .all()
         )
 
-        return await make_dict_from_follow_posts(post_row, decoded_dict.get("id"), db)
+        return await make_dict_from_follow_posts(post_row)

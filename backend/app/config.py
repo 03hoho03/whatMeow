@@ -39,6 +39,9 @@ class Settings:
         config=boto3.session.Config(signature_version="s3v4"),
     )
 
+    # AI Settings
+    MODEL_PATH = os.environ.get("MODEL_PATH")
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
