@@ -131,12 +131,10 @@ async def load_mypage_utils(nickname, my_id, db):
 
         my_row = db.query(model.User).filter_by(id=my_id).first()
         follow = False
+        is_owner = False
         if my_id:
             if user_row.id == my_id:
                 is_owner = True
-            else:
-                is_owner = False
-
             for following in my_row.following:
                 if user_row.id == following.id:
                     follow = True
