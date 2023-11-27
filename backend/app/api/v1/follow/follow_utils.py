@@ -3,7 +3,7 @@ from fastapi import HTTPException, status
 
 
 async def add_follow(follow_nickname, user_id, db):
-    check_row = db.query(model.User).filter_by(id=follow_nickname).first()
+    check_row = db.query(model.User).filter_by(nickname=follow_nickname).first()
     for follower in check_row.follower:
         if follower.id == user_id:
             try:
