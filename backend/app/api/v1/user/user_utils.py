@@ -151,7 +151,7 @@ async def load_mypage_utils(nickname, my_id, db):
                 {
                     "catName": cat.catname,
                     "catID": cat.id,
-                    "thumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/thumnail/{user_row.username}/{cat.image}",
+                    "thumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/thumnail/{cat.image}",
                 }
                 for cat in user_row.cats
             ],
