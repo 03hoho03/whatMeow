@@ -132,12 +132,14 @@ async def load_mypage_utils(nickname, my_id, db):
         my_row = db.query(model.User).filter_by(id=my_id).first()
         if my_id:
             if user_row.id == my_id:
-                relation = "ME"
+                is_owner = True
             else:
-                relation = "UNFOLLOW"
-                for following in my_row.following:
-                    if user_row.id == following.id:
-                        relation = "FOLLOW"
+                is_owner = False
+
+            follow = False
+            for following in my_row.following:
+                if user_row.id == following.id:
+                    follow = True
 
         to_return_dict = {
             "userId": user_row.id,
@@ -145,8 +147,11 @@ async def load_mypage_utils(nickname, my_id, db):
             "profileThumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/thumnail/{user_row.profile_image}",
             "postCount": len(user_row.posts),
             "explain": user_row.explain if user_row.explain is not None else "",
-            "followerCount": len(user_row.follower),
-            "followingCount": len(user_row.following),
+            "follow": {
+                "followerCount": len(user_row.follower),
+                "followingCount": len(user_row.following),
+                "isfollowing": follow,
+            },
             "cats": [
                 {
                     "catName": cat.catname,
@@ -162,7 +167,7 @@ async def load_mypage_utils(nickname, my_id, db):
                 }
                 for post in user_row.posts
             ],
-            "relation": relation if my_id else "UNFOLLOW",
+            "owner": is_owner,
         }
 
         return to_return_dict

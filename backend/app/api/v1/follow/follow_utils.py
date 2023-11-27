@@ -12,7 +12,7 @@ async def add_follow(follow_nickname, user_id, db):
                 ).delete(synchronize_session=False)
                 db.commit()
 
-                return "UNFOLLOW", len(check_row.follower)
+                return False, len(check_row.follower)
             except Exception as e:
                 print(e)
                 raise HTTPException(
@@ -21,4 +21,4 @@ async def add_follow(follow_nickname, user_id, db):
     db.execute(model.followers.insert().values(follower_id=user_id, following_id=check_row.id))
     db.commit()
 
-    return "FOLLOW", len(check_row.follower)
+    return True, len(check_row.follower)

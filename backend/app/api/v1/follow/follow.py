@@ -17,10 +17,10 @@ async def add_follower(
     decoded_dict = request.state.decoded_dict
     if decoded_dict:
         stat, count = await follow_utils.add_follow(toFollow, decoded_dict.get("id"), db)
-        if stat == "FOLLOW":
-            return {"follow": {"isFollowing": True, "count": count}}
+        if stat:
+            return {"follow": {"isFollowing": True, "followerCount": count}}
         else:
-            return {"follow": {"isFollowing": False, "count": count}}
+            return {"follow": {"isFollowing": False, "followerCount": count}}
     else:
         raise HTTPException(status.HTTP_403_FORBIDDEN, detail="There isn't token")
 
