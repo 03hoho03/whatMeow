@@ -1,11 +1,14 @@
 import { useEffect } from 'react'
 
 interface ObserverProps {
-  target: any
-  onIntersect: any
-  root: any
-  rootMargin: any
-  threshold: any
+  target: React.MutableRefObject<HTMLElement | null>
+  onIntersect: (
+    entries: IntersectionObserverEntry[],
+    observer?: IntersectionObserver,
+  ) => void
+  root?: Element | null
+  rootMargin?: string
+  threshold?: number
 }
 
 export const useObserver = ({
@@ -16,7 +19,7 @@ export const useObserver = ({
   threshold = 1.0, // 임계점. 1.0이면 root내에서 target이 100% 보여질 때 callback이 실행된다.
 }: ObserverProps) => {
   useEffect(() => {
-    let observer: any
+    let observer: IntersectionObserver | null
     // 넘어오는 element가 있어야 observer를 생성할 수 있도록 한다.
     if (target && target.current) {
       // callback의 인자로 들어오는 entry는 기본적으로 순환자이기 때문에
@@ -30,7 +33,8 @@ export const useObserver = ({
       // 실제 Element가 들어있는 current 관측을 시작한다.
       observer.observe(target.current)
     }
-    // observer를 사용하는 컴포넌트가 해제되면 observer 역시 꺼 주자.
-    return () => observer && observer.disconnect()
-  }, [target, rootMargin, threshold])
+    return () => {
+      observer && observer.disconnect()
+    }
+  }, [target, onIntersect, rootMargin, root, threshold])
 }
