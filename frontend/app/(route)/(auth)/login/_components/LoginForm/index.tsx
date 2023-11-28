@@ -1,29 +1,32 @@
 'use client'
 
-import React from 'react'
-import { useRouter } from 'next/navigation'
+import React, { useEffect } from 'react'
 import style from './loginForm.module.css'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { useUserService } from '@/app/_services/userService'
-import { useSetRecoilState } from 'recoil'
-import { authState } from '@/app/_store/atom/auth'
+import { useAuthService } from '@/app/_services/authService'
 import SubmitBtn from '@/app/_common/SubmitBtn'
+import { useRouter } from 'next/navigation'
+import { useSetRecoilState } from 'recoil'
+import { userAtom } from '@/app/_store/atom/user'
+import { useMutation } from '@tanstack/react-query'
 
-interface LoginFormValue {
+interface LoginFormReturn {
   email: string
   password: string
 }
 
 function LoginForm() {
+  const router = useRouter()
   const {
     register,
     handleSubmit,
     formState: { isValid },
-  } = useForm<LoginFormValue>()
-  const setAuth = useSetRecoilState(authState)
-
-  const router = useRouter()
-  const userService = useUserService()
+  } = useForm<LoginFormReturn>()
+  const authService = useAuthService()
+  const loginMutation = useMutation<void, Error, LoginFormReturn>({
+    mutationFn: ({ email, password }) => authService.login(email, password),
+  })
+  const setUser = useSetRecoilState(userAtom)
 
   const fields = {
     email: register('email', {
@@ -46,11 +49,22 @@ function LoginForm() {
       },
     }),
   }
-  const onHandleLogin: SubmitHandler<LoginFormValue> = async (data: any) => {
-    const { email, password } = data
-    await userService.login(email, password)
-    setAuth(true)
-    router.push('/')
+  const onHandleLogin: SubmitHandler<LoginFormReturn> = async ({
+    email,
+    password,
+  }) => {
+    loginMutation.mutate(
+      { email, password },
+      {
+        onSuccess: (data) => {
+          setUser({ user: data, isAuth: true })
+          router.push('/')
+        },
+        onError: (error) => {
+          console.log(error)
+        },
+      },
+    )
   }
   return (
     <form className={style.main_wrapper} onSubmit={handleSubmit(onHandleLogin)}>
