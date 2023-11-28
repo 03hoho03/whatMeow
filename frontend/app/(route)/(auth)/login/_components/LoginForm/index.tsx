@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React from 'react'
 import style from './loginForm.module.css'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useAuthService } from '@/app/_services/authService'

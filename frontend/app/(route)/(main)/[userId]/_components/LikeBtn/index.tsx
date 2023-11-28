@@ -6,14 +6,14 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useFeedService } from '@/app/_services/feedService'
 
 interface LikeBtnProps {
-  postId: string
+  postId: number
 }
 interface Like {
   count: number
   isLike: boolean
 }
 interface MutateLikeVariables {
-  postId: string
+  postId: number
 }
 
 const LikeBtn = ({ postId }: LikeBtnProps) => {

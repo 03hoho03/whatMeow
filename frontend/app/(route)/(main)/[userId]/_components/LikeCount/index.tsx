@@ -3,7 +3,7 @@ import style from './likeCount.module.css'
 import { useQuery } from '@tanstack/react-query'
 
 interface LikeCountProps {
-  postId: string
+  postId: number
 }
 interface Like {
   count: number

@@ -6,6 +6,7 @@ import { writer } from '@/app/_utils/constants'
 
 interface ContextFormProps {
   content: UseFormRegisterReturn<string>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   watch: UseFormWatch<any>
 }
 

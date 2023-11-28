@@ -12,7 +12,8 @@ const FeedCommentInput = () => {
   const [commentInput, setCommentInput] = useState<string>('')
   const feedService = useFeedService()
   const { mutate } = useMutation({
-    mutationFn: (variables: Comment) => feedService.registComment(variables),
+    mutationFn: (variables: Comment) =>
+      feedService.registComment(variables.comment),
   })
   const HandleCommentInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     console.log(e.target.value)
