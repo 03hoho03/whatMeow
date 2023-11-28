@@ -1,0 +1,42 @@
+.TitleContainer {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  margin-right: 8px;
+}
+.formTitle {
+  font-size: 16px;
+}
+.ToggleBtn {
+  display: flex;
+  flex-direction: column;
+}
+.optionListWrapper {
+  position: relative;
+}
+.optionListContainer {
+  position:absolute;
+  left: 0;
+  top: 12px;
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  width: 250px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+.optionList {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.hidden {
+  display: none;
+}
+.selectedOptionContainer {
+  display: flex;
+  width: 100%;
+  padding: 8px 12px;
+  min-height: 40px;
+}
