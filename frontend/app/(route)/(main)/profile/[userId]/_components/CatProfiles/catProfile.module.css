@@ -1,0 +1,32 @@
+.catProfileContainer {
+  width: 100%;
+  margin-bottom: 24px;
+  padding: 0 12px;
+}
+.header {
+  display: flex;
+  margin-bottom: 8px;
+}
+.catProfileAddBtn {
+  font-size: 12px;
+  margin-left: 4px;
+  padding: 0;
+}
+.catProfileAddBtn:hover {
+  text-decoration: underline;
+}
+.profile_item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.profile_image {
+  width: 80px;
+  height: 80px;
+  border-radius: 9999px;
+  margin-bottom: 4px;
+} 
+.profile_name:hover {
+  cursor:pointer;
+  text-decoration: underline;
+}

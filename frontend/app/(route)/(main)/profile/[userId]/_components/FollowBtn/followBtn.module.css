@@ -1,0 +1,9 @@
+.followBtn {
+  width: 100%;
+  background-color: orange;
+  padding: 4px 24px;
+  border-radius: 8px;
+}
+.follow {
+  background-color: #ccc;
+}

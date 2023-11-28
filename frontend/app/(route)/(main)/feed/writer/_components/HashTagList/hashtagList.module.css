@@ -1,4 +1,6 @@
 .tagList {
   display: flex;
   flex-wrap: wrap;
+  padding: 8px 12px;
+  min-height: 40px;
 }

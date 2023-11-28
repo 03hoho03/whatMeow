@@ -1,10 +1,10 @@
-import Navbar2 from '@/app/_components/Navbar2'
+import Navbar from '@/app/_components/Navbar'
 import BottomMenu from '@/app/_common/BottomMenu'
 import React from 'react'
 
 const layout = ({ children }: { children: React.ReactNode }) => (
   <div>
-    <Navbar2 />
+    <Navbar />
     {children}
     <BottomMenu />
   </div>

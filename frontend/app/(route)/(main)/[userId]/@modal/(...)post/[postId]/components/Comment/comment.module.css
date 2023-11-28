@@ -1,0 +1,28 @@
+.commentContainer {
+  display: flex;
+  margin-bottom: 8px;
+}
+.writerThumnailContainer {
+  margin-right: 4px;
+}
+.writerThumnailWrapper {
+  width: 32px;
+  height: 32px;
+  border-radius: 9999px;
+}
+.writerThumnailWrapper > img {
+  width: 100%;
+  height: 100%;
+  border-radius: 9999px;
+}
+.commentInfoContainer {
+  display: flex;
+}
+.commentInfoContainer > span {
+  font-size: 12px;
+  font-weight: 300;
+  margin-right: 4px;
+}
+.commentInfoContainer > p {
+  font-size: 12px;
+}

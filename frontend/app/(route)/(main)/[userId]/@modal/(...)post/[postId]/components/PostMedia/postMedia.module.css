@@ -1,0 +1,41 @@
+.swiperContainer {
+  width: 340px;
+}
+.swiper{
+  width:100%;
+  height: 100%;
+}
+.slideItem {
+  position: relative;
+  width: 100%;
+  height: 340px;
+  background-color: black;
+}
+.slideImg {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+  object-fit:cover
+}
+
+@media (min-width:736px) {
+  .swiperContainer {
+    flex: 1 0 auto;
+    height: 100%;
+  }
+  .swiperContainer * {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+  }
+  .swiper {
+    /* max-width: calc(100% - 300px); */
+  }
+  .slideItem {
+    height: 100%;
+  }
+  .slideImg {
+    top: 50%;
+    left: 0;
+  }
+}

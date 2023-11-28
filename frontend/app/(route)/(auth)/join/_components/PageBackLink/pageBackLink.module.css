@@ -1,0 +1,7 @@
+.backPageLinkContainer {
+  margin-bottom: 16px;
+}
+.backPageLinkContainer .backPageLink {
+  display: flex;
+  padding: 0;
+}

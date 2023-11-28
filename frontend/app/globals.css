@@ -3,9 +3,11 @@
 * {
   box-sizing: border-box;
   font-family: 'Spoqa Han Sans Neo', 'sans-serif';
+  font-size: 14px;
 }
 body {
   position: relative;
+  min-width: 320px;
   margin: 0;
   padding: 0;
   display: flex;
@@ -17,9 +19,17 @@ button {
   border:none;
   box-shadow:none;
   border-radius:0;
-  padding:0;
+  padding:8px 12px;
   overflow:visible;
   cursor:pointer
+}
+span {
+  font-size: 12px;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 a { 
   text-decoration: none; color: black; 
@@ -34,8 +44,13 @@ ul {
   margin: 0;
 }
 h3 {
+  font-size: 18px;
   margin: 0;
 }
+h4 {
+  font-size: 16px;
+  margin: 0;
+} 
 p {
   margin: 0;
 }
@@ -44,4 +59,8 @@ img {
   -khtml-user-drag: none;
   -moz-user-drag: none;
   -o-user-drag: none;
+  user-select: none;
+}
+textarea {
+  resize: none;
 }

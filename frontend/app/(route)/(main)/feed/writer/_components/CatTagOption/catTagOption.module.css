@@ -1,0 +1,16 @@
+.option {
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: bold;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  margin-right: 8px;
+  margin-bottom: 4px;
+}
+.option:hover {
+  background-color: #ccc;
+}
+.selected {
+  color: #fff;
+  background-color: #333;
+}

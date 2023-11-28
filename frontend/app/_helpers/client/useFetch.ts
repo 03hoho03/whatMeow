@@ -1,10 +1,6 @@
-import { useRouter } from 'next/navigation'
-
 export { useFetch }
 
 function useFetch() {
-  const router = useRouter()
-
   return {
     get: request('GET'),
     post: request('POST'),
@@ -35,30 +31,29 @@ function useFetch() {
           }
         }
       }
-      return fetch(url, requestOptions).then(handleResponse)
+      return fetch(url, requestOptions)
     }
   }
 
   // helper functions
 
-  async function handleResponse(response: any) {
-    const isJson = response.headers
-      ?.get('content-type')
-      ?.includes('application/json')
-    const data = isJson ? await response.json() : null
+  // async function handleResponse(response: any) {
+  //   const isJson = response.headers
+  //     ?.get('content-type')
+  //     ?.includes('application/json')
+  //   const data = isJson ? await response.json() : null
 
-    // check for error response
-    if (!response.ok) {
-      if (response.status === 401) {
-        // api auto logs out on 401 Unauthorized, so redirect to login page
-        router.push('/login')
-      }
-      // 403 아이디 비밀번호 틀렸을 때
-      // get error message from body or default to response status
-      const error = (data && data.message) || response.statusText
-      return Promise.reject(error)
-    }
-
-    return data
-  }
+  //   // check for error response
+  //   if (!response.ok) {
+  //     if (response.status === 401) {
+  //       // api auto logs out on 401 Unauthorized, so redirect to login page
+  //       router.push('/login')
+  //     }
+  //     // 403 아이디 비밀번호 틀렸을 때
+  //     // get error message from body or default to response status
+  //     const error = (data && data.message) || response.statusText
+  //     return Promise.reject(error)
+  //   }
+  //   return data
+  // }
 }

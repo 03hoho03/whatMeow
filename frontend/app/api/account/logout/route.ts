@@ -1,10 +1,10 @@
-import {cookies}from 'next/headers'
+import { cookies } from 'next/headers'
 
-import { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server'
 
 export async function GET() {
-  const cookieStore = cookies();
-  cookieStore.delete('accessToken');
-  cookieStore.delete('refreshToken');
+  const cookieStore = cookies()
+  cookieStore.delete('accessToken')
+  cookieStore.delete('refreshToken')
   return NextResponse
 }
