@@ -148,3 +148,10 @@ class RefreshToken(BaseMin, Base):
     refresh_token = Column(String(255))
     user_id = Column(Integer, ForeignKey("user.id"))
     user = relationship("User", back_populates="refresh_tokens")
+
+
+class CatFeature(Base):
+    __tablename__ = "catfeature"
+
+    cat_breed = Column(String(15))
+    feature = Column(String(255))
