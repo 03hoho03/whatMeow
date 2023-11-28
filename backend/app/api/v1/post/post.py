@@ -55,6 +55,8 @@ async def post_delete(request: Request, post_id: int, db: Session = Depends(get_
     if decoded_dict:
         if await post_utils.post_delete(db, decoded_dict.get("username"), post_id):
             return {"success": True}
+        else:
+            raise HTTPException(status.HTTP_403_FORBIDDEN, detail="Not a owner of this Post")
     else:
         raise HTTPException(status.HTTP_403_FORBIDDEN, detail="There isn't token")
 

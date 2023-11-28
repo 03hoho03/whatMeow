@@ -1,10 +1,26 @@
 import io
 import torch
+from collections import defaultdict
 from PIL import Image
+
 from app.api.v1.ai.config import resnet_model, yolo_model
+from app import model
 
 
-async def predict_breed(file):
+async def get_feature_from_db(cat_breeds, db):
+    cat_breeds_dict = defaultdict(int)
+    for breed in cat_breeds:
+        cat_breeds_dict[breed] += 1
+
+    to_return_lst = []
+    for key, value in cat_breeds_dict.items():
+        cat_row = db.query(model.CatFeature).filter_by(cat_breed=key).first()
+        to_return_lst.append({"name": key, "count": value, "feature": cat_row.feature})
+
+    return to_return_lst
+
+
+async def predict_breed(file, db):
     file_contents = await file.read()
     image = Image.open(io.BytesIO(file_contents))
     yolo_results = await extract_cat_from_image_file(image)
@@ -26,7 +42,9 @@ async def predict_breed(file):
 
             cat_breeds.append(predicted_class)
 
-        return cat_breeds
+        return_lst = await get_feature_from_db(cat_breeds, db)
+
+        return return_lst
     else:
         return False
 
@@ -34,9 +52,9 @@ async def predict_breed(file):
 async def extract_cat_from_image_file(image):
     cat_results = []
 
-    result = yolo_model.yolo_model.predict(image)
+    result = yolo_model.yolo_model.predict(image, conf=0.5)
     for i, cls in enumerate(result[0].boxes.cls):
-        if int(cls) == 15:
+        if int(cls) == 0:
             cat_results.append(result[0].boxes.xyxy[i])
 
     return cat_results
