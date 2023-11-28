@@ -1,0 +1,9 @@
+.breedAiPageContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 64px;
+}
+.breedAiPageContainer > h3 {
+  margin-bottom: 12px;
+}
