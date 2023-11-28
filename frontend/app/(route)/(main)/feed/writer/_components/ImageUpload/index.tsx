@@ -1,5 +1,4 @@
 'use client'
-
 import React, { useRef } from 'react'
 import { AiOutlineCamera } from 'react-icons/ai'
 import { MdCancel } from 'react-icons/md'
@@ -7,6 +6,8 @@ import Swiper from '@/app/_common/Swiper'
 import style from './imageUpload.module.css'
 import { useRecoilState } from 'recoil'
 import { FileInfoType, imageFileList } from '@/app/_store/atom/writer/image'
+
+const MAX_IMAGE_LENGTH = 10
 
 function ImageUpload() {
   const [fileList, setFileList] = useRecoilState<FileInfoType[]>(imageFileList)
@@ -17,7 +18,7 @@ function ImageUpload() {
     const InputFileList = e.target.files
 
     if (!InputFileList) return
-    if (fileList.length + InputFileList.length > 10) return
+    if (fileList.length + InputFileList.length > MAX_IMAGE_LENGTH) return
 
     const fileArray: FileInfoType[] = [...fileList]
 
@@ -51,7 +52,7 @@ function ImageUpload() {
           <AiOutlineCamera className={style.upload_img} />
           <p className={style.preview_length_container}>
             <span className={style.preview_length_now}>{fileList.length}</span>
-            <span>/10</span>
+            <span>{`/${MAX_IMAGE_LENGTH}`}</span>
           </p>
         </label>
       </div>
