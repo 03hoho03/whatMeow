@@ -54,7 +54,7 @@ async def extract_cat_from_image_file(image):
 
     result = yolo_model.yolo_model.predict(image, conf=0.5)
     for i, cls in enumerate(result[0].boxes.cls):
-        if int(cls) == 15:
+        if int(cls) == 0:
             cat_results.append(result[0].boxes.xyxy[i])
 
     return cat_results
