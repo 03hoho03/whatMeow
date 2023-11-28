@@ -49,7 +49,7 @@ async def get_main_result(
 ):
     decoded_dict = request.state.decoded_dict
     if decoded_dict:
-        return await search_utils.return_follow_posts(db, data.user_id, data.start * data.limit, data.limit)
+        return await search_utils.return_follow_posts(db, decoded_dict.get("id"), data.start * data.limit, data.limit)
     else:
         raise HTTPException(status.HTTP_403_FORBIDDEN, detail="There's no Token")
 
