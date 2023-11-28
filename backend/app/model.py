@@ -153,5 +153,5 @@ class RefreshToken(BaseMin, Base):
 class CatFeature(Base):
     __tablename__ = "catfeature"
 
-    cat_breed = Column(String(15))
+    cat_breed = Column(String(15), primary_key=True)
     feature = Column(String(255))
