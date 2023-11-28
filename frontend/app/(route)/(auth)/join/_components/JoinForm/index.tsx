@@ -1,16 +1,18 @@
 'use client'
-
 import React from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { useUserService } from '@/app/_services/userService'
-import Link from 'next/link'
+import { useAuthService } from '@/app/_services/authService'
 import style from './joinForm.module.css'
 import SubmitBtn from '@/app/_common/SubmitBtn'
+import { useMutation } from '@tanstack/react-query'
+import { useRouter } from 'next/navigation'
 
-interface JoinFormValue {
+interface JoinValue {
   email: string
   password: string
   nickname: string
+}
+interface JoinFormValue extends JoinValue {
   passwordConfirm: string
 }
 
@@ -21,9 +23,12 @@ function JoinForm() {
     formState: { isValid, errors },
     getValues,
   } = useForm<JoinFormValue>({ mode: 'onChange' })
-
-  const userService = useUserService()
-
+  const authService = useAuthService()
+  const { mutate } = useMutation({
+    mutationFn: ({ email, password, nickname }: JoinValue) =>
+      authService.register(email, password, nickname),
+  })
+  const route = useRouter()
   const fields = {
     email: register('email', {
       required: '이메일을 입력해주세요.',
@@ -63,18 +68,24 @@ function JoinForm() {
       maxLength: 12,
     }),
   }
-  const onHandleJoin: SubmitHandler<JoinFormValue> = async (data: any) => {
+  const onHandleJoin: SubmitHandler<JoinFormValue> = async (
+    data: JoinFormValue,
+  ) => {
     const { email, password, nickname } = data
-    await userService.join(email, password, nickname)
+    mutate(
+      { email, password, nickname },
+      {
+        onSuccess: () => {
+          route.push('/login')
+        },
+        onError: (error) => {
+          console.log(error)
+        },
+      },
+    )
   }
-  const onError = (errors: any) => console.log(errors)
   return (
     <div className={style.main_wrapper}>
-      <header>
-        <button type="button">
-          <Link href="/login">{'<'}</Link>
-        </button>
-      </header>
       <div className={style.form_explain_wrapper}>
         <h3 className={style.form_explain_title}>이메일 가입</h3>
         <p className={style.form_explain_detail}>
@@ -83,7 +94,7 @@ function JoinForm() {
       </div>
       <form
         className={style.input_container}
-        onSubmit={handleSubmit(onHandleJoin, onError)}
+        onSubmit={handleSubmit(onHandleJoin)}
       >
         <div className={style.outer}>
           <div className={style.inner}>
