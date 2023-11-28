@@ -15,7 +15,7 @@ async def get_feature_from_db(cat_breeds, db):
     to_return_lst = []
     for key, value in cat_breeds_dict.items():
         cat_row = db.query(model.CatFeature).filter_by(cat_breed=key).first()
-        to_return_lst.append({key: {"count": value, "feature": cat_row.feature}})
+        to_return_lst.append({"name": key, "count": value, "feature": cat_row.feature})
 
     return to_return_lst
 
