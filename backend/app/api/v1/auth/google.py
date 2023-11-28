@@ -19,7 +19,7 @@ def google():
     return RedirectResponse(url=redirect_url)
 
 
-@router.get("/google_login")
+@router.get("/google/callback")
 async def google_login(
     cookie_response: Response,
     code: str | None = None,

@@ -13,7 +13,7 @@ app = FastAPI()
 async def modify_enpoint(request: Request, call_next):
     if "/search/main" in request.scope["path"]:
         if not request.state.decoded_dict:
-            request.scope["path"] = str(request.url.path).replace("main", "test")
+            request.scope["path"] = str(request.url.path).replace("main", "nologined")
     if "/profile/" in request.scope["path"]:
         if not request.state.decoded_dict:
             request.scope["path"] = str(request.url.path).replace("profile", "notlogined")

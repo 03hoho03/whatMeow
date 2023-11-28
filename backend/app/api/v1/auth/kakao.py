@@ -20,7 +20,7 @@ def kakao():
     return RedirectResponse(url=redirect_url)
 
 
-@router.get("/kakao_login")
+@router.get("/kakao/callback")
 async def kakao_login(
     cookie_response: Response,
     code: str | None = None,
