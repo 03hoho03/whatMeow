@@ -34,7 +34,7 @@ async def predict_breed(file):
 async def extract_cat_from_image_file(image):
     cat_results = []
 
-    result = yolo_model.yolo_model.predict(image)
+    result = yolo_model.yolo_model.predict(image, conf=0.5)
     for i, cls in enumerate(result[0].boxes.cls):
         if int(cls) == 15:
             cat_results.append(result[0].boxes.xyxy[i])
