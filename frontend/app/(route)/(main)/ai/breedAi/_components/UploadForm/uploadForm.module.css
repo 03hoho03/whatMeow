@@ -1,0 +1,15 @@
+.uploadForm {
+  width: 100%;
+  max-width: 400px;
+  align-items: center;
+  padding: 0 8px;
+  margin-bottom: 12px;
+}
+.uploadForm > label {
+  margin-bottom: 16px;
+}
+.uploadForm > button {
+  background-color: orange;
+  border-radius: 16px;
+  width: 100%;
+}

@@ -1,0 +1,26 @@
+.aiResult {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  padding: 0 8px;
+}
+.resultContainer {
+  margin-bottom: 12px;
+}
+.resultContainer > span {
+  font-size: 16px;
+  font-weight: bold;
+  margin-right: 4px;
+}
+.catName {
+  color: red;
+}
+.featureBox {
+  display: flex;
+  flex-direction: column;
+}
+.featureBox > li {
+  margin-bottom: 8px;
+}
