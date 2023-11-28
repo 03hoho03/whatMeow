@@ -1,32 +1,87 @@
 import { useFetch } from '../_helpers/client/useFetch'
+import { BASE_URL } from '../_utils/constants'
 
-export { useUserService }
+export interface GetUserProfileResponse {
+  userId?: number
+  nickname: string
+  profileThumnail: string
+  postCount: number
+  explain: string
+  follow: Follow
+  cats: Cat[]
+  posts: Post[]
+  owner: boolean
+}
+interface Post {
+  postId: number
+  thumnail: string
+}
+interface Cat {
+  catName: string
+  catId: number
+  thumnail: string
+}
+interface Follow {
+  followerCount: number
+  followingCount: number
+  isFollowing: boolean
+}
+interface UserCatApiResponse {
+  cat: CatInfo
+}
+interface CatInfo {
+  name: string
+  id: number
+}
+interface UserService {
+  checkDuplicated: (nickname: string) => Promise<void>
+  updateUser: (file: FormData) => Promise<void>
+  getUserProfile: (nickname: string) => Promise<GetUserProfileResponse>
+  getUserCat: () => Promise<UserCatApiResponse[]>
+}
 
-function useUserService(): IUserService {
+function useUserService(): UserService {
   const fetch = useFetch()
+  const baseUrl = `${BASE_URL}/api/v1/user`
   return {
-    join: async (email, password, nickname) => {
-      const response = await fetch.post('/api/account/join', {
-        email,
-        password,
-        nickname,
-      })
+    checkDuplicated: async (nickname) => {
+      const response = await fetch.get(`${baseUrl}/duplicated`, { nickname })
+      if (!response.ok) {
+        throw new Error('오류가 발생하였습니다.')
+      }
+      return await response.json()
     },
-    login: async (email, password) => {
-      const response = await fetch.post('/api/account/login', {
-        email,
-        password,
+    updateUser: async (file) => {
+      const response = await fetch.put(`${baseUrl}/update`, file, undefined, {
+        credentials: 'include',
       })
-      return response.user.email
+      if (!response.ok) {
+        throw new Error('오류가 발생하였습니다.')
+      }
+      return await response.json()
     },
-    logout: async () => {
-      await fetch.get('/api/account/logout')
+    getUserProfile: async (nickname) => {
+      const response = await fetch.get(
+        `${baseUrl}/profile/${nickname}`,
+        null,
+        undefined,
+        { credentials: 'include' },
+      )
+      if (!response.ok) {
+        throw new Error('오류가 발생하였습니다.')
+      }
+      return await response.json()
+    },
+    getUserCat: async () => {
+      const response = await fetch.get(`${baseUrl}/cat`, null, undefined, {
+        credentials: 'include',
+      })
+      if (!response.ok) {
+        throw new Error('오류가 발생하였습니다.')
+      }
+      return await response.json()
     },
   }
 }
 
-interface IUserService {
-  join: (email: string, password: string, nickname: string) => Promise<void>
-  login: (username: string, password: string) => Promise<void>
-  logout: () => Promise<void>
-}
+export default useUserService
