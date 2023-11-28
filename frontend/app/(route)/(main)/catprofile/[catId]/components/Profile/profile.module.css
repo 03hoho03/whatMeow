@@ -1,0 +1,46 @@
+.profileContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+  margin-top: 64px;
+  margin-bottom: 12px;
+}
+.profileImgWrapper {
+  width: 150px;
+  height: 150px;
+  border: none;
+  border-radius: 9999px;
+  margin-bottom: 12px;
+}
+.ProfileImg {
+  width: 100%;
+  height: 100%;
+  border-radius: 9999px;
+  object-fit: cover;
+  background-color: black;
+}
+.catNameWrapper {
+  margin-bottom: 8px;
+}
+.catName {
+  font-size: 16px;
+}
+.catIntroduce{
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 300px;
+  height: 100px;
+  margin-bottom: 8px;
+}
+.EditBtn {
+  width: 100%;
+  max-width: 300px;
+  padding: 8px 12px;
+  background-color: #ccc;
+  border-radius: 8px;
+}
