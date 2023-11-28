@@ -10,13 +10,22 @@ from app import model
 
 
 async def return_hashtag_ids(db, name_lst):
+    hashtag_lst = []
     hashtag_id_lst = []
     for name in name_lst:
-        existing_hashtag = db.query(model.HashTag).filter_by(hashtag=name).first()
+        val = name.split(" ")
+        if len(val) == 1:
+            hashtag_lst.append(val)
+        else:
+            for v in val:
+                hashtag_lst.append(v)
+
+    for hashtag in hashtag_lst:
+        existing_hashtag = db.query(model.HashTag).filter_by(hashtag=hashtag).first()
         if existing_hashtag:
             hashtag_id = existing_hashtag.id
         else:
-            new_hashtag = model.HashTag(hashtag=name)
+            new_hashtag = model.HashTag(hashtag=hashtag)
             db.add(new_hashtag)
             db.commit()
             hashtag_id = new_hashtag.id
@@ -62,17 +71,20 @@ async def save_images(db, username, image_lst, row_id):
 async def post_delete(db, username, post_id):
     # DB에서 Post 관련 row 지우기
     post_row = db.query(model.Post).filter_by(id=post_id).first()
-    if post_row is None:
-        raise HTTPException(status_code=404, detail="Post Not Found.")
-    db.delete(post_row)
+    if username == post_row.post_owner.username:
+        if post_row is None:
+            raise HTTPException(status_code=404, detail="Post Not Found.")
+        db.delete(post_row)
 
-    # S3에서 객체 지우기
-    objects_to_del = settings.s3.list_objects(Bucket=settings.BUCKET_NAME, Prefix=f"{username}/{post_id}/")
-    if "Contents" in objects_to_del:
-        for obj in objects_to_del["Contents"]:
-            settings.s3.delete_object(Bucket=settings.BUCKET_NAME, Key=obj["Key"])
-    db.commit()
-    return True
+        # S3에서 객체 지우기
+        objects_to_del = settings.s3.list_objects(Bucket=settings.BUCKET_NAME, Prefix=f"{username}/{post_id}/")
+        if "Contents" in objects_to_del:
+            for obj in objects_to_del["Contents"]:
+                settings.s3.delete_object(Bucket=settings.BUCKET_NAME, Key=obj["Key"])
+        db.commit()
+        return True
+    else:
+        return False
 
 
 async def return_detailed_post(db, user_id, post_id):
@@ -104,6 +116,7 @@ async def return_detailed_post(db, user_id, post_id):
             "hashtags": [hashtag.hashtag for hashtag in post.hashtags],
             "comments": [
                 {
+                    "commentId": comment.id,
                     "comment": comment.comment,
                     "nickname": comment.comment_owner.nickname,
                     "thumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/thumnail/{comment.comment_owner.profile_image}",
