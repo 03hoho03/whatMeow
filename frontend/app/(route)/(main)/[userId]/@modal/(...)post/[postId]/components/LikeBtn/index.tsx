@@ -13,7 +13,7 @@ interface Like {
   isLike: boolean
 }
 interface MutateLikeVariables {
-  postId: string
+  postId: number
 }
 
 const LikeBtn = ({ postId }: LikeBtnProps) => {

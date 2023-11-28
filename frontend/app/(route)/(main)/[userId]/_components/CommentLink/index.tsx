@@ -4,7 +4,7 @@ import { AiOutlineComment } from 'react-icons/ai'
 import Link from 'next/link'
 
 interface CommentLinkProps {
-  postId: string
+  postId: number
 }
 
 const CommentLink = ({ postId }: CommentLinkProps) => {

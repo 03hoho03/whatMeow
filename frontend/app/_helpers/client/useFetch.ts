@@ -11,6 +11,7 @@ function useFetch() {
   function request(method: string) {
     return (
       url: string,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       body?: any,
       headers?: Record<string, string>,
       options?: RequestInit,

@@ -5,7 +5,6 @@ import { BASE_URL } from '../_utils/constants'
 
 export { useAuthService }
 
-interface LoginApiResponse {}
 interface AuthSerivce {
   register: (email: string, password: string, username: string) => Promise<void>
   login: (username: string, password: string) => Promise<void>

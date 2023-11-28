@@ -8,7 +8,7 @@ import BookmarkBtn from '../BookmarkBtn'
 import LikeCount from '../LikeCount'
 
 interface FeedBottomMenuProps {
-  postId: string
+  postId: number
   createdAt: Date
 }
 

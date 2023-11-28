@@ -7,7 +7,7 @@ interface FeedItem {
   images: string[]
   like: Like
   nickname: string
-  postId: string
+  postId: number
 }
 interface Like {
   count: number
