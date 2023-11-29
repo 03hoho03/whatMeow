@@ -69,16 +69,15 @@ async def logout(request: Request, response: Response, db: Session = Depends(get
     """
     decoded_dict = request.state.decoded_dict
     if decoded_dict:
-        row = db.query(model.RefreshToken).filter_by(user_id=decoded_dict.get("id")).first()
-        if row:
-            response = await auth_utils.set_cookie_expzero(response)
+        try:
+            row = db.query(model.RefreshToken).filter_by(user_id=decoded_dict.get("id")).first()
             db.delete(row)
             db.commit()
             response = JSONResponse(content=row.user_id)
-
+            response = await auth_utils.set_cookie_expzero(response)
             return response
-        else:
-            raise HTTPException(status_cod=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Item Not Found")
+        except Exception as e:
+            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f"An Error {e} occured")
     else:
         raise HTTPException(status.HTTP_403_FORBIDDEN, detail="There isn't token")
 
