@@ -1,6 +1,4 @@
-import { useSetRecoilState } from 'recoil'
 import { useFetch } from '../_helpers/client/useFetch'
-import { userAtom } from '../_store/atom/user'
 import { BASE_URL } from '../_utils/constants'
 
 export { useAuthService }
@@ -12,7 +10,6 @@ interface AuthSerivce {
 }
 
 function useAuthService(): AuthSerivce {
-  const setUser = useSetRecoilState(userAtom)
   const fetch = useFetch()
   const baseUrl = `${BASE_URL}/api/v1/auth`
   return {
@@ -53,15 +50,13 @@ function useAuthService(): AuthSerivce {
       return await response.json()
     },
     logout: async () => {
-      try {
-        await fetch.get('/api/account/logout')
-        setUser({
-          user: null,
-          isAuth: false,
-        })
-      } catch (error) {
-        console.log(error)
+      const response = await fetch.get(`${baseUrl}/logout`, null, undefined, {
+        credentials: 'include',
+      })
+      if (!response.ok) {
+        throw new Error('오류가 발생하였습니다.')
       }
+      return await response.json()
     },
   }
 }
