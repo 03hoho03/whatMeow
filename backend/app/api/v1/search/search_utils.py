@@ -85,14 +85,17 @@ async def return_follow_posts(db, user_id, start, limit):
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
 
-async def make_dict_from_recent_posts(latest_posts):
+async def make_dict_from_recent_posts(latest_posts, user_id, db):
     to_return_lst = []
     for post in latest_posts:
+        stat = False
+        if not user_id:
+            stat = await like_utils.is_like(post.id, user_id, db)
         to_return_lst.append(
             {
                 "nickname": post.post_owner.nickname,
                 "writerThumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/thumnail/{post.post_owner.profile_image}",
-                "like": {"count": len(post.likes), "isLike": False},
+                "like": {"count": len(post.likes), "isLike": stat},
                 "createdAt": post.created_at,
                 "content": post.title,
                 "postId": post.id,
@@ -106,7 +109,7 @@ async def make_dict_from_recent_posts(latest_posts):
     return to_return_lst
 
 
-async def return_recent_posts_without_login(db, start, limit):
+async def return_recent_posts_without_login(db, user_id, start, limit):
     try:
         post_row = (
             db.query(model.Post)
@@ -122,7 +125,7 @@ async def return_recent_posts_without_login(db, start, limit):
             .all()
         )
 
-        return await make_dict_from_recent_posts(post_row)
+        return await make_dict_from_recent_posts(post_row, user_id, db)
     except Exception as e:
         print(e)
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f"An Error {e} Occured")

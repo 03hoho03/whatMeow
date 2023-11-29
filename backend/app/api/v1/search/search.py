@@ -49,11 +49,8 @@ async def get_main_result(
 ):
     decoded_dict = request.state.decoded_dict
     if decoded_dict:
-        return await search_utils.return_follow_posts(db, decoded_dict.get("id"), data.start * data.limit, data.limit)
+        return await search_utils.return_follow_posts(
+            db, decoded_dict.get("id"), data.start * data.limit, (data.start * data.limit) + data.limit
+        )
     else:
         raise HTTPException(status.HTTP_403_FORBIDDEN, detail="There's no Token")
-
-
-@router.get("/nologined")
-async def post_test(start: int, limit: int, db: Session = Depends(get_db)):
-    return await search_utils.return_recent_posts_without_login(db, start, limit)

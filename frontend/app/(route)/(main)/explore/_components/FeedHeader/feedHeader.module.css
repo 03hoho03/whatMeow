@@ -1,0 +1,19 @@
+.header_wrapper {
+  display: flex;
+  padding: 12px;
+}
+.header_link {
+  display: inline-block;
+  margin-right: 8px;
+  font-size: 14px;
+}
+.writer_info_wrapper {
+  display: flex;
+  align-items: center;
+}
+.writer_info_img {
+  border-radius: 100%;
+  width: 25px;
+  height: 25px;
+  background-color: black;
+}

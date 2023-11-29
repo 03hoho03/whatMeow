@@ -11,12 +11,12 @@ app = FastAPI()
 
 @app.middleware("http")
 async def modify_enpoint(request: Request, call_next):
-    if "/search/main" in request.scope["path"]:
+    if "/user/profile/" in request.scope["path"]:
         if not request.state.decoded_dict:
-            request.scope["path"] = str(request.url.path).replace("main", "nologined")
-    if "/profile/" in request.scope["path"]:
+            request.scope["path"] = str(request.url.path).replace("/user/profile", "/guest/user")
+    if request.method == "GET" and "/api/v1/post" in request.scope["path"]:
         if not request.state.decoded_dict:
-            request.scope["path"] = str(request.url.path).replace("profile", "notlogined")
+            request.scope["path"] = str(request.url.path).replace("/api/v1/post", "/api/v1/guest/post")
     response = await call_next(request)
     return response
 
@@ -41,7 +41,7 @@ async def tag_ifLogined(request: Request, call_next):
 app.add_middleware(SessionMiddleware, secret_key="ff29aadd726675a2671da921a53d72e36ec043cdc80056f2f40e602107e6b0f7")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins={"*"},
+    allow_origins={"https://www.whatmeow.shop", "https://local.whatmeow.shop:3001"},
     allow_credentials=True,
     allow_methods={"OPTIONS", "GET", "POST"},
     allow_headers={"*"},

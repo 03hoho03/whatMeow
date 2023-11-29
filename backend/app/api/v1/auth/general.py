@@ -62,22 +62,22 @@ async def issue_token(response: Response, data: user_schema.LoginUser, db: Sessi
     raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Wrong Information")
 
 
-@router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
-async def logout(request: Request, db: Session = Depends(get_db)):
+@router.get("/logout", status_code=status.HTTP_204_NO_CONTENT)
+async def logout(request: Request, response: Response, db: Session = Depends(get_db)):
     """
-    refeshToken 보내줘야함
-    refresh_token을 db에서 삭제 -> 더 이상 access_token 갱신 불가
-    front 쪽에서도 access_token과 refresh_token 정보를 제거 후 로그인 화면으로 redirect해야함
+    로그인 화면으로 redirect해야함
     """
     decoded_dict = request.state.decoded_dict
     if decoded_dict:
-        row = db.query(model.RefreshToken).filter_by(user_id=decoded_dict.get("id")).first()
-        if row:
+        try:
+            row = db.query(model.RefreshToken).filter_by(user_id=decoded_dict.get("id")).first()
             db.delete(row)
             db.commit()
-            return row.user_id
-        else:
-            raise HTTPException(status_cod=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Item Not Found")
+            response = JSONResponse(content=row.user_id)
+            response = await auth_utils.set_cookie_expzero(response)
+            return response
+        except Exception as e:
+            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f"An Error {e} occured")
     else:
         raise HTTPException(status.HTTP_403_FORBIDDEN, detail="There isn't token")
 
