@@ -13,7 +13,11 @@ interface Like {
 const LikeCount = ({ postId }: LikeCountProps) => {
   const { data } = useQuery<Like>({ queryKey: ['like', postId] })
 
-  return <span className={style.likeCount}>{`좋아요 ${data?.count}개`}</span>
+  return (
+    <span className={style.likeCount}>{`좋아요 ${
+      data ? data.count : 0
+    }개`}</span>
+  )
 }
 
 export default LikeCount

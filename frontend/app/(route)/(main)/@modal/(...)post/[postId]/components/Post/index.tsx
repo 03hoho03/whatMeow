@@ -12,7 +12,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useFeedService } from '@/app/_services/feedService'
 
 interface PostProps {
-  postId: string
+  postId: number
 }
 
 const Post = ({ postId }: PostProps) => {
@@ -20,6 +20,7 @@ const Post = ({ postId }: PostProps) => {
   const { data, isFetching, isSuccess } = useQuery({
     queryKey: ['hydrate-postDetail', postId],
     queryFn: () => feedService.getPostDetail(postId),
+    staleTime: 0,
   })
 
   if (isFetching) return <p>...로딩중</p>

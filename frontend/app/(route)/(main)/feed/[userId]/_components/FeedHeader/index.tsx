@@ -4,19 +4,20 @@ import Link from 'next/link'
 
 interface FeedHeaderProps {
   nickname: string
+  writerThumnail: string
 }
-const FeedHeader = ({ nickname }: FeedHeaderProps) => {
+const FeedHeader = ({ nickname, writerThumnail }: FeedHeaderProps) => {
   return (
-    <section className={style.header_wrapper}>
-      <div className={style.writer_info_wrapper}>
-        <Link href={`/profile/${nickname}`} className={style.header_link}>
-          <div className={style.writer_info_img}></div>
+    <header className={style.headerContainer}>
+      <div className={style.headerWrapper}>
+        <Link href={`/profile/${nickname}`} className={style.headerProfileLink}>
+          <img src={writerThumnail} className={style.writerThumnailImg} />
         </Link>
-        <Link href={`/profile/${nickname}`} className={style.header_link}>
+        <Link href={`/profile/${nickname}`} className={style.headerProfileLink}>
           {nickname}
         </Link>
       </div>
-    </section>
+    </header>
   )
 }
 

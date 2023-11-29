@@ -43,9 +43,6 @@ const LikeBtn = ({ postId }: LikeBtnProps) => {
       }
       return { previousLike }
     },
-    onSuccess: (data) => {
-      console.log(data)
-    },
     onError: (
       error: Error,
       variables: MutateLikeVariables,
