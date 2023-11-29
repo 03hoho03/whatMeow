@@ -63,7 +63,7 @@ async def issue_token(response: Response, data: user_schema.LoginUser, db: Sessi
 
 
 @router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
-async def logout(request: Request, db: Session = Depends(get_db)):
+async def logout(request: Request, response: Response, db: Session = Depends(get_db)):
     """
     refeshToken 보내줘야함
     refresh_token을 db에서 삭제 -> 더 이상 access_token 갱신 불가
@@ -73,8 +73,11 @@ async def logout(request: Request, db: Session = Depends(get_db)):
     if decoded_dict:
         row = db.query(model.RefreshToken).filter_by(user_id=decoded_dict.get("id")).first()
         if row:
+            response = await auth_utils.set_cookie_expzero(response)
             db.delete(row)
             db.commit()
+            response = JSONResponse(content=row.user_id)
+
             return row.user_id
         else:
             raise HTTPException(status_cod=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Item Not Found")
