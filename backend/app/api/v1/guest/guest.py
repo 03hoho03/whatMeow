@@ -1,4 +1,4 @@
-from fastapi import Depends, APIRouter, status
+from fastapi import Depends, APIRouter, status, Request
 
 from sqlalchemy.orm.session import Session
 
@@ -17,8 +17,14 @@ async def post_detail(data: post_schema.PostDetail = Depends(), db: Session = De
 
 
 @router.get("/search")
-async def post_test(start: int, limit: int, db: Session = Depends(get_db)):
-    return await search_utils.return_recent_posts_without_login(db, start * limit, (start * limit) + limit)
+async def post_test(request: Request, start: int, limit: int, db: Session = Depends(get_db)):
+    decoded_dict = request.state.decoded_dict
+    if decoded_dict:
+        return await search_utils.return_recent_posts_without_login(
+            db, decoded_dict.get("id"), start * limit, (start * limit) + limit
+        )
+    else:
+        return await search_utils.return_recent_posts_without_login(db, 0, start * limit, (start * limit) + limit)
 
 
 @router.get("/user/{nickname}", status_code=status.HTTP_200_OK)
