@@ -16,7 +16,12 @@ const UploadForm = () => {
   const setLoginModal = useSetRecoilState(loginModalState)
   const aiService = useAiService()
   const queryClient = useQueryClient()
-  const { register, handleSubmit } = useForm<BreedAiSubmitFormReturn>()
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm<BreedAiSubmitFormReturn>()
 
   const { mutate } = useMutation<BreedAiApiResponse, Error, FormData>({
     mutationFn: (formData) => aiService.breedAi(formData),
@@ -33,8 +38,14 @@ const UploadForm = () => {
         queryClient.setQueryData(['breedAi'], data)
         queryClient.invalidateQueries({ queryKey: ['breedAi'] })
       },
-      onError: () => {
-        setLoginModal(true)
+      onError: (error) => {
+        if (error.cause === 403 || error.cause === 401) {
+          setLoginModal(true)
+        } else if (error.cause === 422) {
+          setError('root', {
+            message: '고양이가 감지되지 않습니다. 다른 사진을 넣어주세요.',
+          })
+        }
       },
     })
   }
@@ -46,6 +57,7 @@ const UploadForm = () => {
     >
       <ImageUpload register={register('file', { required: true })} />
       <button type="submit">묘종 알아보기</button>
+      <p className={style.errorMessage}>{errors?.root?.message}</p>
     </form>
   )
 }

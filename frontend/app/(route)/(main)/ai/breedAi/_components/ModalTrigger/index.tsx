@@ -1,10 +1,10 @@
 'use client'
 import React, { useEffect } from 'react'
-import LoginModal from '../LoginModal'
 import { useBodyScrollLock } from '@/app/_hooks/useBodyScrollLock'
-import LoginModalContent from '@/app/_common/LoginModalContent'
 import { useRecoilState } from 'recoil'
 import loginModalState from '@/app/_store/atom/loginModalState'
+import Modal from '@/app/_common/Modal'
+import ModalContent from '../ModalContent'
 
 const ModalTrigger = () => {
   const [showModal, setShowModal] = useRecoilState<boolean>(loginModalState)
@@ -24,9 +24,9 @@ const ModalTrigger = () => {
   return (
     <>
       {showModal && (
-        <LoginModal handleShowModal={handleShowModal}>
-          <LoginModalContent />
-        </LoginModal>
+        <Modal handleShowModal={handleShowModal}>
+          <ModalContent />
+        </Modal>
       )}
     </>
   )
