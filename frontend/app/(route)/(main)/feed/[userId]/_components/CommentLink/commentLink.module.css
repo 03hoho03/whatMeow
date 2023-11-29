@@ -1,0 +1,10 @@
+.menuBtn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 8px;
+  padding: 0;
+}
+.iconBtn {
+  stroke-width: 0.8px !important;
+}
