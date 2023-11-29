@@ -1,12 +1,10 @@
 'use client'
 import React from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faHouse,
-  faClipboard,
-  faMagnifyingGlass,
-} from '@fortawesome/free-solid-svg-icons'
-import { faBell, faUser } from '@fortawesome/free-regular-svg-icons'
+import { AiFillHome } from 'react-icons/ai'
+import { FaClipboardCheck } from 'react-icons/fa'
+import { FaSearch } from 'react-icons/fa'
+import { FaBell } from 'react-icons/fa'
+import { FaUser } from 'react-icons/fa'
 import Link from 'next/link'
 import style from './bottomMenu.module.css'
 import { userAtom } from '@/app/_store/atom/user'
@@ -16,40 +14,30 @@ const BottomMenu = () => {
   const { user, isAuth } = useRecoilValue(userAtom)
 
   return isAuth ? (
-    <div className={style.main_wrapper}>
+    <section className={style.bottomMenuContainer}>
       <div className={style.util_wrapper}>
         <Link href="/" className={style.link}>
-          <button type="button" className={style.button}>
-            <FontAwesomeIcon icon={faHouse} className={style.icon} />
-            <span>메인</span>
-          </button>
+          <AiFillHome className={style.icon} />
+          <span>메인</span>
         </Link>
-        <Link href={`/${user.nickname}`} className={style.link}>
-          <button type="button" className={style.button}>
-            <FontAwesomeIcon icon={faClipboard} className={style.icon} />
-            <span>피드</span>
-          </button>
+        <Link href={`/feed/${user.nickname}`} className={style.link}>
+          <FaClipboardCheck className={style.icon} />
+          <span>피드</span>
         </Link>
         <Link href="/search" className={style.link}>
-          <button type="button" className={style.button}>
-            <FontAwesomeIcon icon={faMagnifyingGlass} className={style.icon} />
-            <span>검색</span>
-          </button>
+          <FaSearch className={style.icon} />
+          <span>검색</span>
         </Link>
         <Link href={`/alarm/${user.nickname}`} className={style.link}>
-          <button type="button" className={style.button}>
-            <FontAwesomeIcon icon={faBell} className={style.icon} />
-            <span>알림</span>
-          </button>
+          <FaBell className={style.icon} />
+          <span>알림</span>
         </Link>
         <Link href={`/profile/${user.nickname}`} className={style.link}>
-          <button type="button" className={style.button}>
-            <FontAwesomeIcon icon={faUser} className={style.icon} />
-            <span>내 정보</span>
-          </button>
+          <FaUser className={style.icon} />
+          <span>내 정보</span>
         </Link>
       </div>
-    </div>
+    </section>
   ) : (
     <></>
   )
