@@ -8,7 +8,7 @@ from app.api.v1.user import user_utils
 from app.api.v1.search import search_utils
 from app.api.v1.post import post_utils
 
-router = APIRouter(tasg=["Guest"])
+router = APIRouter(tags=["Guest"])
 
 
 @router.get("/post/{post_id}")
