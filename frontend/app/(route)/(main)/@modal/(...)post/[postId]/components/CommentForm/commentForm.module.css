@@ -6,7 +6,7 @@
   display: flex;
 }
 .commentInputContainer > input {
-  flex:1 0 auto;
+  flex:1 1 auto;
   border: none;
   padding: 0 8px;
   outline: none;
