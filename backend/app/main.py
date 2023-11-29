@@ -41,7 +41,7 @@ async def tag_ifLogined(request: Request, call_next):
 app.add_middleware(SessionMiddleware, secret_key="ff29aadd726675a2671da921a53d72e36ec043cdc80056f2f40e602107e6b0f7")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins={"*"},
+    allow_origins={"https://wwww.whatmeow.shop", "https://local.whatmeow.shop:3001"},
     allow_credentials=True,
     allow_methods={"OPTIONS", "GET", "POST"},
     allow_headers={"*"},
