@@ -23,7 +23,9 @@ function useAiService(): UseAiService {
         credentials: 'include',
       })
       if (!response.ok) {
-        throw new Error('오류가 발생하였습니다.')
+        const error = new Error('오류가 발생하였습니다.')
+        error.cause = response.status
+        throw error
       }
       return await response.json()
     },

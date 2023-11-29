@@ -28,7 +28,7 @@ const Result = () => {
       <ul className={style.featureBox}>
         {data &&
           data.map((cat, idx) => (
-            <li key={idx}>{`${cat.name}는 ${cat.feature}`}</li>
+            <li key={idx}>{`${cat.name}은(는) ${cat.feature}`}</li>
           ))}
       </ul>
     </div>
