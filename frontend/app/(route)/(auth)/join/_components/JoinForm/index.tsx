@@ -6,6 +6,8 @@ import style from './joinForm.module.css'
 import SubmitBtn from '@/app/_common/SubmitBtn'
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
+import { useSetRecoilState } from 'recoil'
+import loginModalState from '@/app/_store/atom/loginModalState'
 
 interface JoinValue {
   email: string
@@ -17,18 +19,20 @@ interface JoinFormValue extends JoinValue {
 }
 
 function JoinForm() {
+  const authService = useAuthService()
+  const route = useRouter()
+  const setLoginModal = useSetRecoilState(loginModalState)
   const {
     register,
     handleSubmit,
     formState: { isValid, errors },
     getValues,
   } = useForm<JoinFormValue>({ mode: 'onChange' })
-  const authService = useAuthService()
   const { mutate } = useMutation({
     mutationFn: ({ email, password, nickname }: JoinValue) =>
       authService.register(email, password, nickname),
   })
-  const route = useRouter()
+
   const fields = {
     email: register('email', {
       required: '이메일을 입력해주세요.',
@@ -79,6 +83,7 @@ function JoinForm() {
           route.push('/login')
         },
         onError: (error) => {
+          setLoginModal(true)
           console.log(error)
         },
       },

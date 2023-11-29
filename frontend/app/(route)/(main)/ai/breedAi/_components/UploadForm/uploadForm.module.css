@@ -13,3 +13,8 @@
   border-radius: 16px;
   width: 100%;
 }
+.errorMessage {
+  margin-top: 8px;
+  font-size: 12px;
+  color: red;
+}

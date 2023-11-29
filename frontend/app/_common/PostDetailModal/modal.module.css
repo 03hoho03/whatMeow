@@ -14,7 +14,15 @@
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  width:240px;
+  width:340px;
   position: relative;
   max-height: calc(100% - 40px);
+}
+
+@media (min-width:736px) {
+  .modal {
+    /* max-width: calc(100% - 300px); */
+    width: 80%;
+    height: 60%;
+  }
 }

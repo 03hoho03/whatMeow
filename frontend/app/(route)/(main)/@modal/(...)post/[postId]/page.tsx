@@ -1,4 +1,4 @@
-import Modal from '@/app/_common/Modal'
+import Modal from '@/app/_common/PostDetailModal'
 import React from 'react'
 import Post from './components/Post'
 import { BASE_URL } from '@/app/_utils/constants'

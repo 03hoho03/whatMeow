@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import { useBodyScrollLock } from '@/app/_hooks/useBodyScrollLock'
 import { useRecoilState } from 'recoil'
 import loginModalState from '@/app/_store/atom/loginModalState'
-import Modal from '@/app/_common/Modal'
+import Modal from '../../../../../_common/Modal'
 import ModalContent from '../ModalContent'
 
 const ModalTrigger = () => {
@@ -24,8 +24,8 @@ const ModalTrigger = () => {
   return (
     <>
       {showModal && (
-        <Modal handleShowModal={handleShowModal}>
-          <ModalContent />
+        <Modal>
+          <ModalContent handleShowModal={handleShowModal} />
         </Modal>
       )}
     </>
