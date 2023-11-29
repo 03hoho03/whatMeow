@@ -1,5 +1,9 @@
-.main_wrapper {
+.bottomMenuContainer {
   width: 100%;
+  height: 64px;
+  position: fixed;
+  z-index: 100;
+  bottom: 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -9,24 +13,22 @@
   display: flex;
   width: 100%;
   max-width: 700px;
-  position: fixed;
-  z-index: 100;
-  bottom: 0;
   margin: auto;
 }
 .link {
-  flex: 1;
+  flex: 1 0 50px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
+  color:#ff5757;
+  height: 50px;
 }
 .button {
   display: flex;
   flex-direction: column;
   padding: 4px 0;
-  align-items: center;
-  color: #999999;
-  color:#ff5757;
+  
 }
 .icon {
   width: 24px;
