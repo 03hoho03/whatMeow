@@ -1,7 +1,5 @@
-import React from 'react'
-
 const index = () => {
-  return <></>
+  return null
 }
 
 export default index

@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useEffect } from 'react'
 import style from './post.module.css'
 import PostMedia from '../PostMedia'
 import LikeBtn from '../LikeBtn'
@@ -8,7 +8,7 @@ import LikeCount from '../LikeCount'
 import CommentForm from '../CommentForm'
 import WriterInfoHeader from '../WriterInfoHeader'
 import PostContent from '../PostContent'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useFeedService } from '@/app/_services/feedService'
 
 interface PostProps {
@@ -17,11 +17,15 @@ interface PostProps {
 
 const Post = ({ postId }: PostProps) => {
   const feedService = useFeedService()
-  const { data, isFetching, isSuccess } = useQuery({
+  const queryClient = useQueryClient()
+  const { data, isFetching, isSuccess, isFetched } = useQuery({
     queryKey: ['hydrate-postDetail', postId],
     queryFn: () => feedService.getPostDetail(postId),
-    staleTime: 0,
   })
+
+  useEffect(() => {
+    queryClient.setQueryData(['like', postId], data?.like)
+  }, [isFetched])
 
   if (isFetching) return <p>...로딩중</p>
   if (isSuccess) {

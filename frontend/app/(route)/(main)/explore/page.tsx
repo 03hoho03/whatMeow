@@ -20,6 +20,7 @@ const getAllList = async (page = 0, limit = 3): Promise<FeedItem> => {
   })
   const response = await fetch(`${BASE_URL}/api/v1/guest/search?` + param, {
     credentials: 'include',
+    cache: 'no-store',
     headers: {
       Cookie: `accessToken=${accessToken}`,
     },

@@ -1,14 +1,7 @@
 .postContentContainer {
   display: block;
   margin-bottom: 8px;
-  height: 70px;
   padding: 8px;
-  overflow-y: auto;
-  -ms-overflow-style: none; /* 인터넷 익스플로러 */
-  scrollbar-width: none; /* 파이어폭스 */
-}
-.postContentContainer::-webkit-scrollbar {
-  display: none;
 }
 .postContent {
   margin-bottom: 8px;
@@ -23,8 +16,14 @@
   text-decoration: underline;
 }
 
-@media (min-width:736px) {
+@media (min-width:600px) {
   .postContentContainer {
     flex: 1 1 auto;
+    overflow-y: auto;
+    -ms-overflow-style: none; /* 인터넷 익스플로러 */
+    scrollbar-width: none; /* 파이어폭스 */
+  }
+  .postContentContainer::-webkit-scrollbar {
+    display: none;
   }
 }

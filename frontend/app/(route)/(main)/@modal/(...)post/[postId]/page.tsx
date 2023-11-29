@@ -12,7 +12,7 @@ const getCookie = async (key: string) => {
   return cookies().get(key)?.value ?? ''
 }
 const getPostDetail = async (
-  post_id: string,
+  post_id: number,
 ): Promise<PostDetailApiResponse> => {
   const accessToken = await getCookie('accessToken')
   const Url = `${BASE_URL}/api/v1/post/${post_id}`
@@ -20,9 +20,7 @@ const getPostDetail = async (
   const response = await fetch(Url, {
     method: 'GET',
     credentials: 'include',
-    next: {
-      revalidate: 30,
-    },
+    cache: 'no-store',
     headers: {
       Cookie: `accessToken=${accessToken}`,
     },
@@ -30,22 +28,24 @@ const getPostDetail = async (
   if (!response.ok) {
     throw new Error('오류가 발생하였습니다.')
   }
-  console.log(response.status)
-  return await response.json()
+  const data = await response.json()
+  console.log(data)
+  return data
 }
 
 const page = async ({ params }: { params: { postId: string } }) => {
+  const intPostId = parseInt(params.postId)
   const queryClient = getQueryClient()
   await queryClient.prefetchQuery({
-    queryKey: ['hydrate-postDetail', params.postId],
-    queryFn: () => getPostDetail(params.postId),
+    queryKey: ['hydrate-postDetail', intPostId],
+    queryFn: () => getPostDetail(intPostId),
   })
   const dehydratedState = dehydrate(queryClient)
 
   return (
     <Hydrate state={dehydratedState}>
-      <Modal visible={true}>
-        <Post postId={params.postId} />
+      <Modal>
+        <Post postId={intPostId} />
       </Modal>
     </Hydrate>
   )

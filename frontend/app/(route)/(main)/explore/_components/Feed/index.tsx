@@ -12,6 +12,7 @@ interface FeedItem {
   images: string[]
   like: Like
   nickname: string
+  writerThumnail: string
   postId: number
 }
 interface Like {
@@ -24,14 +25,14 @@ interface FeedProps {
 }
 
 const Feed = ({
-  feed: { nickname, images, createdAt, like, postId },
+  feed: { nickname, images, createdAt, like, postId, writerThumnail },
 }: FeedProps) => {
   const queryClient = useQueryClient()
   queryClient.setQueryData(['like', postId], like)
 
   return (
     <li className={style.main_wrapper}>
-      <FeedHeader nickname={nickname} />
+      <FeedHeader writerThumnail={writerThumnail} nickname={nickname} />
       <FeedBody images={images} />
       <FeedBottomMenu createdAt={createdAt} postId={postId} />
     </li>

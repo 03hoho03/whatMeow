@@ -1,0 +1,11 @@
+.postDetailPageContainer {
+  width: 100%;
+  margin-top: 44px;
+  margin-bottom: 64px;
+}
+
+@media (min-width:1001px) {
+  .postDetailPageContainer {
+    margin-top: 64px;
+  }
+}
