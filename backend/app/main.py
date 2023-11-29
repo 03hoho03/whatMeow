@@ -11,9 +11,12 @@ app = FastAPI()
 
 @app.middleware("http")
 async def modify_enpoint(request: Request, call_next):
-    if "/profile/" in request.scope["path"]:
+    if "/user/profile/" in request.scope["path"]:
         if not request.state.decoded_dict:
-            request.scope["path"] = str(request.url.path).replace("profile", "guest")
+            request.scope["path"] = str(request.url.path).replace("/user/profile", "/guest/user")
+    if request.method == "GET" and "/api/v1/post" in request.scope["path"]:
+        if not request.state.decoded_dict:
+            request.scope["path"] = str(request.url.path).replace("/api/v1/post", "/api/v1/guest/post")
     response = await call_next(request)
     return response
 

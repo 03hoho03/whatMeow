@@ -54,8 +54,3 @@ async def get_main_result(
         )
     else:
         raise HTTPException(status.HTTP_403_FORBIDDEN, detail="There's no Token")
-
-
-@router.get("/guest")
-async def post_test(start: int, limit: int, db: Session = Depends(get_db)):
-    return await search_utils.return_recent_posts_without_login(db, start * limit, (start * limit) + limit)

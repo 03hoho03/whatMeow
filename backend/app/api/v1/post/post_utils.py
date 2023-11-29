@@ -101,7 +101,9 @@ async def return_detailed_post(db, user_id, post_id):
             .filter_by(id=post_id)
             .first()
         )
-        stat = await like_utils.is_like(post.id, user_id, db)
+        stat = False
+        if not user_id:
+            stat = await like_utils.is_like(post.id, user_id, db)
 
         to_return = {
             "nickname": post.post_owner.nickname,
