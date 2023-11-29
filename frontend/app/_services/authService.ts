@@ -7,6 +7,7 @@ interface AuthSerivce {
   register: (email: string, password: string, username: string) => Promise<void>
   login: (username: string, password: string) => Promise<void>
   logout: () => Promise<void>
+  kakao: () => Promise<void>
 }
 
 function useAuthService(): AuthSerivce {
@@ -57,6 +58,13 @@ function useAuthService(): AuthSerivce {
         throw new Error('오류가 발생하였습니다.')
       }
       return await response.json()
+    },
+    kakao: async () => {
+      const response = await fetch.get(`${baseUrl}/kakao`, null, undefined, {
+        credentials: 'include',
+      })
+      const data = await response.json()
+      return data
     },
   }
 }
