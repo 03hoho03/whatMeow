@@ -1,0 +1,29 @@
+.postContentContainer {
+  display: block;
+  margin-bottom: 8px;
+  padding: 8px;
+}
+.postContent {
+  margin-bottom: 8px;
+}
+.hashtagList {
+  margin-bottom: 8px;
+}
+.hashtag {
+  margin-right: 4px;
+}
+.hashtag:hover {
+  text-decoration: underline;
+}
+
+@media (min-width:600px) {
+  .postContentContainer {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    -ms-overflow-style: none; /* 인터넷 익스플로러 */
+    scrollbar-width: none; /* 파이어폭스 */
+  }
+  .postContentContainer::-webkit-scrollbar {
+    display: none;
+  }
+}

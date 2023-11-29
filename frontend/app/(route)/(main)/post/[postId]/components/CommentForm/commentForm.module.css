@@ -1,0 +1,27 @@
+.commentForm {
+  padding: 12px 0;
+  border-top: 1px solid #ccc;
+}
+.commentInputContainer {
+  display: flex;
+}
+.commentInputContainer > input {
+  flex:1 0 auto;
+  border: none;
+  padding: 0 8px;
+  outline: none;
+}
+.commentInputContainer > button {
+  font-size: 12px;
+  background-color: orange;
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
+@media (min-width:400px) {
+  .commentForm {
+    padding: 0;
+    padding-top: 12px;
+  }
+
+}
