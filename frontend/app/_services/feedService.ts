@@ -28,7 +28,7 @@ interface FeedService {
   upload: (form: FormData) => Promise<void>
   registComment: (comment: string) => Promise<void>
   updateLike: (feedId: number) => Promise<Like>
-  getPostDetail: (postId: string) => Promise<PostDetailApiResponse>
+  getPostDetail: (postId: number) => Promise<PostDetailApiResponse>
 }
 
 function useFeedService(): FeedService {
