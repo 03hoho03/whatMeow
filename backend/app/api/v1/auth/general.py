@@ -62,12 +62,10 @@ async def issue_token(response: Response, data: user_schema.LoginUser, db: Sessi
     raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Wrong Information")
 
 
-@router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
+@router.get("/logout", status_code=status.HTTP_204_NO_CONTENT)
 async def logout(request: Request, response: Response, db: Session = Depends(get_db)):
     """
-    refeshToken 보내줘야함
-    refresh_token을 db에서 삭제 -> 더 이상 access_token 갱신 불가
-    front 쪽에서도 access_token과 refresh_token 정보를 제거 후 로그인 화면으로 redirect해야함
+    메인 화면으로 redirect해야함
     """
     decoded_dict = request.state.decoded_dict
     if decoded_dict:
@@ -78,7 +76,7 @@ async def logout(request: Request, response: Response, db: Session = Depends(get
             db.commit()
             response = JSONResponse(content=row.user_id)
 
-            return row.user_id
+            return response
         else:
             raise HTTPException(status_cod=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Item Not Found")
     else:
