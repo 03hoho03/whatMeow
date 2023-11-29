@@ -41,7 +41,7 @@ async def set_cookie_expzero(response):
         value="logout",
         httponly=True,
         secure=True,
-        expires=datetime(second=0),
+        expires=datetime.utcnow() + timedelta(seconds=1),
     )
 
     response.set_cookie(
@@ -51,7 +51,7 @@ async def set_cookie_expzero(response):
         value="logout",
         httponly=True,
         secure=True,
-        expires=datetime(second=0),
+        expires=datetime.utcnow() + timedelta(seconds=1),
     )
     return response
 

@@ -65,7 +65,7 @@ async def issue_token(response: Response, data: user_schema.LoginUser, db: Sessi
 @router.get("/logout", status_code=status.HTTP_204_NO_CONTENT)
 async def logout(request: Request, response: Response, db: Session = Depends(get_db)):
     """
-    메인 화면으로 redirect해야함
+    로그인 화면으로 redirect해야함
     """
     decoded_dict = request.state.decoded_dict
     if decoded_dict:
