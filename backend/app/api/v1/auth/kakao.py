@@ -1,6 +1,6 @@
 from datetime import timedelta
 from fastapi import Depends, APIRouter, HTTPException, status, Response
-from fastapi.responses import RedirectResponse, JSONResponse
+from fastapi.responses import RedirectResponse
 import httpx
 from sqlalchemy.orm.session import Session
 from sqlalchemy.exc import IntegrityError
@@ -60,10 +60,16 @@ async def kakao_login(
         result = result.json()
         _property = result.get("properties")
         _profile = result.get("kakao_account")
-        db_user_info = auth_utils.get_username(db, "kakao_" + str(result.get("id")))
+        db_user_info = db.query(model.User).filter_by(kakao_id=result.get("id")).first()
 
         if db_user_info:
-            return await auth_utils.social_create_access_token(db_user_info, db, exp=timedelta(minutes=720))
+            token_info = await auth_utils.social_create_access_token(db_user_info, db, exp=timedelta(minutes=720))
+            user_info = token_info.get("user")
+            _nickname = user_info.get("nickname")
+            cookie_response = RedirectResponse(url=f"https://www.whatmeow.shop/?nickname={_nickname}")
+            cookie_response = await auth_utils.set_cookie_response(cookie_response, token_info)
+
+            return cookie_response
         else:
             # 유저 정보가 존재하지 않는다면?
             # 유저 정보 저장
@@ -81,6 +87,7 @@ async def kakao_login(
                 user_row = model.User(
                     **{
                         "name": _property.get("nickname"),
+                        "kakao_id": result.get("id"),
                         "email": _profile.get("email", None),
                         "gender": _profile.get("gender", None),
                         "profile_image": url,
@@ -94,7 +101,7 @@ async def kakao_login(
 
                 user = db.query(model.User).filter(model.User.nickname == user_row.nickname).first()
                 token_info = await auth_utils.social_create_access_token(user, db, exp=timedelta(minutes=720))
-                cookie_response = JSONResponse(content=token_info.get("user"))
+                cookie_response = RedirectResponse(url=f"https://www.whatmeow.shop/?nickname={nickname}")
                 cookie_response = await auth_utils.set_cookie_response(cookie_response, token_info)
 
                 return cookie_response

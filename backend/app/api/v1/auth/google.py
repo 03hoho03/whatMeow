@@ -1,6 +1,6 @@
 from datetime import timedelta
 from fastapi import Depends, APIRouter, HTTPException, status, Response
-from fastapi.responses import RedirectResponse, JSONResponse
+from fastapi.responses import RedirectResponse
 import httpx
 from sqlalchemy.orm.session import Session
 from sqlalchemy.exc import IntegrityError
@@ -48,10 +48,16 @@ async def google_login(
             url=f"https://oauth2.googleapis.com/tokeninfo?id_token={id_token}",
         )
         result = result.json()
-        db_user_info = auth_utils.get_username(db, str(result.get("email")))
+        db_user_info = db.query(model.User).filter_by(email=result.get("email")).first()
 
         if db_user_info:
-            return await auth_utils.social_create_access_token(db_user_info, db, exp=timedelta(minutes=720))
+            token_info = await auth_utils.social_create_access_token(db_user_info, db, exp=timedelta(minutes=720))
+            user_info = token_info.get("user")
+            _nickname = user_info.get("nickname")
+            cookie_response = RedirectResponse(url=f"https://www.whatmeow.shop/?nickname={_nickname}")
+            cookie_response = await auth_utils.set_cookie_response(cookie_response, token_info)
+
+            return cookie_response
         else:
             # 유저 정보가 존재하지 않는다면?
             # 유저 정보 저장
@@ -59,7 +65,7 @@ async def google_login(
                 nickname = await auth_utils.get_random_nickname(db)
                 username = await auth_utils.get_random_username(db)
                 try:
-                    url = await auth_utils.upload_default_image("images/default.jpg", username)
+                    url = await auth_utils.upload_default_image(username)
                 except Exception as e:
                     print(e)
                     raise HTTPException(
@@ -81,7 +87,7 @@ async def google_login(
 
                 user = db.query(model.User).filter(model.User.nickname == user_row.nickname).first()
                 token_info = await auth_utils.social_create_access_token(user, db, exp=timedelta(minutes=720))
-                cookie_response = JSONResponse(content=token_info.get("user"))
+                cookie_response = RedirectResponse(url=f"https://www.whatmeow.shop/?nickname={nickname}")
                 cookie_response = await auth_utils.set_cookie_response(cookie_response, token_info)
 
                 return cookie_response
