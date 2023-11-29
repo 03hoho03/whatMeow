@@ -2,9 +2,9 @@
 import React, { useRef } from 'react'
 import Feed from '../Feed'
 import { useInfiniteQuery } from '@tanstack/react-query'
+import useSearchService from '@/app/_services/searchService'
 import { useObserver } from '@/app/_hooks/useUserObserver'
 import { FEED_SIZE } from '@/app/_utils/constants'
-import useGuestService from '@/app/_services/guestService'
 
 interface FeedItem {
   createdAt: Date
@@ -21,13 +21,13 @@ interface Like {
 }
 
 const FeedList = () => {
-  const guestService = useGuestService()
+  const searchService = useSearchService()
   const bottom = useRef<HTMLDivElement | null>(null)
   const { data, error, status, fetchNextPage, isFetchingNextPage } =
     useInfiniteQuery({
       queryKey: ['hydrate-feeds'],
       queryFn: ({ pageParam }) =>
-        guestService.getRecentList(pageParam, FEED_SIZE),
+        searchService.getFeedList(pageParam, FEED_SIZE),
       initialPageParam: 0,
       getNextPageParam: (lastPage, allPages) => {
         if (lastPage.length < FEED_SIZE) {

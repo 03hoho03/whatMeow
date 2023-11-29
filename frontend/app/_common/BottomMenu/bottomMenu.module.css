@@ -35,7 +35,7 @@
   height: 24px;
 }
 @media (min-width:1001px) {
-  .main_wrapper {
+  .bottomMenuContainer {
     display: none;
   }
 }

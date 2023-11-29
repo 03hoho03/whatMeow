@@ -20,6 +20,7 @@ const getAllList = async (page = 0, limit = 3): Promise<FeedItem> => {
   })
   const response = await fetch(`${BASE_URL}/api/v1/search/main?` + param, {
     credentials: 'include',
+    cache: 'no-store',
     headers: {
       Cookie: `accessToken=${accessToken}`,
     },
@@ -32,7 +33,6 @@ const getAllList = async (page = 0, limit = 3): Promise<FeedItem> => {
           createdAt: new Date(feed.createdAt),
         }
       })
-      console.log(result)
       return result
     })
   return response

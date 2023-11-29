@@ -1,0 +1,23 @@
+.menuBtn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 8px;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+}
+.btnIcon {
+  width: 100%;
+  height: 100%;
+  stroke-width: 0.8px !important;
+}
+.likeBtn {
+  transition: all 0.25s ease-in-out;
+}
+.likeBtn:hover {
+  color: red;
+}
+.likeBtnActive {
+  color:red;
+}

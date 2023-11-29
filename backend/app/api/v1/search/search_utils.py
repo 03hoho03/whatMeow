@@ -89,7 +89,7 @@ async def make_dict_from_recent_posts(latest_posts, user_id, db):
     to_return_lst = []
     for post in latest_posts:
         stat = False
-        if not user_id:
+        if user_id:
             stat = await like_utils.is_like(post.id, user_id, db)
         to_return_lst.append(
             {
