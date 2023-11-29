@@ -102,7 +102,7 @@ async def return_detailed_post(db, user_id, post_id):
             .first()
         )
         stat = False
-        if not user_id:
+        if user_id:
             stat = await like_utils.is_like(post.id, user_id, db)
 
         to_return = {
