@@ -4,6 +4,7 @@ import SocialLoginMenu from '@/app/(route)/(auth)/login/_components/SocialLoginM
 import React from 'react'
 import style from './loginPage.module.css'
 import PageBackLink from './_components/PageBackLink'
+import ModalTrigger from './_components/ModalTrigger'
 
 function LoginPage() {
   return (
@@ -15,6 +16,7 @@ function LoginPage() {
       <LoginForm />
       <LoginSubMenu />
       <SocialLoginMenu />
+      <ModalTrigger />
     </div>
   )
 }

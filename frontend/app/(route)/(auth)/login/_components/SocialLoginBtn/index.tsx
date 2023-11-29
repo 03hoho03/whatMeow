@@ -5,6 +5,7 @@ import cn from 'classnames'
 import style from './socialLoginBtn.module.css'
 import { RiKakaoTalkFill } from 'react-icons/ri'
 import { FcGoogle } from 'react-icons/fc'
+import { BASE_URL } from '@/app/_utils/constants'
 
 interface SocialProps {
   type: string
@@ -13,7 +14,7 @@ const SocialLoginBtn = ({ type }: SocialProps) => {
   return (
     <form
       method="GET"
-      action={`/api/account/login/social/${type}`}
+      action={`${BASE_URL}/api/v1/auth/${type}`}
       className={style.social_form}
     >
       <button

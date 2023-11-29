@@ -1,5 +1,4 @@
 'use client'
-
 import React from 'react'
 import style from './loginForm.module.css'
 import { SubmitHandler, useForm } from 'react-hook-form'
@@ -9,6 +8,7 @@ import { useRouter } from 'next/navigation'
 import { useSetRecoilState } from 'recoil'
 import { userAtom } from '@/app/_store/atom/user'
 import { useMutation } from '@tanstack/react-query'
+import loginModalState from '@/app/_store/atom/loginModalState'
 
 interface LoginFormReturn {
   email: string
@@ -20,17 +20,18 @@ function LoginForm() {
   const {
     register,
     handleSubmit,
-    formState: { isValid },
-  } = useForm<LoginFormReturn>()
+    formState: { isValid, errors },
+  } = useForm<LoginFormReturn>({ mode: 'onChange' })
   const authService = useAuthService()
   const loginMutation = useMutation<void, Error, LoginFormReturn>({
     mutationFn: ({ email, password }) => authService.login(email, password),
   })
   const setUser = useSetRecoilState(userAtom)
+  const setLoginModalState = useSetRecoilState(loginModalState)
 
   const fields = {
     email: register('email', {
-      required: '이메일을 입력해주세요.',
+      required: true,
       pattern: /^\S+@\S+$/i,
       maxLength: {
         value: 24,
@@ -38,7 +39,7 @@ function LoginForm() {
       },
     }),
     password: register('password', {
-      required: '비밀번호를 입력해주세요.',
+      required: true,
       minLength: {
         value: 6,
         message: '비밀번호는 최소 6자 이상 설정해주세요.',
@@ -61,6 +62,7 @@ function LoginForm() {
           router.push('/')
         },
         onError: (error) => {
+          setLoginModalState(true)
           console.log(error)
         },
       },
@@ -79,6 +81,7 @@ function LoginForm() {
             />
           </div>
         </div>
+        <p className={style.errorMessage}>{errors?.email?.message}</p>
         <div className={style.outer}>
           <div className={style.inner}>
             <span className={style.inner_label}>비밀번호</span>
@@ -90,6 +93,7 @@ function LoginForm() {
             />
           </div>
         </div>
+        <p className={style.errorMessage}>{errors?.password?.message}</p>
       </div>
       <SubmitBtn isValid={isValid}>
         <span>로그인</span>
