@@ -1,8 +1,0 @@
-.main_wrapper {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  max-width: 500px;
-  padding: 0 0 12px;
-  border-bottom: 1px solid #ccc;
-}

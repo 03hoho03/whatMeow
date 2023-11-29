@@ -15,10 +15,9 @@ function useCommentService(): CommentService {
     upload: async (comment, postId) => {
       const body = {
         comment,
-        post_id: postId,
       }
       const response = await fetch.post(
-        `${baseUrl}/upload`,
+        `${baseUrl}/${postId}`,
         body,
         {
           'Content-type': 'application/json',
