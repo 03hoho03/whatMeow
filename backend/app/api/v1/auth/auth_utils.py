@@ -38,20 +38,20 @@ async def set_cookie_expzero(response):
         key="accessToken",
         domain="whatmeow.shop",
         samesite="None",
-        value="logout",
+        value="",
         httponly=True,
         secure=True,
-        expires=datetime.utcnow() + timedelta(seconds=1),
+        max_age=1,
     )
 
     response.set_cookie(
         key="refreshToken",
         domain="whatmeow.shop",
         samesite="None",
-        value="logout",
+        value="",
         httponly=True,
         secure=True,
-        expires=datetime.utcnow() + timedelta(seconds=1),
+        max_age=1,
     )
     return response
 
