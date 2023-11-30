@@ -14,3 +14,12 @@
   content: '';
   position: relative;
 }
+.main > li {
+  display: none;
+}
+.subMenu_item {
+  display:  block !important;
+}
+.subMenu_item:hover {
+  text-decoration: underline;
+}

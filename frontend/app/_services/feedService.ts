@@ -40,7 +40,9 @@ function useFeedService(): FeedService {
         credentials: 'include',
       })
       if (!response.ok) {
-        throw new Error('게시글 등록에 실패하였습니다.')
+        const error = new Error('게시글 등록에 실패하였습니다.')
+        error.cause = response.status
+        throw error
       }
       return await response.json()
     },

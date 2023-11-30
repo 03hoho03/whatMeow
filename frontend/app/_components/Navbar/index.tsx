@@ -79,6 +79,7 @@ function Navbar() {
                   className={cn(style.nav_link, {
                     [style.nav_clicked]:
                       pathname === path || pathname.startsWith(path + '/'),
+                    [style.disabled]: path === '/search' || path === '/alarm',
                   })}
                 >
                   {name}
@@ -89,6 +90,16 @@ function Navbar() {
       </nav>
       <ul className={style.util_ul}>
         <li>
+          <Link
+            className={cn(style.util_button, {
+              [style.util_scrolled]: scrollY > 0,
+              [style.hidden]: !isAuth,
+            })}
+            href={'/feed/writer'}
+            type="button"
+          >
+            새 글 작성
+          </Link>
           <button
             className={cn(style.util_button, {
               [style.util_scrolled]: scrollY > 0,
@@ -96,7 +107,6 @@ function Navbar() {
             })}
             onClick={HandleLogout}
             type="button"
-            disabled={!isAuth}
           >
             로그아웃
           </button>
@@ -109,7 +119,6 @@ function Navbar() {
             })}
             type="button"
             onClick={HandleLogin}
-            disabled={isAuth}
           >
             로그인
           </button>
