@@ -26,7 +26,6 @@ export interface PostDetailApiResponse {
 
 interface FeedService {
   upload: (form: FormData) => Promise<void>
-  registComment: (comment: string) => Promise<void>
   updateLike: (feedId: number) => Promise<Like>
   getPostDetail: (postId: number) => Promise<PostDetailApiResponse>
 }
@@ -40,13 +39,11 @@ function useFeedService(): FeedService {
         credentials: 'include',
       })
       if (!response.ok) {
-        throw new Error('게시글 등록에 실패하였습니다.')
+        const error = new Error('게시글 등록에 실패하였습니다.')
+        error.cause = response.status
+        throw error
       }
       return await response.json()
-    },
-    registComment: async (data) => {
-      console.log(data)
-      setTimeout(() => Promise.resolve(true), 1000)
     },
     updateLike: async (feedId) => {
       const response = await fetch.post(
