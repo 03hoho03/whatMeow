@@ -17,6 +17,9 @@ async def modify_enpoint(request: Request, call_next):
     if request.method == "GET" and "/api/v1/post" in request.scope["path"]:
         if not request.state.decoded_dict:
             request.scope["path"] = str(request.url.path).replace("/api/v1/post", "/api/v1/guest/post")
+    if request.method == "GET" and "/api/v1/cat" in request.scope["path"]:
+        if not request.state.decoded_dict:
+            request.scope["path"] = str(request.url.path).replace("/api/v1/post", "/api/v1/guest/cat")
     response = await call_next(request)
     return response
 
