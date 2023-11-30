@@ -1,11 +1,9 @@
 import React from 'react'
 import style from './profileEditBtn.module.css'
-import { useRouter } from 'next/navigation'
 
 const ProfileEditBtn = () => {
-  const router = useRouter()
   const handleLinkProfile = () => {
-    router.push('/account/edit')
+    alert('아직 구현되지 않은 기능입니다.')
   }
   return (
     <button
