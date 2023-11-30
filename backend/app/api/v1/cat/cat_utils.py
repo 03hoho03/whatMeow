@@ -118,7 +118,7 @@ async def cat_info(cat_id, db):
             "ownerNickname": cat_row.cat_owner.nickname,
             "name": cat_row.catname,
             "explain": cat_row.explain,
-            "image": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/{cat_row.image}.jpg",
+            "image": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/{cat_row.image}",
             "posts": [
                 {
                     "post_id": post.id,
