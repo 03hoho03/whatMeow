@@ -26,6 +26,7 @@ export interface PostDetailApiResponse {
 
 interface FeedService {
   upload: (form: FormData) => Promise<void>
+  registComment: (comment: string) => Promise<void>
   updateLike: (feedId: number) => Promise<Like>
   getPostDetail: (postId: number) => Promise<PostDetailApiResponse>
 }
@@ -44,6 +45,10 @@ function useFeedService(): FeedService {
         throw error
       }
       return await response.json()
+    },
+    registComment: async (data) => {
+      console.log(data)
+      setTimeout(() => Promise.resolve(true), 1000)
     },
     updateLike: async (feedId) => {
       const response = await fetch.post(
