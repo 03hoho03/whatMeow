@@ -8,9 +8,9 @@ import BookMark from '../BookMark'
 const bookMarkInfo = [
   { title: '최근게시글', link: '/explore', type: 'post' },
   { title: '품종 AI', link: '/ai/breedAi', type: 'camera' },
-  { title: '냥BTI', link: '/meowTest', type: 'test' },
-  { title: '이벤트', link: '/', type: 'event' },
-  { title: '다른무언가', link: '/', type: 'another' },
+  // { title: '냥BTI', link: '/meowTest', type: 'test' },
+  // { title: '이벤트', link: '/', type: 'event' },
+  // { title: '다른무언가', link: '/', type: 'another' },
 ]
 
 function BookMarkList() {

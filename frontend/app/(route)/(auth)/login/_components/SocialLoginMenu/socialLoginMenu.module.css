@@ -1,4 +1,5 @@
 .main_wrapper {
   display: flex;
   justify-content: center;
+  display: none;
 }
