@@ -61,9 +61,5 @@ async def cat_update_explain(request: Request, data: cat_schema.CatUpdateExplain
 
 
 @router.get("/{cat_id}", status_code=status.HTTP_200_OK)
-async def cat_info(request: Request, cat_id: int, db: Session = Depends(get_db)):
-    decoded_dict = request.state.decoded_dict
-    if decoded_dict:
-        return await cat_utils.cat_info(cat_id, db)
-    else:
-        raise HTTPException(status.HTTP_403_FORBIDDEN, detail="There isn't token")
+async def cat_info(cat_id: int, db: Session = Depends(get_db)):
+    return await cat_utils.cat_info(cat_id, db)
