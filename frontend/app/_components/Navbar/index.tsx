@@ -25,12 +25,6 @@ function Navbar() {
   const router = useRouter()
   const logoutMutation = useMutation({
     mutationFn: () => authService.logout(),
-    onSuccess: () => {
-      setUser({ user: null, isAuth: false })
-    },
-    onError: (error) => {
-      console.log(error)
-    },
   })
 
   useEffect(() => {
@@ -45,8 +39,17 @@ function Navbar() {
   }, [])
 
   const HandleLogout = async () => {
-    logoutMutation.mutate()
-    router.push('/')
+    logoutMutation.mutate(undefined, {
+      onSuccess: () => {
+        setUser({ user: null, isAuth: false })
+        router.push('/')
+      },
+      onError: (error) => {
+        if (error.cause === 403) {
+          setUser({ user: null, isAuth: false })
+        }
+      },
+    })
   }
   const HandleLogin = () => {
     router.push('/login')

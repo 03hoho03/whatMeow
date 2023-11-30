@@ -18,7 +18,7 @@ interface Post {
 }
 interface Cat {
   catName: string
-  catId: number
+  catID: number
   thumnail: string
 }
 interface Follow {

@@ -11,6 +11,7 @@ const PostList = () => {
   const profileQuery = queryClient.getQueryData<GetUserProfileResponse>([
     'hydrate-profile',
   ])
+
   return (
     <div className={style.postListsContainer}>
       <div className={style.header}>
@@ -26,8 +27,8 @@ const PostList = () => {
                 .slice(rowIdx * 3, (rowIdx + 1) * 3)
                 .map((post, colIdx) => (
                   <Link
-                    href={`/post/${post.postId}`}
-                    key={colIdx}
+                    href={`https://www.whatmeow.shop/post/${post.postId}`}
+                    key={post.thumnail + colIdx}
                     className={style.postThumnail}
                   >
                     <img src={post.thumnail} alt="이미지" />

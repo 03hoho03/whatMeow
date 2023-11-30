@@ -18,7 +18,7 @@ const getProfile = async (
   const response = await fetch(`${BASE_URL}/api/v1/user/profile/${nickname}`, {
     method: 'GET',
     credentials: 'include',
-    next: { revalidate: 3600 },
+    cache: 'no-store',
     headers: {
       Cookie: `accessToken=${accessToken}`,
     },
@@ -38,6 +38,7 @@ const Profile = async ({ params }: { params: { userId: string } }) => {
     queryFn: () => getProfile(nickname),
   })
   const dehydratedState = dehydrate(queryClient)
+
   return (
     <Hydrate state={dehydratedState}>
       <div className={style.profile_page}>
