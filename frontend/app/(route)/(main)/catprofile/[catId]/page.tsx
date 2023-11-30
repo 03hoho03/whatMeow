@@ -1,15 +1,13 @@
 import React from 'react'
 import style from './page.module.css'
-import Profile from './components/Profile'
-import PostList from './components/PostList'
+import ProfileContainer from './components/ProfileContainer'
 
-const CatProfile = () => {
+const CatProfile = ({ params }: { params: { catId: string } }) => {
+  const intCatId = parseInt(params.catId)
+
   return (
     <div className={style.catProfilePageContainer}>
-      <div className={style.catProfileContainer}>
-        <Profile />
-        <PostList />
-      </div>
+      <ProfileContainer catId={intCatId} />
     </div>
   )
 }

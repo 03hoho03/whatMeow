@@ -16,6 +16,7 @@
   height: 60px;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 .modalContent > p {
   font-size: 12px;

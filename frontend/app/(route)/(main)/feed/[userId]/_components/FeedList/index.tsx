@@ -23,26 +23,33 @@ interface Like {
 const FeedList = () => {
   const searchService = useSearchService()
   const bottom = useRef<HTMLDivElement | null>(null)
-  const { data, error, status, fetchNextPage, isFetchingNextPage } =
-    useInfiniteQuery({
-      queryKey: ['hydrate-feeds'],
-      queryFn: ({ pageParam }) =>
-        searchService.getFeedList(pageParam, FEED_SIZE),
-      initialPageParam: 0,
-      getNextPageParam: (lastPage, allPages) => {
-        if (lastPage.length < FEED_SIZE) {
-          return null
-        }
-        return allPages.length // 다음 페이지 번호
-      },
-    })
+  const {
+    data,
+    error,
+    status,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
+    queryKey: ['hydrate-feeds'],
+    queryFn: ({ pageParam }) => searchService.getFeedList(pageParam, FEED_SIZE),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages) => {
+      if (lastPage.length < FEED_SIZE) {
+        return null
+      }
+      return allPages.length // 다음 페이지 번호
+    },
+  })
   const onIntersect = (entries: IntersectionObserverEntry[]) => {
     if (status === 'error') {
       console.log(error)
       return
     }
     const firstEntry = entries[0]
-    firstEntry.isIntersecting && fetchNextPage()
+    if (hasNextPage && firstEntry.isIntersecting) {
+      fetchNextPage()
+    }
   }
 
   useObserver({
@@ -51,7 +58,7 @@ const FeedList = () => {
   })
 
   return (
-    <div style={{ marginBottom: '60px' }}>
+    <div>
       {status === 'pending' && <p>불러오는 중</p>}
       {status === 'error' && <p>{error.message}</p>}
       {status === 'success' &&
@@ -62,6 +69,7 @@ const FeedList = () => {
         )}
       <div ref={bottom}></div>
       {isFetchingNextPage && <p>계속 불러오는 중</p>}
+      {!hasNextPage && <div>최근 올라온 게시글을 모두 보았습니다.</div>}
     </div>
   )
 }

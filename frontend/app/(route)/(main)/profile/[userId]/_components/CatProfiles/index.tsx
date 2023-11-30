@@ -16,15 +16,17 @@ const CatProfiles = () => {
     <div className={style.catProfileContainer}>
       <div className={style.header}>
         <h4>마이 냥프로필</h4>
-        <Link href={`/cat/add`} className={style.catProfileAddBtn}>
-          프로필 추가
-        </Link>
+        {profileQuery?.owner && (
+          <Link href={`/cat/add`} className={style.catProfileAddBtn}>
+            프로필 추가
+          </Link>
+        )}
       </div>
       {profileQuery?.cats && (
         <Swiper slidesPerView={3}>
           {profileQuery?.cats.map((profile, idx) => (
             <SwiperSlide
-              key={`${profile}/${idx}`}
+              key={`${profile.catID}/${idx}`}
               className={style.profile_item}
             >
               <img
@@ -33,7 +35,7 @@ const CatProfiles = () => {
                 className={style.profile_image}
               />
               <Link
-                href={`/catprofile/${profile.catId}`}
+                href={`/catprofile/${profile.catID}`}
                 className={style.profile_name}
               >
                 {profile.catName}
