@@ -6,8 +6,7 @@ from typing import List
 
 from app import model
 from app.database import get_db
-from app.api.schemas import post_schema
-from app.api.v1.post import post_utils
+from app.api.v1.post import post_utils, schema
 
 router = APIRouter(tags=["Post"])
 
@@ -62,7 +61,7 @@ async def post_delete(request: Request, post_id: int, db: Session = Depends(get_
 
 
 @router.get("/{post_id}")
-async def post_detail(request: Request, data: post_schema.PostDetail = Depends(), db: Session = Depends(get_db)):
+async def post_detail(request: Request, data: schema.PostDetail = Depends(), db: Session = Depends(get_db)):
     decoded_dict = request.state.decoded_dict
     if decoded_dict:
         return await post_utils.return_detailed_post(db, decoded_dict.get("id"), data.post_id)

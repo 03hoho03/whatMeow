@@ -2,7 +2,7 @@ from fastapi import APIRouter, status, Request, Depends, UploadFile, File, Form,
 from sqlalchemy.orm.session import Session
 from typing import Optional
 
-from app.api.schemas import cat_schema
+from app.api.v1.cat import schema
 from app.api.v1.cat import cat_utils
 from app.database import get_db
 
@@ -41,7 +41,7 @@ async def cat_update(
 
 
 @router.put("/update/name", status_code=status.HTTP_202_ACCEPTED)
-async def cat_update_catname(request: Request, data: cat_schema.CatUpdateName, db: Session = Depends(get_db)):
+async def cat_update_catname(request: Request, data: schema.CatUpdateName, db: Session = Depends(get_db)):
     decoded_dict = request.state.decoded_dict
     if decoded_dict:
         if await cat_utils.update_catname(data.cat_id, decoded_dict.get("username"), data.catname, db):
@@ -51,7 +51,7 @@ async def cat_update_catname(request: Request, data: cat_schema.CatUpdateName, d
 
 
 @router.put("/update/explain", status_code=status.HTTP_202_ACCEPTED)
-async def cat_update_explain(request: Request, data: cat_schema.CatUpdateExplain, db: Session = Depends(get_db)):
+async def cat_update_explain(request: Request, data: schema.CatUpdateExplain, db: Session = Depends(get_db)):
     decoded_dict = request.state.decoded_dict
     if decoded_dict:
         if await cat_utils.update_explain(data.cat_id, data.explain, db):

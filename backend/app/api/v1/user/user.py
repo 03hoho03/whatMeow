@@ -2,8 +2,7 @@ from fastapi import Depends, APIRouter, status, UploadFile, File, Request, HTTPE
 from sqlalchemy.orm.session import Session
 
 from app.database import get_db
-from app.api.schemas import user_schema
-from app.api.v1.user import user_utils
+from app.api.v1.user import user_utils, schema
 
 router = APIRouter(tags=["User"])
 
@@ -28,7 +27,7 @@ async def update_profile_info(request: Request, db: Session = Depends(get_db)):
 @router.put("/update/nickname", status_code=status.HTTP_202_ACCEPTED)
 async def update_nickname(
     request: Request,
-    data: user_schema.UpdateNickname,
+    data: schema.UpdateNickname,
     db: Session = Depends(get_db),
 ):
     decoded_dict = request.state.decoded_dict
@@ -40,7 +39,7 @@ async def update_nickname(
 
 
 @router.put("/update/name", status_code=status.HTTP_202_ACCEPTED)
-async def update_name(request: Request, data: user_schema.UpdateName, db: Session = Depends(get_db)):
+async def update_name(request: Request, data: schema.UpdateName, db: Session = Depends(get_db)):
     decoded_dict = request.state.decoded_dict
     if decoded_dict:
         if await user_utils.update_name(decoded_dict.get("id"), data.name, db):
@@ -50,7 +49,7 @@ async def update_name(request: Request, data: user_schema.UpdateName, db: Sessio
 
 
 @router.put("/update/explain", status_code=status.HTTP_202_ACCEPTED)
-async def update_explain(request: Request, data: user_schema.UpdateExplain, db: Session = Depends(get_db)):
+async def update_explain(request: Request, data: schema.UpdateExplain, db: Session = Depends(get_db)):
     decoded_dict = request.state.decoded_dict
     if decoded_dict:
         if await user_utils.update_explain(decoded_dict.get("id"), data.explain, db):

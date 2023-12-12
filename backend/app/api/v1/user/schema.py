@@ -2,6 +2,13 @@ from pydantic import BaseModel
 from datetime import datetime
 
 
+class ResourceId(BaseModel):
+    id: int
+
+    class Config:
+        from_attributes = True
+
+
 class GeneralUserAdd(BaseModel):
     email: str
     name: str

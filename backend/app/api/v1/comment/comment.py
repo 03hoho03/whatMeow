@@ -1,8 +1,7 @@
 from fastapi import APIRouter, Depends, status, HTTPException, Request
 from sqlalchemy.orm.session import Session
 
-from app.api.v1.comment import comment_utils
-from app.api.schemas import comment_schema
+from app.api.v1.comment import comment_utils, schema
 from app.database import get_db
 
 router = APIRouter(tags=["Comment"])
@@ -12,7 +11,7 @@ router = APIRouter(tags=["Comment"])
 async def comment_upload(
     request: Request,
     post_id: int,
-    data: comment_schema.add_comment,
+    data: schema.add_comment,
     db: Session = Depends(get_db),
 ):
     decoded_dict = request.state.decoded_dict
@@ -52,7 +51,7 @@ async def return_comments(post_id: int, request: Request, db: Session = Depends(
 async def comment_update(
     request: Request,
     comment_id: int,
-    data: comment_schema.update_comment,
+    data: schema.update_comment,
     db: Session = Depends(get_db),
 ):
     decoded_dict = request.state.decoded_dict
