@@ -2,13 +2,12 @@
 import React from 'react'
 import style from './loginForm.module.css'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { useAuthService } from '@/app/_services/authService'
 import SubmitBtn from '@/app/_common/SubmitBtn'
 import { useRouter } from 'next/navigation'
 import { useSetRecoilState } from 'recoil'
 import { userAtom } from '@/app/_store/atom/user'
-import { useMutation } from '@tanstack/react-query'
 import loginModalState from '@/app/_store/atom/loginModalState'
+import { useLoginMutation } from '@/app/_services/mutations/useLogin'
 
 interface LoginFormReturn {
   email: string
@@ -22,10 +21,7 @@ function LoginForm() {
     handleSubmit,
     formState: { isValid, errors },
   } = useForm<LoginFormReturn>({ mode: 'onChange' })
-  const authService = useAuthService()
-  const loginMutation = useMutation<void, Error, LoginFormReturn>({
-    mutationFn: ({ email, password }) => authService.login(email, password),
-  })
+  const { loginMutation } = useLoginMutation()
   const setUser = useSetRecoilState(userAtom)
   const setLoginModalState = useSetRecoilState(loginModalState)
 
@@ -68,6 +64,7 @@ function LoginForm() {
       },
     )
   }
+
   return (
     <form className={style.main_wrapper} onSubmit={handleSubmit(onHandleLogin)}>
       <div className={style.input_container}>
