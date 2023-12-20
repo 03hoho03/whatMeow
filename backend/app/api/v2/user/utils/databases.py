@@ -1,25 +1,29 @@
 import string
 import random
 
+from fastapi import HTTPException, status
 from app.model import User
 
 
 async def add_generaluser(data, username, url, password, db):
-    row = User(
-        **{
-            "email": data.email,
-            "nickname": data.nickname,
-            "name": data.name,
-            "username": username,
-            "profile_image": url,
-            "password": password,
-        }
-    )
+    try:
+        row = User(
+            **{
+                "email": data.email,
+                "nickname": data.nickname,
+                "name": data.name,
+                "username": username,
+                "profile_image": url,
+                "password": password,
+            }
+        )
 
-    db.add(row)
-    db.commit()
+        db.add(row)
+        db.commit()
 
-    return row
+        return row
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f"{e}, add_generaluser")
 
 
 async def get_random_username(db):
