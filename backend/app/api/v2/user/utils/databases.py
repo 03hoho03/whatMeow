@@ -28,3 +28,11 @@ async def get_random_username(db):
         random_string = "".join(random.choice(letters) for _ in range(8))
         if not db.query(User).filter_by(username=random_string).first():
             return random_string
+
+
+async def is_duplicated(nickname, db):
+    row = db.query(User).filter_by(nickname=nickname).first()
+    if row:
+        return True
+    else:
+        return False
