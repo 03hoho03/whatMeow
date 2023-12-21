@@ -58,6 +58,9 @@ class User(BaseMin, Base):
         overlaps="following_lst,follower_lst",
     )
 
+    def as_dict(self):
+        return {column.name: getattr(self, column.name) for column in self.__table__.columns}
+
 
 post_cats = Table(
     "post_cats",

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, Response
 from sqlalchemy.orm.session import Session
 
 from app.database import get_db
@@ -16,3 +16,8 @@ async def register(data: schema.GeneralUserAdd, db: Session = Depends(get_db)):
 @router.get("/duplicated", status_code=status.HTTP_200_OK)
 async def checkDup(nickname: str, db: Session = Depends(get_db)):
     return await readService.nicknameDup(nickname, db)
+
+
+@router.post("/login", status_code=status.HTTP_200_OK)
+async def login(response: Response, data: schema.GeneralUserLogin, db: Session = Depends(get_db)):
+    return await readService.userLogin(data, response, db)
