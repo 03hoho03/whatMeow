@@ -59,3 +59,9 @@ async def kakaoLogin(response: Response, code: str | None = None, db: Session = 
 async def userProfile(nickname: str, request: Request, db: Session = Depends(get_db)):
     access_token = request.state.access_token
     return await readService.readUserProfile(nickname, access_token.get("id") if access_token else None, db)
+
+
+@router.get("/cat", status_code=status.HTTP_200_OK)
+async def send_catInfo(request: Request, db: Session = Depends(get_db)):
+    access_token = request.state.access_token
+    return await readService.readCatInfo(access_token.get("id"), db)
