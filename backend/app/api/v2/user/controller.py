@@ -53,3 +53,9 @@ async def kakao():
 @router.get("/login/kakao/callback")
 async def kakaoLogin(response: Response, code: str | None = None, db: Session = Depends(get_db)):
     return await writeService.kakaoSocialLogin(response, code, db)
+
+
+@router.get("/profile/{nickname}")
+async def userProfile(nickname: str, request: Request, db: Session = Depends(get_db)):
+    access_token = request.state.access_token
+    return await readService.readUserProfile(nickname, access_token.get("id") if access_token else None, db)

@@ -58,9 +58,9 @@ class User(BaseMin, Base):
         overlaps="following_lst,follower_lst",
     )
 
-    __table_args__ = Index("idx_nickname", "nickname")
-    __table_args__ = Index("idx_email", "email")
-    __table_args__ = Index("idx_kakao_id", "kakao_id")
+    __table_args__ = (Index("idx_nickname", "nickname"),)
+    __table_args__ = (Index("idx_email", "email"),)
+    __table_args__ = (Index("idx_kakao_id", "kakao_id"),)
 
     def as_dict(self):
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}
@@ -72,7 +72,7 @@ class Follow(Base, BaseMin):
     fromUserId = Column(Integer, ForeignKey("user.id"))
     toUserId = Column(Integer, ForeignKey("user.id"))
 
-    __table_args__ = Index("idx_fromUserId_toUserId", "fromUserId", "toUserId")
+    __table_args__ = (Index("idx_fromUserId_toUserId", "fromUserId", "toUserId"),)
 
     def as_dict(self):
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}
@@ -83,13 +83,15 @@ class PostCats(Base, BaseMin):
     postId = Column(Integer, ForeignKey("post.id", ondelete="CASCADE"))
     catId = Column(Integer, ForeignKey("cat.id", ondelete="CASCADE"))
 
+    __table_args__ = (Index("idx_postId_catId", "postId", "catId"),)
+
 
 class PostHashTag(Base, BaseMin):
     __tablename__ = "posthashtag"
     postId = Column(Integer, ForeignKey("post.id", ondelete="CASCADE"))
     hashtagId = Column(Integer, ForeignKey("hashtag.id"))
 
-    __table_args__ = Index("idx_postId_hashtagId", "postId", "hashtagId")
+    __table_args__ = (Index("idx_postId_hashtagId", "postId", "hashtagId"),)
 
 
 class Cat(BaseMin, Base):
@@ -104,6 +106,8 @@ class Cat(BaseMin, Base):
     owner_id = Column(Integer, ForeignKey("user.id"))
     image = Column(String(100), nullable=False)
 
+    __table_args__ = (Index("idx_owner_id", "owner_id"),)
+
     cat_owner = relationship("User", back_populates="cats")
 
 
@@ -117,6 +121,8 @@ class Post(BaseMin, Base):
     comments = relationship("Comment", back_populates="comment_post_owner", cascade="all,delete")
     post_owner = relationship("User", back_populates="posts", foreign_keys=[uploader_id])
     images = relationship("Image", back_populates="post", cascade="all,delete")
+
+    __table_args__ = (Index("idx_uploader_id", "uploader_id"),)
 
 
 class Image(BaseMin, Base):

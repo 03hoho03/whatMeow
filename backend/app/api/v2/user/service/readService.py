@@ -1,4 +1,5 @@
 from fastapi.responses import JSONResponse, RedirectResponse
+from ...application.get_cats_posts__follows_by_user import get_cats_posts_follows_by_user
 from ..utils import databases, tools, cookies
 from ..schema import GeneralUserReturn
 
@@ -45,3 +46,9 @@ async def googleRedirect():
 async def kakaoRedirect():
     url = await tools.get_kakao_redirect_url()
     return RedirectResponse(url)
+
+
+async def readUserProfile(nickname, id, db):
+    user = await databases.find_user_by_nickname(nickname, db)
+    data = await get_cats_posts_follows_by_user(user, db)
+    return await tools.make_return_dict(user, id, data)

@@ -94,6 +94,10 @@ async def find_user_by_email_without_exception(email, db):
     return db.query(User).filter_by(email=email).first()
 
 
+async def find_user_by_nickname(nickname, db):
+    return db.query(User).filter_by(nickname=nickname).first()
+
+
 async def find_user_by_kakao_id(id, db):
     return db.query(User).filter_by(kakao_id=id).first()
 
