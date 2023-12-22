@@ -10,10 +10,12 @@ async def nicknameDup(nickname, db):
 async def userLogin(data, response, db):
     user = await databases.find_user_by_email(data.email, db)
     if await tools.is_password_correct(data, user):
-        token_info = await tools.create_access_token(user)
-        await databases.update_refresh_token_info(user, token_info, db)
+        access_token = await tools.create_access_token(user)
+        refresh_token = await tools.create_refresh_token(user)
+        await databases.update_refresh_token_info(user, refresh_token, db)
         response = JSONResponse(content=GeneralUserReturn(**user.as_dict()).dict())
-        response = await cookies.set_cookie_response(response, token_info)
+        response = await cookies.set_cookie_access_token(response, access_token)
+        response = await cookies.set_cookie_refresh_token(response, refresh_token)
 
         return response
 
@@ -24,3 +26,12 @@ async def userLogout(response, id, db):
         response = await cookies.set_cookie_expzero(response)
 
         return response
+
+
+async def userTokenRefresh(response, id, db):
+    user = await databases.find_user_by_id(id, db)
+    access_token = await tools.create_access_token(user)
+    response = JSONResponse(content={"status": "New Access Token"})
+    response = await cookies.set_cookie_access_token(response, access_token)
+
+    return response

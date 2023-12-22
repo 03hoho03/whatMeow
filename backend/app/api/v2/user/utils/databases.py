@@ -42,6 +42,14 @@ async def find_user_by_email(email, db):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Wrong Informaition")
 
 
+async def find_user_by_id(id, db):
+    row = db.query(User).filter_by(id=id).first()
+    if row:
+        return row
+    else:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"No User with {id}")
+
+
 async def update_refresh_token_info(user, token, db):
     exist = db.query(RefreshToken).filter_by(user_id=user.id).first()
     if exist:

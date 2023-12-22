@@ -27,3 +27,9 @@ async def login(response: Response, data: schema.GeneralUserLogin, db: Session =
 async def logout(response: Response, request: Request, db: Session = Depends(get_db)):
     access_token = request.state.access_token
     return await readService.userLogout(response, access_token.get("id"), db)
+
+
+@router.get("/token/refresh", status_code=status.HTTP_200_OK)
+async def refresh(response: Response, request: Request, db: Session = Depends(get_db)):
+    refresh_token = request.state.refresh_token
+    return await readService.userTokenRefresh(response, refresh_token.get("id"), db)
