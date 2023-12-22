@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, DateTime, func, String, Table
+from sqlalchemy import Column, Integer, DateTime, func, String, Table, Index
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.exc import SAWarning
@@ -58,6 +58,10 @@ class User(BaseMin, Base):
         overlaps="following_lst,follower_lst",
     )
 
+    __table_args__ = Index("idx_nickname", "nickname")
+    __table_args__ = Index("idx_email", "email")
+    __table_args__ = Index("idx_kakao_id", "kakao_id")
+
     def as_dict(self):
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}
 
@@ -67,6 +71,8 @@ class Follow(Base, BaseMin):
 
     fromUserId = Column(Integer, ForeignKey("user.id"))
     toUserId = Column(Integer, ForeignKey("user.id"))
+
+    __table_args__ = Index("idx_fromUserId_toUserId", "fromUserId", "toUserId")
 
     def as_dict(self):
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}
@@ -82,6 +88,8 @@ class PostHashTag(Base, BaseMin):
     __tablename__ = "posthashtag"
     postId = Column(Integer, ForeignKey("post.id", ondelete="CASCADE"))
     hashtagId = Column(Integer, ForeignKey("hashtag.id"))
+
+    __table_args__ = Index("idx_postId_hashtagId", "postId", "hashtagId")
 
 
 class Cat(BaseMin, Base):
