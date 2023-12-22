@@ -46,6 +46,26 @@ async def add_google_user(result, nickname, username, url, db):
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f"{e}, add_google_user")
 
 
+async def add_kakao_user(result, _property, _profile, nickname, username, url, db):
+    try:
+        row = User(
+            **{
+                "name": _property.get("nickname"),
+                "kakao_id": result.get("id"),
+                "email": _profile.get("email", None),
+                "gender": _profile.get("gender", None),
+                "profile_image": url,
+                "nickname": nickname,
+                "username": username,
+            }
+        )
+
+        db.add(row)
+        db.commit()
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f"{e}, add_kakao_user")
+
+
 async def get_random_username(db):
     letters = string.ascii_letters
     while True:
@@ -74,6 +94,10 @@ async def find_user_by_email_without_exception(email, db):
     return db.query(User).filter_by(email=email).first()
 
 
+async def find_user_by_kakao_id(id, db):
+    return db.query(User).filter_by(kakao_id=id).first()
+
+
 async def find_user_by_id(id, db):
     row = db.query(User).filter_by(id=id).first()
     if row:
@@ -82,11 +106,11 @@ async def find_user_by_id(id, db):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"No User with {id}")
 
 
-async def update_refresh_token_info(user, token, db):
+async def update_refresh_token_info(user, refresh_token, db):
     exist = db.query(RefreshToken).filter_by(user_id=user.id).first()
     if exist:
         db.delete(exist)
-    row = RefreshToken(**{"refresh_token": token["refresh_token"], "user_id": user.id})
+    row = RefreshToken(**{"refresh_token": refresh_token, "user_id": user.id})
     db.add(row)
     db.commit()
 

@@ -39,3 +39,7 @@ async def create_refresh_token(user):
 
 async def get_google_redirect_uri():
     return f"https://accounts.google.com/o/oauth2/v2/auth?client_id={settings.GOOGLE_CLIENT_ID}&redirect_uri={settings.GOOGLE_REDIRECT_URI_V2}&response_type=code&scope=openid email profile"
+
+
+async def get_kakao_redirect_url():
+    return f"https://kauth.kakao.com/oauth/authorize?client_id={settings.KAKAO_CLIENT_ID}&redirect_uri={settings.KAKAO_REDIRECT_URI_V2}&response_type=code"

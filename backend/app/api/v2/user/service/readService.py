@@ -40,3 +40,8 @@ async def userTokenRefresh(response, id, db):
 async def googleRedirect():
     url = await tools.get_google_redirect_uri()
     return RedirectResponse(url)
+
+
+async def kakaoRedirect():
+    url = await tools.get_kakao_redirect_url()
+    return RedirectResponse(url)

@@ -29,3 +29,38 @@ async def get_result_google(code):
         result = result.json()
 
         return result
+
+
+async def get_result_kakao(code):
+    async with httpx.AsyncClient() as client:
+        # KaKao 토큰 발급
+        response = await client.post(
+            url="https://kauth.kakao.com/oauth/token",
+            headers={
+                "Content-Type": "application/x-www-form-urlencoded",
+                "charset": "utf-8",
+                "Cache-Control": "no-cache",
+            },
+            data={
+                "grant_type": "authorization_code",
+                "client_id": str(settings.KAKAO_CLIENT_ID),
+                "client_secret": str(settings.KAKAO_CLIENT_SECRET),
+                "redirect_uri": str(settings.KAKAO_REDIRECT_URI_V2),
+                "code": str(code),
+            },
+        )
+        response = response.json()
+        # 토큰으로 유저 정보 획득
+        access_token = response.get("access_token")
+        result = await client.post(
+            url="https://kapi.kakao.com/v2/user/me",
+            headers={
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Cache-Control": "no-cache",
+                "Authorization": "Bearer " + access_token,
+            },
+            data={},
+        )
+        result = result.json()
+
+        return result

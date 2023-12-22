@@ -43,3 +43,13 @@ async def google():
 @router.get("/login/google/callback")
 async def googleLogin(response: Response, code: str | None = None, db: Session = Depends(get_db)):
     return await writeService.googleSocialLogin(response, code, db)
+
+
+@router.get("/login/kakao")
+async def kakao():
+    return await readService.kakaoRedirect()
+
+
+@router.get("/login/kakao/callback")
+async def kakaoLogin(response: Response, code: str | None = None, db: Session = Depends(get_db)):
+    return await writeService.kakaoSocialLogin(response, code, db)
