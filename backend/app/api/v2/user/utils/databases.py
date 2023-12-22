@@ -51,6 +51,17 @@ async def update_refresh_token_info(user, token, db):
     db.commit()
 
 
+async def delete_refreshtoken_info(id, db):
+    try:
+        row = db.query(RefreshToken).filter_by(user_id=id).first()
+        db.delete(row)
+        db.commit()
+
+        return True
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f"{e} while deleting refreshtoken")
+
+
 async def is_duplicated(nickname, db):
     row = db.query(User).filter_by(nickname=nickname).first()
     if row:

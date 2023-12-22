@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status, Response
+from fastapi import APIRouter, Depends, status, Response, Request
 from sqlalchemy.orm.session import Session
 
 from app.database import get_db
@@ -21,3 +21,9 @@ async def checkDup(nickname: str, db: Session = Depends(get_db)):
 @router.post("/login", status_code=status.HTTP_200_OK)
 async def login(response: Response, data: schema.GeneralUserLogin, db: Session = Depends(get_db)):
     return await readService.userLogin(data, response, db)
+
+
+@router.get("/logout", status_code=status.HTTP_204_NO_CONTENT)
+async def logout(response: Response, request: Request, db: Session = Depends(get_db)):
+    access_token = request.state.access_token
+    return await readService.userLogout(response, access_token.get("id"), db)
