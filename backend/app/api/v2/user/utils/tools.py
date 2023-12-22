@@ -47,11 +47,14 @@ async def get_kakao_redirect_url():
 
 async def make_return_dict(user, id, data):
     is_owner = True if user.id == id else False
-    follow = False
-    for f in data["followers"]:
-        if id == f.fromUserId:
-            follow = True
-            break
+    if id:
+        follow = False
+        for f in data["followers"]:
+            if id == f.fromUserId:
+                follow = True
+                break
+    else:
+        follow = False
 
     _dict = {
         "userId": user.id,
