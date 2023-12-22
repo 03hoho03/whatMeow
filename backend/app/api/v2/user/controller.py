@@ -33,3 +33,13 @@ async def logout(response: Response, request: Request, db: Session = Depends(get
 async def refresh(response: Response, request: Request, db: Session = Depends(get_db)):
     refresh_token = request.state.refresh_token
     return await readService.userTokenRefresh(response, refresh_token.get("id"), db)
+
+
+@router.get("/login/google")
+async def google():
+    return await readService.googleRedirect()
+
+
+@router.get("/login/google/callback")
+async def googleLogin(response: Response, code: str | None = None, db: Session = Depends(get_db)):
+    return await writeService.googleSocialLogin(response, code, db)

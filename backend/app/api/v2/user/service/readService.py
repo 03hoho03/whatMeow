@@ -1,4 +1,4 @@
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 from ..utils import databases, tools, cookies
 from ..schema import GeneralUserReturn
 
@@ -35,3 +35,8 @@ async def userTokenRefresh(response, id, db):
     response = await cookies.set_cookie_access_token(response, access_token)
 
     return response
+
+
+async def googleRedirect():
+    url = await tools.get_google_redirect_uri()
+    return RedirectResponse(url)

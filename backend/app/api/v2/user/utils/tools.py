@@ -35,3 +35,7 @@ async def create_refresh_token(user):
     refresh_token = jwt.encode(user_refresh_info.dict(), settings.SECRET_REFRESH_KEY, algorithm=settings.ALGORITHM)
 
     return refresh_token
+
+
+async def get_google_redirect_uri():
+    return f"https://accounts.google.com/o/oauth2/v2/auth?client_id={settings.GOOGLE_CLIENT_ID}&redirect_uri={settings.GOOGLE_REDIRECT_URI_V2}&response_type=code&scope=openid email profile"

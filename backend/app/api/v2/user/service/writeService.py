@@ -1,4 +1,5 @@
-from ..utils import databases, images, tools
+from fastapi.responses import RedirectResponse
+from ..utils import databases, images, tools, oauth, cookies
 
 
 async def userRegister(data, db):
@@ -8,3 +9,29 @@ async def userRegister(data, db):
     user = await databases.add_generaluser(data, username, url, password, db)
 
     return user
+
+
+async def googleSocialLogin(response, code, db):
+    result = await oauth.get_result_google(code)
+    user = await databases.find_user_by_email_without_exception(result.get("email"), db)
+    if user:
+        access_token = await tools.create_access_token(user)
+        refresh_token = await tools.create_refresh_token(user)
+        response = RedirectResponse(url=f"https://www.whatmeow.shop/?nickname={user.nickname}")
+        response = await cookies.set_cookie_access_token(response, access_token)
+        response = await cookies.set_cookie_refresh_token(response, refresh_token)
+
+        return response
+    else:
+        username = await databases.get_random_username(db)
+        nickname = await databases.get_random_nickname(db)
+        url = await images.upload_default_image(username)
+        new_user = await databases.add_google_user(result, nickname, username, url, db)
+        print(new_user.as_dict())
+        access_token = await tools.create_access_token(new_user)
+        refresh_token = await tools.create_refresh_token(new_user)
+        response = RedirectResponse(url=f"https://www.whatmeow.shop/?nickname={nickname}")
+        response = await cookies.set_cookie_access_token(response, access_token)
+        response = await cookies.set_cookie_refresh_token(response, refresh_token)
+
+        return response
