@@ -1,10 +1,23 @@
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, Request, HTTPException, status
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
+from jose import jwt
+from jose.exceptions import ExpiredSignatureError
 
-from app.api.v1.auth import auth_utils
+from app.config import settings
 from app import api
+
+
+async def verify_token(token, type):
+    key = settings.SECRET_ACCESS_KEY if type == "access" else settings.SECRET_REFRESH_KEY
+    try:
+        jwt_dict = jwt.decode(token, key, settings.ALGORITHM)
+        if jwt_dict:
+            return jwt_dict
+    except ExpiredSignatureError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Expired")
+
 
 app = FastAPI()
 
@@ -21,6 +34,7 @@ async def modify_enpoint(request: Request, call_next):
         if not request.state.decoded_dict:
             request.scope["path"] = str(request.url.path).replace("/api/v1/post", "/api/v1/guest/cat")
     response = await call_next(request)
+
     return response
 
 
@@ -32,10 +46,21 @@ async def tag_ifLogined(request: Request, call_next):
             refresh_token = request.cookies.get("refreshToken")
             token = access_token if access_token is not None else refresh_token
             if token:
-                request.state.decoded_dict = await auth_utils.verify_access_token(token)
+                request.state.decoded_dict = await verify_token(token, "access")
             else:
                 request.state.decoded_dict = None
+
+        if "/api/v2/" in request.scope["path"]:
+            access_token = request.cookies.get("accessToken")
+            refresh_token = request.cookies.get("refreshToken")
+
+            if "/token/refresh" in request.scope["path"]:
+                request.state.refresh_token = await verify_token(refresh_token, "refresh") if refresh_token else None
+            else:
+                request.state.access_token = await verify_token(access_token, "access") if access_token else None
+
         response = await call_next(request)
+
         return response
     except HTTPException as e:
         return JSONResponse(content={"error": e.detail}, status_code=e.status_code)

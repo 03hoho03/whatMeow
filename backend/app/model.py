@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, DateTime, func, String, Table
+from sqlalchemy import Column, Integer, DateTime, func, String, Table, Index
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.exc import SAWarning
@@ -58,13 +58,40 @@ class User(BaseMin, Base):
         overlaps="following_lst,follower_lst",
     )
 
+    __table_args__ = (Index("idx_nickname", "nickname"),)
+    __table_args__ = (Index("idx_email", "email"),)
+    __table_args__ = (Index("idx_kakao_id", "kakao_id"),)
 
-post_cats = Table(
-    "post_cats",
-    Base.metadata,
-    Column("post_id", Integer, ForeignKey("post.id", ondelete="CASCADE"), primary_key=True),
-    Column("cat_id", Integer, ForeignKey("cat.id", ondelete="CASCADE"), primary_key=True),
-)
+    def as_dict(self):
+        return {column.name: getattr(self, column.name) for column in self.__table__.columns}
+
+
+class Follow(Base, BaseMin):
+    __tablename__ = "follow"
+
+    fromUserId = Column(Integer, ForeignKey("user.id"))
+    toUserId = Column(Integer, ForeignKey("user.id"))
+
+    __table_args__ = (Index("idx_fromUserId_toUserId", "fromUserId", "toUserId"),)
+
+    def as_dict(self):
+        return {column.name: getattr(self, column.name) for column in self.__table__.columns}
+
+
+class PostCats(Base, BaseMin):
+    __tablename__ = "postcats"
+    postId = Column(Integer, ForeignKey("post.id", ondelete="CASCADE"))
+    catId = Column(Integer, ForeignKey("cat.id", ondelete="CASCADE"))
+
+    __table_args__ = (Index("idx_postId_catId", "postId", "catId"),)
+
+
+class PostHashTag(Base, BaseMin):
+    __tablename__ = "posthashtag"
+    postId = Column(Integer, ForeignKey("post.id", ondelete="CASCADE"))
+    hashtagId = Column(Integer, ForeignKey("hashtag.id"))
+
+    __table_args__ = (Index("idx_postId_hashtagId", "postId", "hashtagId"),)
 
 
 class Cat(BaseMin, Base):
@@ -79,16 +106,9 @@ class Cat(BaseMin, Base):
     owner_id = Column(Integer, ForeignKey("user.id"))
     image = Column(String(100), nullable=False)
 
-    posts = relationship("Post", secondary=post_cats, back_populates="cats")
+    __table_args__ = (Index("idx_owner_id", "owner_id"),)
+
     cat_owner = relationship("User", back_populates="cats")
-
-
-post_hashtags = Table(
-    "post_hashtags",
-    Base.metadata,
-    Column("post_id", Integer, ForeignKey("post.id", ondelete="CASCADE"), primary_key=True),
-    Column("hashtag_id", Integer, ForeignKey("hashtag.id"), primary_key=True),
-)
 
 
 class Post(BaseMin, Base):
@@ -97,12 +117,12 @@ class Post(BaseMin, Base):
     title = Column(String(50), nullable=False)
     uploader_id = Column(Integer, ForeignKey("user.id"))
 
-    cats = relationship("Cat", secondary=post_cats, back_populates="posts")
     likes = relationship("Like", back_populates="like_post_owner", cascade="all,delete")
     comments = relationship("Comment", back_populates="comment_post_owner", cascade="all,delete")
     post_owner = relationship("User", back_populates="posts", foreign_keys=[uploader_id])
-    hashtags = relationship("HashTag", secondary=post_hashtags, back_populates="posts")
     images = relationship("Image", back_populates="post", cascade="all,delete")
+
+    __table_args__ = (Index("idx_uploader_id", "uploader_id"),)
 
 
 class Image(BaseMin, Base):
@@ -118,7 +138,6 @@ class HashTag(BaseMin, Base):
     __tablename__ = "hashtag"
 
     hashtag = Column(String(50), nullable=False, unique=True)
-    posts = relationship("Post", secondary=post_hashtags, back_populates="hashtags")
 
 
 class Comment(BaseMin, Base):
