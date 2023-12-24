@@ -131,6 +131,8 @@ class Image(BaseMin, Base):
     url = Column(String(255), nullable=False)
     post_id = Column(Integer, ForeignKey("post.id", ondelete="CASCADE"))  # 게시물과의 관계 설정
 
+    __table_args__ = (Index("idx_post_id", "post_id"),)
+
     post = relationship("Post", back_populates="images")
 
 
@@ -138,6 +140,8 @@ class HashTag(BaseMin, Base):
     __tablename__ = "hashtag"
 
     hashtag = Column(String(50), nullable=False, unique=True)
+
+    __table_args__ = (Index("idx_hashtag", "hashtag"),)
 
 
 class Comment(BaseMin, Base):
