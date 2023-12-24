@@ -4,8 +4,8 @@ from app.config import settings
 
 async def upload_default_image(username):
     try:
-        obj_path = f"{username}/user.jpg"
-        thumnail_path = f"thumnail/{username}/user.jpg"
+        obj_path = f"user/{username}/user.jpg"
+        thumnail_path = f"user/{username}/thumnail.jpg"
         settings.s3.upload_file(
             "images/default.jpg", settings.BUCKET_NAME, obj_path, ExtraArgs={"ContentType": "image/jpeg"}
         )
