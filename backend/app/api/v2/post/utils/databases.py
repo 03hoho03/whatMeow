@@ -4,14 +4,14 @@ from app.model import Post, Image, HashTag, PostHashTag, PostCats
 
 
 async def find_posts_by_uploader_id(id, db):
-    return db.query(Post).filter_by(uploader_id=id).all()
+    return db.query(Post).filter_by(uploaderId=id).all()
 
 
 async def create_post(id, content, db):
     try:
-        row = Post(title=content, uploader_id=id)
+        row = Post(title=content, uploaderId=id)
         db.add(row)
-        db.commit()
+        db.flush()
 
         return row
     except Exception as e:
@@ -21,9 +21,9 @@ async def create_post(id, content, db):
 async def create_image(id, images, db):
     try:
         for image in images:
-            row = Image(url=image, post_id=id)
+            row = Image(url=image, postId=id)
             db.add(row)
-        db.commit()
+
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f"{e} while create_image")
 
@@ -50,8 +50,6 @@ async def apply_hashtag(id, tags, db):
                 posthashtag = PostHashTag(postId=id, hashtagId=new_hashtag.id)
                 db.add(posthashtag)
 
-        db.commit()
-
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f"{e} while apply_hashtag")
 
@@ -61,7 +59,6 @@ async def insert_postcats(id, catIds, db):
         for catId in catIds:
             postcat = PostCats(postId=id, catId=catId)
             db.add(postcat)
-        db.commit()
 
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f"{e} while insert_postcats")

@@ -11,4 +11,5 @@ async def createPost(id, username, content, tags, cat_ids, files, db):
     if cat_ids:
         await databases.insert_postcats(post.id, cat_ids, db)
 
+    db.commit()
     return post
