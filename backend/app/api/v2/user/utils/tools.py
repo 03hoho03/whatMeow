@@ -59,7 +59,7 @@ async def make_return_dict(user, id, data):
     _dict = {
         "userId": user.id,
         "nickname": user.nickname,
-        "profileThumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/thumnail/{user.profile_image}",
+        "profileThumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/thumnail/{user.profileImage}",
         "postCount": len(data["posts"]),
         "explain": user.explain if user.explain else "",
         "follow": {
