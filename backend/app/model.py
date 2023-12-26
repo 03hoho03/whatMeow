@@ -11,8 +11,8 @@ warnings.filterwarnings("ignore", category=SAWarning)
 
 class BaseMin:
     id = Column(Integer, primary_key=True, index=True)
-    createdAt = Column(DateTime, nullable=False, default=func.utc_timestamp())
-    updatedAt = Column(DateTime, nullable=False, default=func.utc_timestamp(), onupdate=func.utc_timestamp())
+    createdAt = Column(DateTime, nullable=False, default=func.now())
+    updatedAt = Column(DateTime, nullable=False, default=func.now(), onupdate=func.now())
 
 
 followers = Table(
@@ -140,8 +140,6 @@ class HashTag(BaseMin, Base):
     __tablename__ = "hashtag"
 
     hashtag = Column(String(50), nullable=False, unique=True)
-
-    __table_args__ = (Index("idx_hashtag", "hashtag"),)
 
 
 class Comment(BaseMin, Base):

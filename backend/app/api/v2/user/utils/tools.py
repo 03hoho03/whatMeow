@@ -21,7 +21,7 @@ async def is_password_correct(data, user):
 
 
 async def create_access_token(user):
-    access_expire = datetime.utcnow() + timedelta(days=1)
+    access_expire = datetime.now() + timedelta(days=1)
     user_access_info = UserPayload(**user.__dict__, exp=access_expire)
 
     access_token = jwt.encode(user_access_info.dict(), settings.SECRET_ACCESS_KEY, algorithm=settings.ALGORITHM)
@@ -30,7 +30,7 @@ async def create_access_token(user):
 
 
 async def create_refresh_token(user):
-    refresh_expire = datetime.utcnow() + timedelta(days=14)
+    refresh_expire = datetime.now() + timedelta(days=14)
     user_refresh_info = UserPayload(**user.__dict__, exp=refresh_expire)
     refresh_token = jwt.encode(user_refresh_info.dict(), settings.SECRET_REFRESH_KEY, algorithm=settings.ALGORITHM)
 
