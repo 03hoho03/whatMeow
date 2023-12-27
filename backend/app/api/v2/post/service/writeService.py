@@ -13,3 +13,8 @@ async def createPost(id, username, content, tags, cat_ids, files, db):
 
     db.commit()
     return post
+
+
+async def deletePost(userId, postId, db):
+    await databases.delete_post(userId, postId, db)
+    db.commit()

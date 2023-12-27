@@ -80,3 +80,11 @@ async def insert_postcats(id, catIds, db):
 
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f"{e} while insert_postcats")
+
+
+async def delete_post(userId, postId, db):
+    post = db.query(Post).filter_by(id=postId).first()
+    if post.uploaderId == userId:
+        db.delete(post)
+    else:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not Owner")
