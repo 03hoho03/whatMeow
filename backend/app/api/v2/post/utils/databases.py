@@ -3,8 +3,24 @@ from fastapi import HTTPException, status
 from app.model import Post, Image, HashTag, PostHashTag, PostCats
 
 
+async def find_post_by_post_id(id, db):
+    return db.query(Post).filter_by(id=id).first()
+
+
 async def find_posts_by_uploader_id(id, db):
     return db.query(Post).filter_by(uploaderId=id).all()
+
+
+async def find_urls_by_post_id(id, db):
+    return db.query(Image.url).filter_by(postId=id).all()
+
+
+async def find_hashtagids_by_post_id(id, db):
+    return db.query(PostHashTag.hashtagId).filter_by(postId=id).all()
+
+
+async def find_hashtags_by_hashtagids(ids, db):
+    return db.query(HashTag.hashtag).filter(HashTag.id.in_(ids)).all()
 
 
 async def create_post(id, content, db):

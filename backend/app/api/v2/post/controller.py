@@ -4,7 +4,7 @@ from typing import List
 
 from app.database import get_db
 from . import schema
-from .service import writeService
+from .service import writeService, readService
 
 router = APIRouter(tags=["PostV2"])
 
@@ -22,3 +22,10 @@ async def create(
     return await writeService.createPost(
         access_token.get("id"), access_token.get("username"), content, tags, cat_ids, files, db
     )
+
+
+@router.get("/{postId}", status_code=status.HTTP_200_OK)
+async def find(request: Request, postId: int, db: Session = Depends(get_db)):
+    access_token = request.state.access_token
+
+    return await readService.findDetailedPost(access_token.get("id") if access_token else None, postId, db)
