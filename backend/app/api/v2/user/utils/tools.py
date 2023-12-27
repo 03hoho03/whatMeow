@@ -21,7 +21,7 @@ async def is_password_correct(data, user):
 
 
 async def create_access_token(user):
-    access_expire = datetime.utcnow() + timedelta(days=1)
+    access_expire = datetime.now() + timedelta(days=1)
     user_access_info = UserPayload(**user.__dict__, exp=access_expire)
 
     access_token = jwt.encode(user_access_info.dict(), settings.SECRET_ACCESS_KEY, algorithm=settings.ALGORITHM)
@@ -30,7 +30,7 @@ async def create_access_token(user):
 
 
 async def create_refresh_token(user):
-    refresh_expire = datetime.utcnow() + timedelta(days=14)
+    refresh_expire = datetime.now() + timedelta(days=14)
     user_refresh_info = UserPayload(**user.__dict__, exp=refresh_expire)
     refresh_token = jwt.encode(user_refresh_info.dict(), settings.SECRET_REFRESH_KEY, algorithm=settings.ALGORITHM)
 
@@ -59,7 +59,7 @@ async def make_return_dict(user, id, data):
     _dict = {
         "userId": user.id,
         "nickname": user.nickname,
-        "profileThumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/thumnail/{user.profile_image}",
+        "profileThumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/thumnail/{user.profileImage}",
         "postCount": len(data["posts"]),
         "explain": user.explain if user.explain else "",
         "follow": {
@@ -78,7 +78,7 @@ async def make_return_dict(user, id, data):
         "posts": [
             {
                 "postId": post.id,
-                "thumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/thumnail/{user.username}/{post.id}.jpg",
+                "thumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/thumnail/post/{user.username}/{post.id}/0.jpg",
             }
             for post in data["posts"]
         ],

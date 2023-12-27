@@ -13,7 +13,7 @@ async def add_generaluser(data, username, url, password, db):
                 "nickname": data.nickname,
                 "name": data.name,
                 "username": username,
-                "profile_image": url,
+                "profileImage": url,
                 "password": password,
             }
         )
@@ -32,7 +32,7 @@ async def add_google_user(result, nickname, username, url, db):
             **{
                 "name": result.get("name"),
                 "email": result.get("email"),
-                "profile_image": url,
+                "profileImage": url,
                 "nickname": nickname,
                 "username": username,
             }
@@ -51,10 +51,10 @@ async def add_kakao_user(result, _property, _profile, nickname, username, url, d
         row = User(
             **{
                 "name": _property.get("nickname"),
-                "kakao_id": result.get("id"),
+                "kakaoId": result.get("id"),
                 "email": _profile.get("email", None),
                 "gender": _profile.get("gender", None),
-                "profile_image": url,
+                "profileImage": url,
                 "nickname": nickname,
                 "username": username,
             }
@@ -99,7 +99,7 @@ async def find_user_by_nickname(nickname, db):
 
 
 async def find_user_by_kakao_id(id, db):
-    return db.query(User).filter_by(kakao_id=id).first()
+    return db.query(User).filter_by(kakaoId=id).first()
 
 
 async def find_user_by_id(id, db):
@@ -111,17 +111,17 @@ async def find_user_by_id(id, db):
 
 
 async def update_refresh_token_info(user, refresh_token, db):
-    exist = db.query(RefreshToken).filter_by(user_id=user.id).first()
+    exist = db.query(RefreshToken).filter_by(userId=user.id).first()
     if exist:
         db.delete(exist)
-    row = RefreshToken(**{"refresh_token": refresh_token, "user_id": user.id})
+    row = RefreshToken(**{"refresh_token": refresh_token, "userId": user.id})
     db.add(row)
     db.commit()
 
 
 async def delete_refreshtoken_info(id, db):
     try:
-        row = db.query(RefreshToken).filter_by(user_id=id).first()
+        row = db.query(RefreshToken).filter_by(userId=id).first()
         db.delete(row)
         db.commit()
 

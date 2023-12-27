@@ -12,7 +12,9 @@ class GeneralUserReturn(GeneralUserBase):
     id: int
 
 
-class GeneralUserAdd(GeneralUserReturn):
+class GeneralUserAdd(GeneralUserBase):
+    name: str
+    nickname: str
     password: str
 
 
@@ -23,4 +25,5 @@ class GeneralUserLogin(GeneralUserBase):
 class UserPayload(BaseModel):
     id: int
     nickname: str
+    username: str
     exp: datetime
