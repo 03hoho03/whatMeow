@@ -44,9 +44,11 @@ async def apply_hashtag(id, tags, db):
             existing_hashtag = db.query(HashTag).filter_by(hashtag=hashtag).first()
             if existing_hashtag:
                 posthashtag = PostHashTag(postId=id, hashtagId=existing_hashtag.id)
+                db.add(posthashtag)
             else:
                 new_hashtag = HashTag(hashtag=hashtag)
                 db.add(new_hashtag)
+                db.flush()
                 posthashtag = PostHashTag(postId=id, hashtagId=new_hashtag.id)
                 db.add(posthashtag)
 

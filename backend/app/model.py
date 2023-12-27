@@ -141,6 +141,8 @@ class HashTag(BaseMin, Base):
 
     hashtag = Column(String(50), nullable=False, unique=True)
 
+    __table_args__ = (Index("idx_hashtag", "hashtag"),)
+
 
 class Comment(BaseMin, Base):
     __tablename__ = "comment"
