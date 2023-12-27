@@ -78,7 +78,7 @@ async def make_return_dict(user, id, data):
         "posts": [
             {
                 "postId": post.id,
-                "thumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/thumnail/{user.username}/{post.id}.jpg",
+                "thumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/thumnail/post/{user.username}/{post.id}/0.jpg",
             }
             for post in data["posts"]
         ],

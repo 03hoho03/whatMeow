@@ -6,7 +6,7 @@ from PIL import Image
 from app.config import settings
 
 
-async def upload_post_thumnail(username, postId, file):
+async def upload_post_thumnail(username, obj_path, postId, file):
     async def image_to_thumnail(image):
         image = Image.open(image.file)
         rgb_img = image.convert("RGB")
@@ -19,7 +19,7 @@ async def upload_post_thumnail(username, postId, file):
         in_mem_file = io.BytesIO()
         resized_image.save(in_mem_file, format="jpeg")
         in_mem_file.seek(0)
-        thunmnail_path = f"post/{username}/{postId}/thumnail.jpg"
+        thunmnail_path = f"thumnail/{obj_path}"
         settings.s3.upload_fileobj(
             in_mem_file, settings.BUCKET_NAME, thunmnail_path, ExtraArgs={"ContentType": "image/jpeg"}
         )
