@@ -13,3 +13,10 @@ async def create(request: Request, data: schema.CommentAdd, postId: int, db: Ses
     access_token = request.state.access_token
 
     return await writeService.createComment(access_token.get("id"), postId, data, db)
+
+
+@router.delete("/{commentId}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete(request: Request, commentId, db: Session = Depends(get_db)):
+    access_token = request.state.access_token
+
+    return await writeService.deleteComment(access_token.get("id"), commentId, db)

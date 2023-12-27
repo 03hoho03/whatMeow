@@ -6,3 +6,8 @@ async def createComment(userId, postId, data, db):
     db.commit()
 
     return comment
+
+
+async def deleteComment(userId, commentId, db):
+    if await databases.delete_comment(userId, commentId, db):
+        db.commit()
