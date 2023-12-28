@@ -26,7 +26,6 @@ export interface PostDetailApiResponse {
 
 interface FeedService {
   upload: (form: FormData) => Promise<void>
-  registComment: (comment: string) => Promise<void>
   updateLike: (feedId: number) => Promise<Like>
   getPostDetail: (postId: number) => Promise<PostDetailApiResponse>
 }
@@ -36,44 +35,41 @@ function useFeedService(): FeedService {
   const baseUrl = `${BASE_URL}/api/v1/post`
   return {
     upload: async (form) => {
-      const response = await fetch.post(`${baseUrl}`, form, undefined, {
-        credentials: 'include',
+      const response = await fetch.post(`${baseUrl}`, {
+        body: form,
+        options: { credentials: 'include' },
       })
+
       if (!response.ok) {
+        const data = await response.json()
+        console.log(data)
         const error = new Error('게시글 등록에 실패하였습니다.')
         error.cause = response.status
         throw error
       }
+
       return await response.json()
     },
-    registComment: async (data) => {
-      console.log(data)
-      setTimeout(() => Promise.resolve(true), 1000)
-    },
     updateLike: async (feedId) => {
-      const response = await fetch.post(
-        `${baseUrl}/like/${feedId}`,
-        null,
-        undefined,
-        {
-          credentials: 'include',
-        },
-      )
+      const response = await fetch.post(`${baseUrl}/like/${feedId}`, {
+        options: { credentials: 'include' },
+      })
+
       if (!response.ok) {
         throw new Error('오류가 발생하였습니다.')
       }
+
       return await response.json()
     },
     getPostDetail: async (postId) => {
-      const response = await fetch.get(
-        `${baseUrl}/${postId}`,
-        null,
-        undefined,
-        { credentials: 'include' },
-      )
+      const response = await fetch.get(`${baseUrl}/${postId}`, {
+        options: { credentials: 'include' },
+      })
+
       if (!response.ok) {
         throw new Error('오류가 발생하였습니다.')
       }
+
       return await response.json()
     },
   }

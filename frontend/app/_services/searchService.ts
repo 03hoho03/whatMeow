@@ -1,8 +1,10 @@
 import { useFetch } from '../_helpers/client/useFetch'
 import { BASE_URL } from '../_utils/constants'
 
-export interface FeedItem {
-  createdAt: Date
+export interface GetFeedListApiResponse extends Feed {}
+interface GetRecentListApiResponse extends Feed {}
+interface Feed {
+  createdAt: string
   content: string
   images: string[]
   like: Like
@@ -15,8 +17,14 @@ interface Like {
   isLike: boolean
 }
 interface SearchService {
-  getFeedList: (page?: number, limit?: number) => Promise<FeedItem[]>
-  getRecentList: (page?: number, limit?: number) => Promise<FeedItem[]>
+  getFeedList: (
+    page?: number,
+    limit?: number,
+  ) => Promise<GetFeedListApiResponse[]>
+  getRecentList: (
+    page?: number,
+    limit?: number,
+  ) => Promise<GetRecentListApiResponse[]>
 }
 
 function useSearchService(): SearchService {
@@ -28,44 +36,34 @@ function useSearchService(): SearchService {
         limit: limit.toString(),
         start: page.toString(),
       })
-      const response = await fetch
-        .get(`${baseUrl}/main?` + param, null, undefined, {
+      const response = await fetch.get(`${baseUrl}/main?` + param, {
+        options: {
           credentials: 'include',
-        })
-        .then((res) => res.json())
-        .then((data) => {
-          const result = data.map((feed: FeedItem) => {
-            return {
-              ...feed,
-              createdAt: new Date(feed.createdAt),
-            }
-          })
-          console.log(result)
-          return result
-        })
-      return response
+        },
+      })
+
+      if (!response.ok) {
+        throw Error('오류가 발생하였습니다.')
+      }
+
+      return await response.json()
     },
     getRecentList: async (page = 0, limit = 3) => {
       const param = new URLSearchParams({
         limit: limit.toString(),
         start: page.toString(),
       })
-      const response = await fetch
-        .get(`${baseUrl}/guest?` + param, null, undefined, {
+      const response = await fetch.get(`${baseUrl}/guest?` + param, {
+        options: {
           credentials: 'include',
-        })
-        .then((res) => res.json())
-        .then((data) => {
-          const result = data.map((feed: FeedItem) => {
-            return {
-              ...feed,
-              createdAt: new Date(feed.createdAt),
-            }
-          })
-          console.log(result)
-          return result
-        })
-      return response
+        },
+      })
+
+      if (!response.ok) {
+        throw Error('오류가 발생하였습니다.')
+      }
+
+      return await response.json()
     },
   }
 }

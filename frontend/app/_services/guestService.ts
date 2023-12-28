@@ -29,8 +29,8 @@ function useGuestService(): GuestService {
         start: page.toString(),
       })
       const response = await fetch
-        .get(`${baseUrl}/search?` + param, null, undefined, {
-          credentials: 'include',
+        .get(`${baseUrl}/search?` + param, {
+          options: { credentials: 'include' },
         })
         .then((res) => res.json())
         .then((data) => {

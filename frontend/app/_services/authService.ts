@@ -16,43 +16,45 @@ function useAuthService(): AuthSerivce {
   return {
     register: async (email, password, nickname) => {
       const name = '장호정'
-      const response = await fetch.post(
-        `${baseUrl}/register`,
-        {
+      const response = await fetch.post(`${baseUrl}/register`, {
+        headers: {
+          'Content-type': 'application/json',
+        },
+        body: {
           email,
           name,
           password,
           nickname,
         },
-        {
-          'Content-type': 'application/json',
-        },
-      )
+      })
+
       if (!response.ok) {
         throw new Error('오류가 발생했습니다.')
       }
+
       return await response.json()
     },
     login: async (email, password) => {
-      const response = await fetch.post(
-        `${baseUrl}/login`,
-        {
+      const response = await fetch.post(`${baseUrl}/login`, {
+        headers: {
+          'Content-type': 'application/json',
+        },
+        body: {
           email,
           password,
         },
-        {
-          'Content-type': 'application/json',
-        },
-        { credentials: 'include' },
-      )
+        options: { credentials: 'include' },
+      })
+
       if (!response.ok) {
         throw new Error('오류가 발생했습니다.')
       }
+
       return await response.json()
     },
     logout: async () => {
-      const response = await fetch.get(`${baseUrl}/logout`, null, undefined, {
-        credentials: 'include',
+      const response = await fetch.get(`${baseUrl}/logout`, {
+        options: { credentials: 'include' },
       })
 
       if (!response.ok) {
@@ -65,10 +67,12 @@ function useAuthService(): AuthSerivce {
       return await response.json()
     },
     kakao: async () => {
-      const response = await fetch.get(`${baseUrl}/kakao`, null, undefined, {
-        credentials: 'include',
+      const response = await fetch.get(`${baseUrl}/kakao`, {
+        options: { credentials: 'include' },
       })
+
       const data = await response.json()
+
       return data
     },
   }
