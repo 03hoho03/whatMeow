@@ -3,7 +3,7 @@ import {
   PostDetailApiResponse,
   useFeedService,
 } from '@/app/_services/feedService'
-import { UseCommentQueryKey } from './useComment'
+import { UseCommentQueryKey } from './useGetCommentList'
 
 interface Like {
   count: number
