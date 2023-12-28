@@ -5,6 +5,6 @@
   margin-right: 8px;
   padding: 0;
 }
-.iconBtn {
-  stroke-width: 0.8px !important;
+.commentIcon:hover {
+  color: #aaa;
 }
