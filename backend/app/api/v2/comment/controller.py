@@ -12,7 +12,7 @@ router = APIRouter(tags=["CommentV2"])
 async def create(request: Request, data: schema.CommentAdd, postId: int, db: Session = Depends(get_db)):
     access_token = request.state.access_token
 
-    return await writeService.createComment(access_token.get("id"), postId, data, db)
+    return await writeService.createComment(access_token.get("id"), access_token.get("nickname"), postId, data, db)
 
 
 @router.delete("/{commentId}", status_code=status.HTTP_204_NO_CONTENT)

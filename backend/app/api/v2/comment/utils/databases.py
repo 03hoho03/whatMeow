@@ -3,8 +3,8 @@ from fastapi import HTTPException, status
 from app.model import Comment
 
 
-async def create_comment(userId, postId, comment, db):
-    comment = Comment(uploader=userId, postId=postId, comment=comment)
+async def create_comment(userId, nickname, postId, comment, db):
+    comment = Comment(uploader=userId, nickname=nickname, postId=postId, comment=comment)
     db.add(comment)
 
     return comment

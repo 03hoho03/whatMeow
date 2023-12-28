@@ -148,6 +148,7 @@ class Comment(BaseMin, Base):
     __tablename__ = "comment"
 
     comment = Column(String(255), nullable=False)
+    nickname = Column(String(20), nullable=False)
     uploader = Column(Integer, ForeignKey("user.id", ondelete="CASCADE"))
     postId = Column(Integer, ForeignKey("post.id", ondelete="CASCADE"))
 

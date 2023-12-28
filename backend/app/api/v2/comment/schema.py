@@ -10,4 +10,5 @@ class CommentReturn(CommentAdd):
     id: int
     uploader: int
     postId: int
+    nickname: str
     createdAt: datetime
