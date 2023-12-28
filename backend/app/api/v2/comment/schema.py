@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from datetime import datetime
 
 
 class CommentAdd(BaseModel):
@@ -9,3 +10,4 @@ class CommentReturn(CommentAdd):
     id: int
     uploader: int
     postId: int
+    createdAt: datetime

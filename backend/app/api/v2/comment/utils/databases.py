@@ -13,8 +13,20 @@ async def create_comment(userId, postId, comment, db):
 async def delete_comment(userId, commentId, db):
     comment = db.query(Comment).filter_by(id=commentId).first()
     if comment:
-        if comment.id == userId:
+        if comment.uploader == userId:
             db.delete(comment)
+        else:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Wrong User Information")
+    else:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No comment with this ID")
+
+
+async def update_comment(userId, commentId, newComment, db):
+    comment = db.query(Comment).filter_by(id=commentId).first()
+    if comment:
+        if comment.uploader == userId:
+            comment.comment = newComment
+            return comment
         else:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Wrong User Information")
     else:

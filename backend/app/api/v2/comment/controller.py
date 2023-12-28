@@ -20,3 +20,10 @@ async def delete(request: Request, commentId, db: Session = Depends(get_db)):
     access_token = request.state.access_token
 
     return await writeService.deleteComment(access_token.get("id"), commentId, db)
+
+
+@router.put("/{commentId}", status_code=status.HTTP_202_ACCEPTED, response_model=schema.CommentReturn)
+async def update(request: Request, data: schema.CommentAdd, commentId: int, db: Session = Depends(get_db)):
+    access_token = request.state.access_token
+
+    return await writeService.updateComment(access_token.get("id"), commentId, data, db)
