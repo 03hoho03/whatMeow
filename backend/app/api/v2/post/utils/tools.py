@@ -1,7 +1,7 @@
 from app.config import settings
 
 
-async def make_detailed_post(post, user, images, hashtags):
+async def make_detailed_post(post, user, images, hashtags, comments):
     """
     필요한 것 : Post, Uploader(User), PostHashTag에서 추출한 HashTag
     """
@@ -18,11 +18,12 @@ async def make_detailed_post(post, user, images, hashtags):
         "hashtags": [hashtag.hashtag for hashtag in hashtags],
         "comments": [
             {
-                "commentId": "commentId",
-                "comment": "comment",
-                "nickname": "comment_nickname",
-                "thumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/thumnail/user.jpg",
+                "commentId": comment.id,
+                "comment": comment.comment,
+                "nickname": comment.nickname,
+                "thumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/thumnail/user/{comment.uploader}/user.jpg",
             }
+            for comment in comments
         ],
     }
 

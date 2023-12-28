@@ -31,3 +31,8 @@ async def update_comment(userId, commentId, newComment, db):
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Wrong User Information")
     else:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No comment with this ID")
+
+
+async def find_commets_by_post_id(postId, db):
+    comments = db.query(Comment).filter_by(postId=postId).all()
+    return comments
