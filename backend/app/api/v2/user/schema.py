@@ -25,5 +25,4 @@ class GeneralUserLogin(GeneralUserBase):
 class UserPayload(BaseModel):
     id: int
     nickname: str
-    username: str
     exp: datetime

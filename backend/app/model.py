@@ -28,7 +28,7 @@ class User(BaseMin, Base):
 
     name = Column(String(10), nullable=False)
     nickname = Column(String(20), nullable=False, unique=True)
-    username = Column(String(20), nullable=False, unique=True)
+    # username = Column(String(20), nullable=False, unique=True)
     kakaoId = Column(String(20), nullable=True, unique=True)
     email = Column(String(30), nullable=True, unique=True)
     password = Column(String(255), nullable=True)
