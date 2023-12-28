@@ -34,7 +34,7 @@ const Comment = ({ comment, postId }: CommentProps) => {
       <div className={style.commentWrapper}>
         <div className={style.writerThumnailContainer}>
           <div className={style.writerThumnailWrapper}>
-            <img src={comment.thumnail} />
+            <img src={comment.thumnail} alt="thumnail" />
           </div>
         </div>
         <div className={style.commentInfoContainer}>
