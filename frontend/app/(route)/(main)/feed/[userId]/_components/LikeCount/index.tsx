@@ -1,19 +1,19 @@
 import React from 'react'
 import style from './likeCount.module.css'
-import { useQuery } from '@tanstack/react-query'
+import { useLikeQuery } from '@/app/_services/quries/useLike'
 
 interface LikeCountProps {
   postId: number
 }
-interface Like {
-  count: number
-  isLike: boolean
-}
 
 const LikeCount = ({ postId }: LikeCountProps) => {
-  const { data } = useQuery<Like>({ queryKey: ['like', postId] })
+  const { likeQuery } = useLikeQuery(postId)
 
-  return <span className={style.likeCount}>{`좋아요 ${data?.count}개`}</span>
+  return (
+    <span className={style.likeCount}>{`좋아요 ${
+      likeQuery.data?.count ? likeQuery.data?.count : 0
+    }개`}</span>
+  )
 }
 
 export default LikeCount
