@@ -1,32 +1,29 @@
-import string
 import random
 
 from fastapi import HTTPException, status
 from app.model import User, RefreshToken
 
 
-async def add_generaluser(data, username, url, password, db):
+async def add_generaluser(data, password, db):
     try:
         row = User(
             **{
                 "email": data.email,
                 "nickname": data.nickname,
                 "name": data.name,
-                "username": username,
-                "profileImage": url,
                 "password": password,
             }
         )
 
         db.add(row)
-        db.commit()
+        db.flush()
 
         return row
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f"{e}, add_generaluser")
 
 
-async def add_google_user(result, nickname, username, url, db):
+async def add_google_user(result, nickname, url, db):
     try:
         row = User(
             **{
@@ -34,19 +31,18 @@ async def add_google_user(result, nickname, username, url, db):
                 "email": result.get("email"),
                 "profileImage": url,
                 "nickname": nickname,
-                "username": username,
             }
         )
 
         db.add(row)
-        db.commit()
+        db.flush()
 
         return row
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f"{e}, add_google_user")
 
 
-async def add_kakao_user(result, _property, _profile, nickname, username, url, db):
+async def add_kakao_user(result, _property, _profile, nickname, url, db):
     try:
         row = User(
             **{
@@ -56,22 +52,13 @@ async def add_kakao_user(result, _property, _profile, nickname, username, url, d
                 "gender": _profile.get("gender", None),
                 "profileImage": url,
                 "nickname": nickname,
-                "username": username,
             }
         )
 
         db.add(row)
-        db.commit()
+        db.flush()
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f"{e}, add_kakao_user")
-
-
-async def get_random_username(db):
-    letters = string.ascii_letters
-    while True:
-        random_string = "".join(random.choice(letters) for _ in range(8))
-        if not db.query(User).filter_by(username=random_string).first():
-            return random_string
 
 
 async def get_random_nickname(db):

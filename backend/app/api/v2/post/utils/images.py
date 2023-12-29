@@ -6,7 +6,7 @@ from PIL import Image
 from app.config import settings
 
 
-async def upload_post_thumnail(username, obj_path, postId, file):
+async def upload_post_thumnail(obj_path, file):
     async def image_to_thumnail(image):
         image = Image.open(image.file)
         rgb_img = image.convert("RGB")
@@ -27,13 +27,13 @@ async def upload_post_thumnail(username, obj_path, postId, file):
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f"{e} while upload_post_thumnail")
 
 
-async def upload_post_images(username, postId, files):
+async def upload_post_images(userId, postId, files):
     try:
         images = []
         for i, file_obj in enumerate(files):
             content_type = file_obj.content_type
             if content_type.startswith("image/"):
-                obj_path = f"post/{username}/{postId}/{i}.jpg"
+                obj_path = f"post/{userId}/{postId}/{i}.jpg"
                 content = await file_obj.read()
                 settings.s3.upload_fileobj(
                     io.BytesIO(content), settings.BUCKET_NAME, obj_path, ExtraArgs={"ContentType": "image/jpeg"}

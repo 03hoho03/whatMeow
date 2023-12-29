@@ -28,7 +28,7 @@ class User(BaseMin, Base):
 
     name = Column(String(10), nullable=False)
     nickname = Column(String(20), nullable=False, unique=True)
-    username = Column(String(20), nullable=False, unique=True)
+    # username = Column(String(20), nullable=False, unique=True)
     kakaoId = Column(String(20), nullable=True, unique=True)
     email = Column(String(30), nullable=True, unique=True)
     password = Column(String(255), nullable=True)
@@ -148,6 +148,7 @@ class Comment(BaseMin, Base):
     __tablename__ = "comment"
 
     comment = Column(String(255), nullable=False)
+    nickname = Column(String(20), nullable=False)
     uploader = Column(Integer, ForeignKey("user.id", ondelete="CASCADE"))
     postId = Column(Integer, ForeignKey("post.id", ondelete="CASCADE"))
 

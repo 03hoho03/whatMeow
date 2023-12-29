@@ -19,9 +19,7 @@ async def create(
     db: Session = Depends(get_db),
 ):
     access_token = request.state.access_token
-    return await writeService.createPost(
-        access_token.get("id"), access_token.get("username"), content, tags, cat_ids, files, db
-    )
+    return await writeService.createPost(access_token.get("id"), content, tags, cat_ids, files, db)
 
 
 @router.get("/{postId}", status_code=status.HTTP_200_OK)

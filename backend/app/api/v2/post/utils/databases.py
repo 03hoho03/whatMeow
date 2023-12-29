@@ -84,7 +84,10 @@ async def insert_postcats(id, catIds, db):
 
 async def delete_post(userId, postId, db):
     post = db.query(Post).filter_by(id=postId).first()
-    if post.uploaderId == userId:
-        db.delete(post)
+    if post:
+        if post.uploaderId == userId:
+            db.delete(post)
+        else:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not Owner")
     else:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not Owner")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No Post with this ID")
