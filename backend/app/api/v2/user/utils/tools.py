@@ -69,7 +69,7 @@ async def make_return_dict(user, id, data):
         },
         "cats": [
             {
-                "catName": cat.catname,
+                "catName": cat.catName,
                 "catId": cat.id,
                 "thumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/thumnail/{cat.image}",
             }
