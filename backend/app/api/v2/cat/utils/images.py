@@ -37,5 +37,7 @@ async def upload_cat_image(catId, image):
                 io.BytesIO(content), settings.BUCKET_NAME, obj_path, ExtraArgs={"ContentType": "image/jpeg"}
             )
 
+            return obj_path
+
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f"{e} while upload_post_images")

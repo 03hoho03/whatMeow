@@ -4,7 +4,7 @@ from sqlalchemy.orm.session import Session
 
 from app.database import get_db
 from . import schema
-from .service import writeService
+from .service import writeService, readService
 
 router = APIRouter(tags=["CatV2"])
 
@@ -26,3 +26,10 @@ async def create(
     return await writeService.createCat(
         access_token.get("id"), catName, age, gender, explain, breed, file, hashtags, db
     )
+
+
+@router.get("/{catId}", status_code=status.HTTP_200_OK)
+async def find(request: Request, catId: int, db: Session = Depends(get_db)):
+    access_token = request.state.access_token
+
+    return await readService.findCat(access_token.get("id") if access_token else None, catId, db)

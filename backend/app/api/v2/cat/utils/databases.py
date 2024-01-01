@@ -1,10 +1,18 @@
 from fastapi import HTTPException, status
 
-from app.model import Cat, HashTag, CatHashTag
+from app.model import Cat, HashTag, CatHashTag, PostCats
+
+
+async def find_postids_by_cat_id(catId, db):
+    return db.query(PostCats.postId).filter_by(catId=catId).all()
 
 
 async def find_cats_by_owner_id(userId, db):
     return db.query(Cat).filter_by(ownerId=userId).all()
+
+
+async def find_cat_by_cat_id(catId, db):
+    return db.query(Cat).filter_by(id=catId).first()
 
 
 async def create_cat(userId, catName, age, gender, explain, breed, db):
