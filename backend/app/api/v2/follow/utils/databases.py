@@ -13,6 +13,10 @@ async def make_toUserId_subquery(fromUserId, db):
     return db.query(Follow.toUserId).filter(Follow.fromUserId == fromUserId).subquery()
 
 
+async def make_fromUserId_subquery(toUserId, db):
+    return db.query(Follow.fromUserId).filter(Follow.toUserId == toUserId).subquery()
+
+
 async def apply_follow_request_by_toUser_id(fromUserId, toUserId, toUsers, db):
     follow = db.query(Follow).filter_by(fromUserId=fromUserId, toUserId=toUserId).first()
     if follow:
