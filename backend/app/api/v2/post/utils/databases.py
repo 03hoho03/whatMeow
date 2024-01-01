@@ -23,6 +23,10 @@ async def find_hashtags_by_hashtagids(ids, db):
     return db.query(HashTag.hashtag).filter(HashTag.id.in_(ids)).all()
 
 
+async def find_posts_by_post_ids(postIds, db):
+    return db.query(Post).filter(Post.id.in_(postIds)).all()
+
+
 async def create_post(id, content, db):
     try:
         row = Post(title=content, uploaderId=id)

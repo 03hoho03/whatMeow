@@ -97,18 +97,25 @@ class PostHashTag(Base, BaseMin):
 class Cat(BaseMin, Base):
     __tablename__ = "cat"
 
-    catname = Column(String(20), nullable=False)
+    catName = Column(String(20), nullable=False)
     age = Column(Integer, nullable=True)
     gender = Column(String(5), nullable=True)
-    cat_hashtags = Column(String(50), nullable=True)
     explain = Column(String(255), nullable=True)
     breed = Column(String(100), nullable=True)
     ownerId = Column(Integer, ForeignKey("user.id"))
-    image = Column(String(100), nullable=False)
+    image = Column(String(100), nullable=True)
 
     __table_args__ = (Index("idx_owner_id", "ownerId"),)
 
     cat_owner = relationship("User", back_populates="cats")
+
+
+class CatHashTag(Base, BaseMin):
+    __tablename__ = "cathashtag"
+    catId = Column(Integer, ForeignKey("cat.id", ondelete="CASCADE"))
+    hashtagId = Column(Integer, ForeignKey("hashtag.id"))
+
+    __table_args__ = (Index("idx_catId_hashtagId", "catId"),)
 
 
 class Post(BaseMin, Base):
