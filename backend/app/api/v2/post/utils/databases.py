@@ -19,12 +19,14 @@ async def find_hashtagids_by_post_id(id, db):
     return db.query(PostHashTag.hashtagId).filter_by(postId=id).all()
 
 
-async def find_hashtags_by_hashtagids(ids, db):
+async def find_hashtags_by_hashtagids(hashtagIds, db):
+    ids = [hashtagId[0] for hashtagId in hashtagIds]
     return db.query(HashTag.hashtag).filter(HashTag.id.in_(ids)).all()
 
 
 async def find_posts_by_post_ids(postIds, db):
-    return db.query(Post).filter(Post.id.in_(postIds)).all()
+    ids = [postId[0] for postId in postIds]
+    return db.query(Post).filter(Post.id.in_(ids)).all()
 
 
 async def timeline_upload(postId, fromUsers, db):
