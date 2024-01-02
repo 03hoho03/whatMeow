@@ -3,6 +3,6 @@ from ..utils import tools
 
 
 async def findDetailedPost(userId, postId, db):
-    post, user, images, hashtags, comments = await get_posts_users_hashtags_by_post_id(postId, db)
+    post, user, images, hashtags, comments, statLike = await get_posts_users_hashtags_by_post_id(userId, postId, db)
 
-    return await tools.make_detailed_post(post, user, images, hashtags, comments), userId
+    return await tools.make_detailed_post(post, user, images, hashtags, comments, statLike)

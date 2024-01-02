@@ -39,7 +39,6 @@ class User(BaseMin, Base):
     cats = relationship("Cat", back_populates="cat_owner")
     posts = relationship("Post", back_populates="post_owner")
     comments = relationship("Comment", back_populates="comment_owner")
-    likes = relationship("Like", back_populates="like_owner")
     refresh_tokens = relationship("RefreshToken", back_populates="user")
     following = relationship(
         "User",
@@ -123,8 +122,9 @@ class Post(BaseMin, Base):
 
     title = Column(String(50), nullable=False)
     uploaderId = Column(Integer, ForeignKey("user.id"))
+    likeCount = Column(Integer, default=0)
+    version = Column(Integer, default=0)
 
-    likes = relationship("Like", back_populates="like_post_owner", cascade="all,delete")
     comments = relationship("Comment", back_populates="comment_post_owner", cascade="all,delete")
     post_owner = relationship("User", back_populates="posts", foreign_keys=[uploaderId])
     images = relationship("Image", back_populates="post", cascade="all,delete")
@@ -163,15 +163,11 @@ class Comment(BaseMin, Base):
     comment_owner = relationship("User", back_populates="comments")
 
 
-class Like(BaseMin, Base):
+class Like(Base):
     __tablename__ = "like"
 
-    ownerId = Column(Integer, ForeignKey("user.id", ondelete="CASCADE"))
-    postId = Column(Integer, ForeignKey("post.id", ondelete="CASCADE"))
-
-    like_post_owner = relationship("Post", back_populates="likes")
-    # 내가 좋아요 눌러놓은 목록들이 필요하면 사용
-    like_owner = relationship("User", back_populates="likes")
+    ownerId = Column(Integer, ForeignKey("user.id", ondelete="CASCADE"), primary_key=True)
+    postId = Column(Integer, ForeignKey("post.id", ondelete="CASCADE"), primary_key=True)
 
 
 class RefreshToken(BaseMin, Base):

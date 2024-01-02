@@ -51,6 +51,20 @@ async def timeline_upload_by_fromUsers_postId(postId, fromUsers, db):
     db.bulk_insert_mappings(Timeline, [timeline.__dict__ for timeline in data])
 
 
+async def update_version_likes(postId, stat, version, db):
+    post = db.query(Post).filter_by(id=postId).first()
+    if post.version == version:
+        post.version += 1
+        if stat:
+            post.likeCount += 1
+        else:
+            post.likeCount -= 1
+
+        return post.likeCount
+    else:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Post Version Error. Try Again")
+
+
 async def create_post(id, content, db):
     try:
         row = Post(title=content, uploaderId=id)
