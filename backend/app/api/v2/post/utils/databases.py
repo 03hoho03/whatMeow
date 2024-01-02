@@ -51,6 +51,17 @@ async def timeline_upload_by_fromUsers_postId(postId, fromUsers, db):
     db.bulk_insert_mappings(Timeline, [timeline.__dict__ for timeline in data])
 
 
+async def update_version_likes(postId, stat, db):
+    post = db.query(Post).filter_by(id=postId).first()
+    post.version += 1
+    if stat:
+        post.likeCount += 1
+    else:
+        post.likeCount -= 1
+
+    return post.likeCount
+
+
 async def create_post(id, content, db):
     try:
         row = Post(title=content, uploaderId=id)
