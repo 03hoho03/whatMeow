@@ -1,4 +1,6 @@
 from fastapi import HTTPException, status
+from sqlalchemy import desc
+from sqlalchemy.exc import IntegrityError
 
 from app.model import Post, Image, HashTag, PostHashTag, PostCats, Timeline
 
@@ -29,7 +31,21 @@ async def find_posts_by_post_ids(postIds, db):
     return db.query(Post).filter(Post.id.in_(ids)).all()
 
 
-async def timeline_upload(postId, fromUsers, db):
+async def find_posts_by_uploader_id_order_by_id(toUserId, db):
+    return db.query(Post).filter_by(uploaderId=toUserId).order_by(desc(Post.id)).limit(5).all()
+
+
+async def timeline_upload_by_fromUser_posts(posts, fromUserId, db):
+    try:
+        data = [Timeline(postId=post.id, userId=fromUserId) for post in posts]
+
+        db.bulk_insert_mappings(Timeline, [timeline.__dict__ for timeline in data])
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+
+
+async def timeline_upload_by_fromUsers_postId(postId, fromUsers, db):
     data = [Timeline(postId=postId, userId=fromUser.id) for fromUser in fromUsers]
 
     db.bulk_insert_mappings(Timeline, [timeline.__dict__ for timeline in data])
