@@ -187,3 +187,10 @@ class CatFeature(Base):
 
     cat_breed = Column(String(15), primary_key=True)
     feature = Column(String(255))
+
+
+class Timeline(Base):
+    __tablename__ = "timeline"
+
+    userId = Column(Integer, ForeignKey("user.id"), primary_key=True)
+    postId = Column(Integer, ForeignKey("post.id"), primary_key=True)

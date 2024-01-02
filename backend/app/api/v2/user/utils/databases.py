@@ -89,6 +89,10 @@ async def find_user_by_kakao_id(id, db):
     return db.query(User).filter_by(kakaoId=id).first()
 
 
+async def find_users_by_follow_subquery(subq, db):
+    return db.query(User).filter(User.id.in_(subq)).all()
+
+
 async def find_user_by_id(id, db):
     row = db.query(User).filter_by(id=id).first()
     if row:
