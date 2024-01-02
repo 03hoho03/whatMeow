@@ -10,3 +10,11 @@ async def apply_like(userId, postId, db):
         likeNew = Like(ownerId=userId, postId=postId)
         db.add(likeNew)
         return True
+
+
+async def is_like(userId, postId, db):
+    like = db.query(Like).filter_by(ownerId=userId, postId=postId).first()
+    if like:
+        return True
+    else:
+        return False

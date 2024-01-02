@@ -1,7 +1,7 @@
 from app.config import settings
 
 
-async def make_detailed_post(post, user, images, hashtags, comments):
+async def make_detailed_post(post, user, images, hashtags, comments, statLike):
     """
     필요한 것 : Post, Uploader(User), PostHashTag에서 추출한 HashTag
     """
@@ -9,9 +9,8 @@ async def make_detailed_post(post, user, images, hashtags, comments):
         "nickname": user.nickname,
         "writerThumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/thumnail/{user.profileImage}",
         "postId": post.id,
-        # Like, Comment는 리팩토링 X
-        # 추후에 수정 예정
-        "like": {"count": 0, "isLike": False},
+        "version": post.version,
+        "like": {"count": post.likeCount, "isLike": statLike},
         "content": post.title,
         "createdAt": post.createdAt,
         "images": [f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/{image.url}" for image in images],
