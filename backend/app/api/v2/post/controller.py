@@ -32,5 +32,10 @@ async def find(request: Request, postId: int, db: Session = Depends(get_db)):
 @router.delete("/{postId}", status_code=status.HTTP_204_NO_CONTENT)
 async def post_delete(request: Request, postId: int, db: Session = Depends(get_db)):
     access_token = request.state.access_token
-    await writeService.deletePost(access_token.get("id") if access_token else None, postId, db)
-    return
+    return await writeService.deletePost(access_token.get("id") if access_token else None, postId, db)
+
+
+@router.get("/search/main", status_code=status.HTTP_200_OK)
+async def cursorMain(request: Request, key: int = None, db: Session = Depends(get_db)):
+    access_token = request.state.access_token
+    return await readService.searchMainFeed(access_token.get("id") if access_token else None, key, db)

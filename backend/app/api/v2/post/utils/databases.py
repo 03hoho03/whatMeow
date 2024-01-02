@@ -17,6 +17,10 @@ async def find_urls_by_post_id(id, db):
     return db.query(Image.url).filter_by(postId=id).all()
 
 
+async def find_urls_by_posts(posts, db):
+    return [db.query(Image).filter_by(postId=post.id).all() for post in posts]
+
+
 async def find_hashtagids_by_post_id(id, db):
     return db.query(PostHashTag.hashtagId).filter_by(postId=id).all()
 
@@ -133,3 +137,10 @@ async def delete_post(userId, postId, db):
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not Owner")
     else:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No Post with this ID")
+
+
+async def search_all_order_by_created_at(key, db):
+    if key:
+        return db.query(Post).filter(Post.id < key).order_by(desc(Post.id)).limit(5).all()
+    else:
+        return db.query(Post).order_by(desc(Post.id)).limit(5).all()
