@@ -1,3 +1,4 @@
+from ...application import get_users_from_follow_ids
 from ..utils import databases, images
 
 
@@ -10,6 +11,9 @@ async def createPost(userId, content, tags, cat_ids, files, db):
         await databases.apply_hashtag(post.id, tags, db)
     if cat_ids:
         await databases.insert_postcats(post.id, cat_ids, db)
+
+    fromUsers = await get_users_from_follow_ids.get_toUsers_from_follow_ids(userId, db)
+    await databases.timeline_upload(post.id, fromUsers, db)
 
     db.commit()
     return post

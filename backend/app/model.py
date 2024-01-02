@@ -187,3 +187,12 @@ class CatFeature(Base):
 
     cat_breed = Column(String(15), primary_key=True)
     feature = Column(String(255))
+
+
+class Timeline(Base, BaseMin):
+    __tablename__ = "timeline"
+
+    userId = Column(Integer, ForeignKey("user.id"))
+    postId = Column(Integer, ForeignKey("post.id"))
+
+    __table_args__ = (Index("idx_user_post_id", "postId", "userId"),)

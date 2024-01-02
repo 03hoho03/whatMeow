@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status
 
-from app.model import Post, Image, HashTag, PostHashTag, PostCats
+from app.model import Post, Image, HashTag, PostHashTag, PostCats, Timeline
 
 
 async def find_post_by_post_id(id, db):
@@ -25,6 +25,12 @@ async def find_hashtags_by_hashtagids(ids, db):
 
 async def find_posts_by_post_ids(postIds, db):
     return db.query(Post).filter(Post.id.in_(postIds)).all()
+
+
+async def timeline_upload(postId, fromUsers, db):
+    data = [Timeline(postId=postId, userId=fromUser.id) for fromUser in fromUsers]
+
+    db.bulk_insert_mappings(Timeline, [timeline.__dict__ for timeline in data])
 
 
 async def create_post(id, content, db):
