@@ -144,14 +144,14 @@ async def delete_post(userId, postId, db):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No Post with this ID")
 
 
-async def search_all_order_by_id(key, db):
+async def search_all_order_by_id(key, size, db):
     if key:
-        return db.query(Post).filter(Post.id < key).order_by(desc(Post.id)).limit(5).all()
+        return db.query(Post).filter(Post.id < key).order_by(desc(Post.id)).limit(size).all()
     else:
-        return db.query(Post).order_by(desc(Post.id)).limit(5).all()
+        return db.query(Post).order_by(desc(Post.id)).limit(size).all()
 
 
-async def find_postIds_from_timeline(userId, key, db):
+async def find_postIds_from_timeline(userId, key, size, db):
     if key:
         return (
             db.query(Timeline.postId)
@@ -160,10 +160,14 @@ async def find_postIds_from_timeline(userId, key, db):
                 Timeline.postId < key,
             )
             .order_by(desc(Timeline.postId))
-            .limit(5)
+            .limit(size)
             .all()
         )
     else:
         return (
-            db.query(Timeline.postId).filter(Timeline.userId == userId).order_by(desc(Timeline.postId)).limit(5).all()
+            db.query(Timeline.postId)
+            .filter(Timeline.userId == userId)
+            .order_by(desc(Timeline.postId))
+            .limit(size)
+            .all()
         )

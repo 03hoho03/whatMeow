@@ -36,12 +36,12 @@ async def post_delete(request: Request, postId: int, db: Session = Depends(get_d
 
 
 @router.get("/search/main", status_code=status.HTTP_200_OK)
-async def cursorMain(request: Request, key: int = None, db: Session = Depends(get_db)):
+async def cursorMain(request: Request, key: int = None, size: int = 5, db: Session = Depends(get_db)):
     access_token = request.state.access_token
-    return await readService.searchMainFeed(access_token.get("id") if access_token else None, key, db)
+    return await readService.searchMainFeed(access_token.get("id") if access_token else None, key, size, db)
 
 
 @router.get("/search/follow", status_code=status.HTTP_200_OK)
-async def cursorFollow(request: Request, key: int = None, db: Session = Depends(get_db)):
+async def cursorFollow(request: Request, key: int = None, size: int = 5, db: Session = Depends(get_db)):
     access_token = request.state.access_token
-    return await readService.searchFollow(access_token.get("id"), key, db)
+    return await readService.searchFollow(access_token.get("id"), key, size, db)
