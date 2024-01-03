@@ -22,11 +22,13 @@ async def is_like(userId, postId, db):
 
 async def is_likes(userId, posts, db):
     likes = []
-    for i in range(len(posts)):
-        like = db.query(Like).filter_by(ownerId=userId, postId=posts[i].id).first()
-        if like:
-            likes.append(True)
-        else:
-            likes.append(False)
-
+    if userId:
+        for i in range(len(posts)):
+            like = db.query(Like).filter_by(ownerId=userId, postId=posts[i].id).first()
+            if like:
+                likes.append(True)
+            else:
+                likes.append(False)
+    else:
+        likes = [False * len(posts)]
     return likes
