@@ -23,13 +23,12 @@ async def add_generaluser(data, password, db):
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f"{e}, add_generaluser")
 
 
-async def add_google_user(result, nickname, url, db):
+async def add_google_user(result, nickname, db):
     try:
         row = User(
             **{
                 "name": result.get("name"),
                 "email": result.get("email"),
-                "profileImage": url,
                 "nickname": nickname,
             }
         )
@@ -42,7 +41,7 @@ async def add_google_user(result, nickname, url, db):
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f"{e}, add_google_user")
 
 
-async def add_kakao_user(result, _property, _profile, nickname, url, db):
+async def add_kakao_user(result, _property, _profile, nickname, db):
     try:
         row = User(
             **{
@@ -50,7 +49,6 @@ async def add_kakao_user(result, _property, _profile, nickname, url, db):
                 "kakaoId": result.get("id"),
                 "email": _profile.get("email", None),
                 "gender": _profile.get("gender", None),
-                "profileImage": url,
                 "nickname": nickname,
             }
         )
