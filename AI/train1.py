@@ -1,14 +1,11 @@
 import torch
 from torch import nn
 from torch.utils.data import DataLoader
-
 from torchvision import models
 from torchvision import transforms
 
-
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 print(device)
-
 
 num_classes = 15
 
@@ -22,7 +19,6 @@ model.to(device)
 
 # 변경된 모델 확인
 print(model)
-
 
 from torch.utils.data import Dataset
 from torchvision import datasets
@@ -54,7 +50,7 @@ preprocess = transforms.Compose([
 ])
 
 class WhatMeowData(Dataset):
-    def __init__(self, data, transform,classes):    # __init__ -> class를 선언하자마자 최초로 한 번 실행되는 함수
+    def __init__(self, data, transform,classes):
       self.data = data
       self.transform = transform
       self.classes = classes
@@ -108,8 +104,6 @@ for epoch in tqdm(range(num_epochs),position=0):
 
 
   # 이번 Epoch 학습 결과 테스트
-  # 10 Epoch마다 학습 결과 테스트하고 싶으면
-  # if epoch != 0 and epoch % 10 == 0:
   size = len(test_dataloader.dataset)
   num_batch = len(test_dataloader)
   print(f"Size : {size}")
