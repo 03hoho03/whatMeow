@@ -1,6 +1,5 @@
-from sqlalchemy import Column, Integer, DateTime, func, String, Table, Index
+from sqlalchemy import Column, Integer, DateTime, func, String, Index
 from sqlalchemy.sql.schema import ForeignKey
-from sqlalchemy.orm import relationship
 from sqlalchemy.exc import SAWarning
 import warnings
 
@@ -15,47 +14,17 @@ class BaseMin:
     updatedAt = Column(DateTime, nullable=False, default=func.now(), onupdate=func.now())
 
 
-followers = Table(
-    "followers",
-    Base.metadata,
-    Column("follower_id", Integer, ForeignKey("user.id")),
-    Column("following_id", Integer, ForeignKey("user.id")),
-)
-
-
 class User(BaseMin, Base):
     __tablename__ = "user"
 
     name = Column(String(10), nullable=False)
     nickname = Column(String(20), nullable=False, unique=True)
-    # username = Column(String(20), nullable=False, unique=True)
     kakaoId = Column(String(20), nullable=True, unique=True)
     email = Column(String(30), nullable=True, unique=True)
     password = Column(String(255), nullable=True)
     gender = Column(String(5), nullable=True)
     explain = Column(String(50), nullable=True)
     profileImage = Column(String(255), nullable=True)
-
-    cats = relationship("Cat", back_populates="cat_owner")
-    posts = relationship("Post", back_populates="post_owner")
-    comments = relationship("Comment", back_populates="comment_owner")
-    refresh_tokens = relationship("RefreshToken", back_populates="user")
-    following = relationship(
-        "User",
-        secondary=followers,
-        primaryjoin="User.id == followers.c.follower_id",
-        secondaryjoin="User.id == followers.c.following_id",
-        backref="follower_lst",
-        overlaps="follower_lst,following_lst",
-    )
-    follower = relationship(
-        "User",
-        secondary=followers,
-        primaryjoin="User.id == followers.c.following_id",
-        secondaryjoin="User.id == followers.c.follower_id",
-        backref="following_lst",
-        overlaps="following_lst,follower_lst",
-    )
 
     __table_args__ = (Index("idx_nickname", "nickname"),)
     __table_args__ = (Index("idx_email", "email"),)
@@ -106,8 +75,6 @@ class Cat(BaseMin, Base):
 
     __table_args__ = (Index("idx_owner_id", "ownerId"),)
 
-    cat_owner = relationship("User", back_populates="cats")
-
 
 class CatHashTag(Base, BaseMin):
     __tablename__ = "cathashtag"
@@ -125,10 +92,6 @@ class Post(BaseMin, Base):
     likeCount = Column(Integer, default=0)
     version = Column(Integer, default=0)
 
-    comments = relationship("Comment", back_populates="comment_post_owner", cascade="all,delete")
-    post_owner = relationship("User", back_populates="posts", foreign_keys=[uploaderId])
-    images = relationship("Image", back_populates="post", cascade="all,delete")
-
     __table_args__ = (Index("idx_uploader_id", "uploaderId"),)
 
 
@@ -136,11 +99,9 @@ class Image(BaseMin, Base):
     __tablename__ = "image"
 
     url = Column(String(255), nullable=False)
-    postId = Column(Integer, ForeignKey("post.id", ondelete="CASCADE"))  # 게시물과의 관계 설정
+    postId = Column(Integer, ForeignKey("post.id", ondelete="CASCADE"))
 
     __table_args__ = (Index("idx_post_id", "postId"),)
-
-    post = relationship("Post", back_populates="images")
 
 
 class HashTag(BaseMin, Base):
@@ -159,9 +120,6 @@ class Comment(BaseMin, Base):
     uploader = Column(Integer, ForeignKey("user.id", ondelete="CASCADE"))
     postId = Column(Integer, ForeignKey("post.id", ondelete="CASCADE"))
 
-    comment_post_owner = relationship("Post", back_populates="comments")
-    comment_owner = relationship("User", back_populates="comments")
-
 
 class Like(Base):
     __tablename__ = "like"
@@ -175,7 +133,6 @@ class RefreshToken(BaseMin, Base):
 
     refresh_token = Column(String(255))
     userId = Column(Integer, ForeignKey("user.id"))
-    user = relationship("User", back_populates="refresh_tokens")
 
 
 class CatFeature(Base):
