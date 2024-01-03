@@ -55,6 +55,8 @@ async def add_kakao_user(result, _property, _profile, nickname, db):
 
         db.add(row)
         db.flush()
+
+        return row
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f"{e}, add_kakao_user")
 
