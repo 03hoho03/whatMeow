@@ -1,5 +1,6 @@
 from ...application.get_posts_users_hashtags_by_post_id import get_posts_users_hashtags_by_post_id
 from ...application.get_posts_users_images import get_posts_users_images
+from ...application.get_posts_users_images_follow import get_posts_users_images_follow
 from ..utils import tools
 
 
@@ -11,5 +12,11 @@ async def findDetailedPost(userId, postId, db):
 
 async def searchMainFeed(userId, key, db):
     posts, users, images, likes = await get_posts_users_images(userId, key, db)
+
+    return await tools.make_mainfeed_posts(users, posts, images, likes)
+
+
+async def searchFollow(userId, key, db):
+    posts, users, images, likes = await get_posts_users_images_follow(userId, key, db)
 
     return await tools.make_mainfeed_posts(users, posts, images, likes)
