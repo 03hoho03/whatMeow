@@ -32,7 +32,7 @@ async def googleSocialLogin(response, code, db):
         new_user.profileImage = url
         access_token = await tools.create_access_token(new_user)
         refresh_token = await tools.create_refresh_token(new_user)
-        await databases.update_refresh_token_info(user, refresh_token, db)
+        await databases.update_refresh_token_info(new_user, refresh_token, db)
         response = RedirectResponse(url=f"https://www.whatmeow.shop/?nickname={nickname}")
         response = await cookies.set_cookie_access_token(response, access_token)
         response = await cookies.set_cookie_refresh_token(response, refresh_token)
@@ -62,7 +62,7 @@ async def kakaoSocialLogin(response, code, db):
         new_user.profileImage = url
         access_token = await tools.create_access_token(new_user)
         refresh_token = await tools.create_refresh_token(new_user)
-        await databases.update_refresh_token_info(user, refresh_token, db)
+        await databases.update_refresh_token_info(new_user, refresh_token, db)
         response = RedirectResponse(url=f"https://www.whatmeow.shop/?nickname={nickname}")
         response = await cookies.set_cookie_access_token(response, access_token)
         response = await cookies.set_cookie_refresh_token(response, refresh_token)
