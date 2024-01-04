@@ -56,4 +56,5 @@ async def readUserProfile(nickname, id, db):
 
 
 async def readCatInfo(id, db):
-    return await get_cat_info_by_user_id(id, db)
+    cats = await get_cat_info_by_user_id(id, db)
+    return await tools.make_cat_ids(cats)

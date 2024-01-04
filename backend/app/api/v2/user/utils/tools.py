@@ -86,3 +86,7 @@ async def make_return_dict(user, id, data):
     }
 
     return _dict
+
+
+async def make_cat_ids(cats):
+    return [{"catId": cat.id, "catName": cat.catName} for cat in cats]
