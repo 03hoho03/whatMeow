@@ -3,14 +3,14 @@ import { BASE_URL } from '../_utils/constants'
 
 export { useAuthService }
 
-interface AuthSerivce {
+interface AuthService {
   register: (email: string, password: string, username: string) => Promise<void>
   login: (username: string, password: string) => Promise<void>
   logout: () => Promise<void>
   kakao: () => Promise<void>
 }
 
-function useAuthService(): AuthSerivce {
+function useAuthService(): AuthService {
   const fetch = useFetch()
   const baseUrl = `${BASE_URL}/api/v1/auth`
   return {
