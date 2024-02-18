@@ -23,12 +23,9 @@ function useFollowService(): UseFollowService {
       if (!nickname) {
         throw new Error('닉네임이 없습니다.')
       }
-      const response = await fetch.post(
-        `${baseUrl}/follow/${nickname}`,
-        null,
-        undefined,
-        { credentials: 'include' },
-      )
+      const response = await fetch.post(`${baseUrl}/follow/${nickname}`, {
+        options: { credentials: 'include' },
+      })
       if (!response.ok) {
         throw new Error('오류가 발생하였습니다.')
       }

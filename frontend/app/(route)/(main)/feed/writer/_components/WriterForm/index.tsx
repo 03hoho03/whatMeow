@@ -73,7 +73,6 @@ const WriterForm = () => {
     hashList.forEach((tag) => formData.append('tags', tag))
 
     mutate(formData)
-    // await feedService.upload(formData)
   }
 
   return (

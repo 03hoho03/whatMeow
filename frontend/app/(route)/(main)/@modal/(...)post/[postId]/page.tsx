@@ -11,6 +11,7 @@ import { PostDetailApiResponse } from '@/app/_services/feedService'
 const getCookie = async (key: string) => {
   return cookies().get(key)?.value ?? ''
 }
+
 const getPostDetail = async (
   post_id: number,
 ): Promise<PostDetailApiResponse> => {
@@ -25,11 +26,12 @@ const getPostDetail = async (
       Cookie: `accessToken=${accessToken}`,
     },
   })
+
   if (!response.ok) {
     throw new Error('오류가 발생하였습니다.')
   }
   const data = await response.json()
-  console.log(data)
+
   return data
 }
 
@@ -39,6 +41,7 @@ const page = async ({ params }: { params: { postId: string } }) => {
   await queryClient.prefetchQuery({
     queryKey: ['hydrate-postDetail', intPostId],
     queryFn: () => getPostDetail(intPostId),
+    staleTime: 0,
   })
   const dehydratedState = dehydrate(queryClient)
 

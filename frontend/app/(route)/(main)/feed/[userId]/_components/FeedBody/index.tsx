@@ -20,9 +20,10 @@ const FeedBody = ({ images }: FeedBodyProps) => {
         slidesPerView={1}
         navigation
         pagination={{ clickable: true }}
+        className={style.swiper}
       >
         {images?.map((img) => (
-          <SwiperSlide key={img} className={style.slide_item}>
+          <SwiperSlide key={img}>
             <img src={img} alt="이미지" className={style.img} />
           </SwiperSlide>
         ))}

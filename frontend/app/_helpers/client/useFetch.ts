@@ -1,6 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export { useFetch }
 
-function useFetch() {
+interface RequestOptions {
+  body?: any
+  headers?: Record<string, string>
+  options?: RequestInit
+}
+
+const useFetch = () => {
   return {
     get: request('GET'),
     post: request('POST'),
@@ -9,52 +16,35 @@ function useFetch() {
   }
 
   function request(method: string) {
-    return (
-      url: string,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      body?: any,
-      headers?: Record<string, string>,
-      options?: RequestInit,
-    ) => {
+    return (url: string, config?: RequestOptions) => {
       const requestOptions = {
         method,
         headers: {
-          ...headers,
+          ...config?.headers,
         },
-        ...options,
+        ...config?.options,
       }
-      if (body) {
+
+      if (config?.body) {
         if (method === 'POST') {
-          if (body instanceof FormData) {
-            requestOptions.body = body
-          } else if (body instanceof Object) {
-            requestOptions.body = JSON.stringify(body)
+          if (config.body instanceof FormData) {
+            requestOptions.body = config.body
+          } else if (config.body instanceof Object) {
+            requestOptions.body = JSON.stringify(config.body)
           }
         }
       }
-      return fetch(url, requestOptions)
+      return fetch(url, requestOptions).then(handleResponse)
     }
   }
 
-  // helper functions
-
-  // async function handleResponse(response: any) {
-  //   const isJson = response.headers
-  //     ?.get('content-type')
-  //     ?.includes('application/json')
-  //   const data = isJson ? await response.json() : null
-
-  //   // check for error response
-  //   if (!response.ok) {
-  //     if (response.status === 401) {
-  //       // api auto logs out on 401 Unauthorized, so redirect to login page
-  //       router.push('/login')
-  //     }
-  //     // 403 아이디 비밀번호 틀렸을 때
-  //     // get error message from body or default to response status
-  //     const error = (data && data.message) || response.statusText
-  //     return Promise.reject(error)
-  //   }
-  //   return data
-  // }
+  async function handleResponse(response: Response) {
+    if (!response.ok) {
+      if (response.status === 401) {
+        // 401 에 따른 accessToken refresh 로직 필요
+        return response
+      }
+    }
+    return response
+  }
 }

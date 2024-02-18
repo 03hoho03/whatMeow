@@ -5,14 +5,17 @@ import { getQueryClient } from '@/app/getQueryClient'
 import { dehydrate } from '@tanstack/react-query'
 import Hydrate from '@/app/_utils/hydrate.client'
 import { BASE_URL, FEED_SIZE } from '@/app/_utils/constants'
-import { FeedItem } from '@/app/_services/searchService'
 import { cookies } from 'next/headers'
+import { GetFeedListApiResponse } from '@/app/_services/searchService'
 
 const getCookie = async (key: string) => {
   return cookies().get(key)?.value ?? ''
 }
 
-const getAllList = async (page = 0, limit = 3): Promise<FeedItem> => {
+const getAllList = async (
+  page = 0,
+  limit = 3,
+): Promise<GetFeedListApiResponse> => {
   const accessToken = await getCookie('accessToken')
   const param = new URLSearchParams({
     limit: limit.toString(),
@@ -25,17 +28,12 @@ const getAllList = async (page = 0, limit = 3): Promise<FeedItem> => {
       Cookie: `accessToken=${accessToken}`,
     },
   })
-    .then((res) => res.json())
-    .then((data) => {
-      const result = data.map((feed: FeedItem) => {
-        return {
-          ...feed,
-          createdAt: new Date(feed.createdAt),
-        }
-      })
-      return result
-    })
-  return response
+
+  if (!response.ok) {
+    throw new Error('오류가 발생하였습니다.')
+  }
+
+  return await response.json()
 }
 
 const UserFeed = async () => {
@@ -50,7 +48,9 @@ const UserFeed = async () => {
 
   return (
     <Hydrate state={dehydratedState}>
-      <div className={style.main_wrapper}>{<FeedList />}</div>
+      <div className={style.main_wrapper}>
+        <FeedList />
+      </div>
     </Hydrate>
   )
 }
