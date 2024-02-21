@@ -30,5 +30,5 @@ async def is_likes(userId, posts, db):
             else:
                 likes.append(False)
     else:
-        likes = [False * len(posts)]
+        likes = [False] * len(posts)
     return likes
