@@ -69,7 +69,7 @@ async def update_version_likes(postId, stat, version, db):
         else:
             post.likeCount -= 1
 
-        return post.likeCount
+        return post.likeCount, post.version
     else:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Post Version Error. Try Again")
 
