@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, Request, status
 from sqlalchemy.orm.session import Session
-from typing import List
 
 from app.database import get_db
 from . import schema
@@ -9,7 +8,7 @@ from .service import writeService, readService
 router = APIRouter(tags=["CommentV2"])
 
 
-@router.get("/{postId}", status_code=status.HTTP_200_OK, response_model=List[schema.CommentReturn])
+@router.get("/{postId}", status_code=status.HTTP_200_OK)
 async def get(postId: int, db: Session = Depends(get_db)):
     return await readService.lookupComment(postId, db)
 
