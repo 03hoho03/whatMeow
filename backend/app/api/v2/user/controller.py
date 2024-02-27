@@ -1,7 +1,8 @@
+from aioredis import Redis
 from fastapi import APIRouter, Depends, status, Response, Request, BackgroundTasks
 from sqlalchemy.orm.session import Session
 
-from app.database import get_db
+from app.database import get_db, get_redis
 from . import schema
 from .service import writeService, readService, emailService
 
@@ -68,7 +69,7 @@ async def send_catInfo(request: Request, db: Session = Depends(get_db)):
 
 
 @router.post("/email-confirm", status_code=status.HTTP_200_OK)
-async def sendEmail(data: schema.GeneralUserBase, background_tasks: BackgroundTasks):
-    background_tasks.add_task(emailService.sendEmail, data.email)
+async def sendEmail(data: schema.GeneralUserBase, background_tasks: BackgroundTasks, redis: Redis = Depends(get_redis)):
+    background_tasks.add_task(emailService.sendEmail, data.email, redis)
 
     return {"message": "Server started to send confirm-email"}
