@@ -61,9 +61,15 @@ app.add_middleware(
 @app.on_event("startup")
 def on_startup():
     from app import model
-    from app.database import engine
+    from app.database import engine, get_redis
 
     model.Base.metadata.create_all(bind=engine)
+    app.state.redis = get_redis()
+
+
+@app.on_event("shutdown")
+async def off_shutdown():
+    await app.state.redis.close()
 
 
 app.include_router(api.router)
