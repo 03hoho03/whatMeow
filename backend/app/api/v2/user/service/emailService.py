@@ -6,3 +6,7 @@ async def sendEmail(receiverEmail, redis):
     await redis_db.insert_email_code(receiverEmail, random_code, redis)
     msg = await tools.make_email_text(receiverEmail, random_code)
     await tools.stmp_connect_and_send(receiverEmail, msg)
+
+
+async def checkEmailCode(email, code, redis):
+    return await redis_db.get_email_code(email, code, redis)

@@ -73,3 +73,8 @@ async def sendEmail(data: schema.GeneralUserBase, background_tasks: BackgroundTa
     background_tasks.add_task(emailService.sendEmail, data.email, redis)
 
     return {"message": "Server started to send confirm-email"}
+
+
+@router.post("/email-confirm-check", status_code=status.HTTP_200_OK)
+async def checkEmailCode(data: schema.EmailCodeVerify, redis: Redis = Depends(get_redis)):
+    return await emailService.checkEmailCode(data.email, data.code, redis)

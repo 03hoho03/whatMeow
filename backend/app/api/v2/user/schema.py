@@ -26,3 +26,7 @@ class UserPayload(BaseModel):
     id: int
     nickname: str
     exp: datetime
+
+
+class EmailCodeVerify(GeneralUserBase):
+    code: str
