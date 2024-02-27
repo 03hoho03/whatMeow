@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends, status, Response, Request
+from fastapi import APIRouter, Depends, status, Response, Request, BackgroundTasks
 from sqlalchemy.orm.session import Session
 
 from app.database import get_db
 from . import schema
-from .service import writeService, readService
+from .service import writeService, readService, emailService
 
 router = APIRouter(tags=["UserV2"])
 
@@ -65,3 +65,10 @@ async def userProfile(nickname: str, request: Request, db: Session = Depends(get
 async def send_catInfo(request: Request, db: Session = Depends(get_db)):
     access_token = request.state.access_token
     return await readService.readCatInfo(access_token.get("id"), db)
+
+
+@router.post("/email-confirm", status_code=status.HTTP_200_OK)
+async def sendEmail(data: schema.GeneralUserBase, background_tasks: BackgroundTasks):
+    background_tasks.add_task(emailService.sendEmail, data.email)
+
+    return {"message": "Server started to send confirm-email"}

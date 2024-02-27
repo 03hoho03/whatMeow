@@ -41,6 +41,10 @@ class Settings:
         config=boto3.session.Config(signature_version="s3v4"),
     )
 
+    # Email Settings
+    EMAIL_SENDER = os.environ.get("EMAIL_SENDER")
+    EMAIL_PW = os.environ.get("EMAIL_PW")
+
     # AI Settings
     MODEL_PATH = os.environ.get("MODEL_PATH")
 

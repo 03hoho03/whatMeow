@@ -1,6 +1,11 @@
 import bcrypt
+import secrets
+import string
+import smtplib
 from datetime import datetime, timedelta
 from fastapi import HTTPException, status
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from jose import jwt
 
 from app.config import settings
@@ -90,3 +95,56 @@ async def make_return_dict(user, id, data):
 
 async def make_cat_ids(cats):
     return [{"catId": cat.id, "catName": cat.catName} for cat in cats]
+
+
+async def make_random_code_for_register():
+    digit_and_alpha = string.ascii_letters + string.digits
+    return "".join(secrets.choice(digit_and_alpha) for _ in range(6))
+
+
+async def template(code):
+    return """
+        <table cellpadding="0" cellspacing="0" border="0" style="width:500px;padding-top:60px">
+            <tbody>
+                <tr>
+                <td><img src="https://{}.s3.ap-northeast-2.amazonaws.com/email.png" width="99" height="54" border="0" alt="WhatMeow" class="CToWUd" data-bit="iit"></a></td>
+                </tr>
+                <tr>
+                <td
+                    style="padding-top:25px;font:bold 32px 'Malgun Gothic',dotum,verdana,serif;color:#17191d;letter-spacing:-1.5px">
+                    WhatMeow 회원가입 코드 안내</td>
+                </tr>
+                <tr>
+                <td
+                    style="padding:20px 0 30px;font:14px 'Malgun Gothic',dotum,verdana,serif;color:#4a4e57;letter-spacing:-0.7px;line-height:1.71">
+                    안녕하세요, <strong style="color:#17191d;word-break:break-all;word-wrap:break-word">신규 회원가입</strong> 고객님<br>
+                    고객님의 인증 코드는 <strong style="color:#17191d;word-break:break-all;word-wrap:break-word">{}</strong> 입니다.
+                </td>
+                </tr>
+            </tbody>
+        </table>
+    """.format(
+        settings.BUCKET_NAME, code
+    )
+
+
+async def make_email_text(receiverEmail, code):
+    content = await template(code)
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = "%s" % "[WhatMeow] 이메일 인증 코드 안내"
+    msg["From"] = "fnzksxl@gmail.com"
+    msg["To"] = receiverEmail
+
+    html = MIMEText(content, "html")
+    msg.attach(html)
+
+    return msg.as_string()
+
+
+async def stmp_connect_and_send(receiverEmail, msg):
+    smtp = smtplib.SMTP("smtp.gmail.com", 587)
+    smtp.starttls()
+    smtp.login(settings.EMAIL_SENDER, settings.EMAIL_PW)
+
+    smtp.sendmail(settings.EMAIL_SENDER, receiverEmail, msg)
+    smtp.quit()
