@@ -147,3 +147,13 @@ class Timeline(Base):
 
     userId = Column(Integer, ForeignKey("user.id"), primary_key=True)
     postId = Column(Integer, ForeignKey("post.id"), primary_key=True)
+
+
+class TempUser(BaseMin, Base):
+    __tablename__ = "tempuser"
+
+    name = Column(String(10), nullable=False)
+    nickname = Column(String(20), nullable=False, unique=True)
+    email = Column(String(30), nullable=True, unique=True)
+    password = Column(String(255), nullable=True)
+    count = Column(Integer, nullable=False)
