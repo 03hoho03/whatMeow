@@ -14,6 +14,14 @@ interface CatProfileSubmitFormResponse {
   name: string
   explain?: string
 }
+interface AddCatProfileApiResponse {
+  catName: string
+  explain: string | null
+  gender: null
+  breed: null
+  ownerId: number
+  id: number
+}
 
 const WriterForm = () => {
   const router = useRouter()
@@ -48,11 +56,11 @@ const WriterForm = () => {
   }: CatProfileSubmitFormResponse) => {
     const formData = new FormData()
     formData.append('file', thumnail[0])
-    formData.append('catname', name)
+    formData.append('catName', name)
     explain && formData.append('explain', explain)
     profileMutation.mutate(formData, {
-      onSuccess: () => {
-        router.push('/')
+      onSuccess: (response: AddCatProfileApiResponse) => {
+        router.push(`/catprofile/${response.id}`)
       },
       onError: (error) => {
         console.log(error)
