@@ -6,6 +6,8 @@ const publicRoutes = ['/login', '/join']
 // This function can be marked `async` if using `await` inside
 // eslint-disable-next-line consistent-return
 export async function middleware(request: NextRequest) {
+  return NextResponse.next()
+
   const accessToken = request.cookies.get('accessToken')?.value
   const currentPath = request.nextUrl.pathname
   const loginUrl =
@@ -26,7 +28,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl)
   }
 
-  const response = await fetch('https://api.whatmeow.shop/api/v1/user/cat', {
+  const response = await fetch('https://api.whatmeow.shop/api/v2/users/cat', {
     headers: {
       Cookie: `accessToken=${accessToken}`,
     },
