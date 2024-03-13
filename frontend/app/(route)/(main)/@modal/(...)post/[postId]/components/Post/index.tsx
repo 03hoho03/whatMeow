@@ -41,7 +41,7 @@ const Post = ({ postId }: PostProps) => {
           />
           <div className={style.userInteractContainer}>
             <div className={style.userInteractBtnsContainer}>
-              <LikeBtn postId={data?.postId} />
+              <LikeBtn postId={data?.postId} version={data?.version} />
               <BookmarkBtn />
             </div>
             <div className={style.likeCountContainer}>
