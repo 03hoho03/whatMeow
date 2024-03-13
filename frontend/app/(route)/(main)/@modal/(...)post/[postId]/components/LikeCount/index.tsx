@@ -1,13 +1,10 @@
 import React from 'react'
 import style from './likeCount.module.css'
 import { useQuery } from '@tanstack/react-query'
+import { Like } from '@/app/_services/likeService'
 
 interface LikeCountProps {
   postId: number
-}
-interface Like {
-  count: number
-  isLike: boolean
 }
 
 const LikeCount = ({ postId }: LikeCountProps) => {
