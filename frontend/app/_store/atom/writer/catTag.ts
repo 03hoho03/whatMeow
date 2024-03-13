@@ -3,8 +3,8 @@ import { atom } from 'recoil'
 export { catTagList }
 
 interface CatInfo {
-  id: number
-  name: string
+  catId: number
+  catName: string
 }
 
 const catTagList = atom<CatInfo[]>({
