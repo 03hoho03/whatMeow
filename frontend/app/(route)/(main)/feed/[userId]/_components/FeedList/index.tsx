@@ -42,8 +42,8 @@ const FeedList = () => {
       {status === 'error' && <p>{error?.message}</p>}
       {status === 'success' &&
         data?.pages.map((group) =>
-          group.map((feed: SelectedFeed, idx: number) => (
-            <Feed key={(feed.postId, idx)} feed={feed} />
+          group.map((feed: SelectedFeed) => (
+            <Feed key={feed.postId} feed={feed} />
           )),
         )}
       <div ref={bottom}></div>
