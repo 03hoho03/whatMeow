@@ -14,7 +14,7 @@ const PostContent = ({ postId, content, hashtags }: PostContentProps) => {
     <div className={style.postContentContainer}>
       <p className={style.postContent}>{content}</p>
       <ul className={style.hashtagList}>
-        {hashtags.map((hashtag, idx) => (
+        {hashtags?.map((hashtag, idx) => (
           <Link
             key={hashtag + idx}
             href={`/search?hashtag=${hashtag}`}
