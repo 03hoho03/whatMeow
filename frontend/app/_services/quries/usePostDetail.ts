@@ -4,26 +4,21 @@ import {
   useFeedService,
 } from '@/app/_services/feedService'
 import { UseCommentQueryKey } from './useGetCommentList'
+import { Like } from '../likeService'
+import { CommentListApiResponse } from '../commentService'
+import { LikeStateQueryKey } from './useLike'
 
-interface Like {
-  count: number
-  isLike: boolean
-}
-interface Comment {
-  comment: string
-  nickname: string
-  thumnail: string
-}
-interface PostDetail {
+export interface PostDetail {
   nickname: string
   writerThumnail: string
   postId: number
   like: Like
+  version: number
   content: string
   createdAt: Date
   images: string[]
   hashtags: string[]
-  comments: Comment[]
+  comments: CommentListApiResponse[]
 }
 
 export const UsePostDetailKey = 'hydrate-postDetail'
@@ -37,19 +32,27 @@ export const usePostDetail = (postId: number) => {
   >({
     queryKey: [UsePostDetailKey, postId],
     queryFn: () => feedService.getPostDetail(postId),
-    initialData: {
-      nickname: '',
-      writerThumnail: '',
-      postId: 0,
-      like: {
-        count: 0,
-        isLike: false,
-      },
-      content: '',
-      createdAt: '',
-      images: [],
-      hashtags: [],
-      comments: [],
+    initialData: () => {
+      const initialData = {
+        nickname: '',
+        writerThumnail: '',
+        postId: 0,
+        version: 0,
+        like: {
+          count: 0,
+          isLike: false,
+        },
+        content: '',
+        createdAt: '',
+        images: [],
+        hashtags: [],
+        comments: [],
+      }
+
+      queryClient.setQueryData([LikeStateQueryKey, postId], data.like)
+      queryClient.setQueryData([UseCommentQueryKey, postId], data.comments)
+
+      return initialData
     },
     select: (data) => {
       return {
@@ -57,9 +60,8 @@ export const usePostDetail = (postId: number) => {
         createdAt: new Date(data.createdAt),
       }
     },
+    staleTime: Infinity,
   })
-
-  queryClient.setQueryData([UseCommentQueryKey, postId], data.comments)
 
   return { isSuccess, data, isFetching }
 }
