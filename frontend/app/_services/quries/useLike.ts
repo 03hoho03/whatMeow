@@ -1,13 +1,9 @@
 import { useQuery } from '@tanstack/react-query'
-
-interface LikeState {
-  count: number
-  isLike: boolean
-}
+import { Like } from '../likeService'
 
 export const LikeStateQueryKey = 'like'
 export const useLikeQuery = (postId: number) => {
-  const likeQuery = useQuery<LikeState>({
+  const likeQuery = useQuery<Like>({
     queryKey: [LikeStateQueryKey, postId],
   })
   return { likeQuery }
