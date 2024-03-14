@@ -22,10 +22,10 @@ interface Post {
 
 function useCatService(): CatService {
   const fetch = useFetch()
-  const baseUrl = `${BASE_URL}/api/v1/cat`
+  const baseUrl = `${BASE_URL}/api/v2/cat`
   return {
     profileUpload: async (form) => {
-      const response = await fetch.post(`${baseUrl}/add`, {
+      const response = await fetch.post(`${baseUrl}`, {
         body: form,
         options: { credentials: 'include' },
       })
