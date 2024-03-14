@@ -12,20 +12,21 @@ interface AuthService {
 
 function useAuthService(): AuthService {
   const fetch = useFetch()
-  const baseUrl = `${BASE_URL}/api/v1/auth`
+  const baseUrl = `${BASE_URL}/api/v2/users`
   return {
     register: async (email, password, nickname) => {
-      const name = '장호정'
+      const sampleName = '장호정'
+      const registerBody = {
+        email,
+        password,
+        nickname,
+        name: sampleName,
+      }
       const response = await fetch.post(`${baseUrl}/register`, {
         headers: {
           'Content-type': 'application/json',
         },
-        body: {
-          email,
-          name,
-          password,
-          nickname,
-        },
+        body: registerBody,
       })
 
       if (!response.ok) {
@@ -35,14 +36,15 @@ function useAuthService(): AuthService {
       return await response.json()
     },
     login: async (email, password) => {
+      const loginBody = {
+        email,
+        password,
+      }
       const response = await fetch.post(`${baseUrl}/login`, {
         headers: {
           'Content-type': 'application/json',
         },
-        body: {
-          email,
-          password,
-        },
+        body: loginBody,
         options: { credentials: 'include' },
       })
 
