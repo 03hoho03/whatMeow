@@ -7,7 +7,13 @@ import useFollowService, {
 } from '@/app/_services/followService'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-const FollowBtn = ({ nickname }: { nickname: string }) => {
+const FollowBtn = ({
+  nickname,
+  userId,
+}: {
+  nickname: string
+  userId: number | undefined
+}) => {
   const queryClient = useQueryClient()
   const followService = useFollowService()
   const followQuery = useQuery<UpdateFollowApiResponse>({
@@ -19,7 +25,7 @@ const FollowBtn = ({ nickname }: { nickname: string }) => {
     void,
     { previousFollow: UpdateFollowApiResponse | undefined }
   >({
-    mutationFn: () => followService.updateFollow(nickname),
+    mutationFn: () => followService.update(userId),
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: ['follow'] })
       const previousFollow = queryClient.getQueryData<UpdateFollowApiResponse>([

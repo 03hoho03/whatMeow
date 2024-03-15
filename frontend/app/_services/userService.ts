@@ -2,7 +2,7 @@ import { useFetch } from '../_helpers/client/useFetch'
 import { BASE_URL } from '../_utils/constants'
 
 export interface GetUserProfileResponse {
-  userId?: number
+  userId: number
   nickname: string
   profileThumnail: string
   postCount: number
@@ -18,7 +18,7 @@ interface Post {
 }
 interface Cat {
   catName: string
-  catID: number
+  catId: number
   thumnail: string
 }
 interface Follow {
@@ -26,13 +26,11 @@ interface Follow {
   followingCount: number
   isFollowing: boolean
 }
-interface UserCatApiResponse {
-  cat: CatInfo
+export interface UserCatApiResponse {
+  catName: string
+  catId: number
 }
-interface CatInfo {
-  name: string
-  id: number
-}
+
 interface UserService {
   checkDuplicated: (nickname: string) => Promise<void>
   updateUser: (file: FormData) => Promise<void>
@@ -42,7 +40,7 @@ interface UserService {
 
 function useUserService(): UserService {
   const fetch = useFetch()
-  const baseUrl = `${BASE_URL}/api/v1/user`
+  const baseUrl = `${BASE_URL}/api/v2/users`
   return {
     checkDuplicated: async (nickname) => {
       const response = await fetch.get(`${baseUrl}/duplicated`, {

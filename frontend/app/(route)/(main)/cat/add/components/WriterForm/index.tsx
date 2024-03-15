@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { useMutation } from '@tanstack/react-query'
 import useCatService, {
-  ProfileUploadApiResponse,
+  AddCatProfileApiResponse,
 } from '@/app/_services/catService'
 
 interface CatProfileSubmitFormResponse {
@@ -24,7 +24,7 @@ const WriterForm = () => {
     formState: { errors },
   } = useForm<CatProfileSubmitFormResponse>()
   const profileMutation = useMutation<
-    ProfileUploadApiResponse,
+    AddCatProfileApiResponse,
     Error,
     FormData
   >({
@@ -48,11 +48,11 @@ const WriterForm = () => {
   }: CatProfileSubmitFormResponse) => {
     const formData = new FormData()
     formData.append('file', thumnail[0])
-    formData.append('catname', name)
+    formData.append('catName', name)
     explain && formData.append('explain', explain)
     profileMutation.mutate(formData, {
-      onSuccess: () => {
-        router.push('/')
+      onSuccess: (response: AddCatProfileApiResponse) => {
+        router.push(`/catprofile/${response.id}`)
       },
       onError: (error) => {
         console.log(error)

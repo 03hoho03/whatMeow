@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import useCommentService from '../commentService'
+import useCommentService, { CommentUploadApiResponse } from '../commentService'
 import { UseCommentQueryKey } from '../quries/useGetCommentList'
 
 interface UploadCommentMutationVariables {
@@ -11,7 +11,7 @@ export const useUploadComment = () => {
   const commentService = useCommentService()
   const queryClient = useQueryClient()
   const uploadCommentMutation = useMutation<
-    { success: boolean },
+    CommentUploadApiResponse,
     Error,
     UploadCommentMutationVariables
   >({

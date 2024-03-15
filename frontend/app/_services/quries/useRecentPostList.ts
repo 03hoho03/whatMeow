@@ -1,9 +1,9 @@
 import { useInfiniteQuery } from '@tanstack/react-query'
+import { Post, useFeedService } from '../feedService'
 import { FEED_SIZE } from '@/app/_utils/constants'
 import { Like } from '../likeService'
-import { Feed, useFeedService } from '../feedService'
 
-export interface SelectedFeed {
+export interface SelectedPost {
   createdAt: Date
   content: string
   images: string[]
@@ -13,9 +13,13 @@ export interface SelectedFeed {
   postId: number
   version: number
 }
+export interface SelectedPostList {
+  posts: SelectedPost
+  nextKey: number
+}
 
-const transformFeedArray = (feeds: Feed[]): SelectedFeed[] => {
-  const transformFeed = (feed: Feed) => ({
+const transformPostArray = (feeds: Post[]): SelectedPost[] => {
+  const transformFeed = (feed: Post) => ({
     ...feed,
     createdAt: new Date(feed.createdAt),
   })
@@ -23,9 +27,9 @@ const transformFeedArray = (feeds: Feed[]): SelectedFeed[] => {
   return feeds.map((feed) => transformFeed(feed))
 }
 
-export const UseFeedListQueryKey = 'hydrate-feeds'
+export const UseRecentPostListQueryKey = 'hydrate-posts'
 
-export const useFeedListQuery = () => {
+export const useRecentPostListQuery = () => {
   const feedService = useFeedService()
   const {
     data,
@@ -34,9 +38,10 @@ export const useFeedListQuery = () => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    refetch,
   } = useInfiniteQuery({
-    queryKey: [UseFeedListQueryKey],
-    queryFn: ({ pageParam }) => feedService.getFeedList(pageParam, FEED_SIZE),
+    queryKey: [UseRecentPostListQueryKey],
+    queryFn: ({ pageParam }) => feedService.getRecentList(pageParam, FEED_SIZE),
     initialPageParam: 0,
     getNextPageParam: (lastPage) => {
       if (lastPage.nextKey <= 1) {
@@ -45,10 +50,18 @@ export const useFeedListQuery = () => {
       return lastPage.nextKey
     },
     select: (data) => ({
-      pages: data.pages.map((feeds) => transformFeedArray(feeds.posts)),
+      pages: data.pages.map((posts) => transformPostArray(posts.posts)),
       pageParams: data.pageParams,
     }),
   })
 
-  return { data, error, status, fetchNextPage, hasNextPage, isFetchingNextPage }
+  return {
+    data,
+    error,
+    status,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    refetch,
+  }
 }

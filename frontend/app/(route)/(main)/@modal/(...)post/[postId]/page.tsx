@@ -13,13 +13,12 @@ const getCookie = async (key: string) => {
 }
 
 const getPostDetail = async (
-  post_id: number,
+  postId: number,
 ): Promise<PostDetailApiResponse> => {
   const accessToken = await getCookie('accessToken')
-  const Url = `${BASE_URL}/api/v1/post/${post_id}`
+  const Url = `${BASE_URL}/api/v2/post/${postId}`
 
   const response = await fetch(Url, {
-    method: 'GET',
     credentials: 'include',
     cache: 'no-store',
     headers: {

@@ -7,17 +7,12 @@ import CatTagOption from '../CatTagOption'
 import CatTag from '../CatTag'
 import { useRecoilValue } from 'recoil'
 import { catTagList } from '@/app/_store/atom/writer/catTag'
-import { useQuery } from '@tanstack/react-query'
-import useUserService from '@/app/_services/userService'
+import { useUserCatListQuery } from '@/app/_services/quries/useUserCatList'
 
 const CatTagSection = () => {
   const [isToggle, setIsToggle] = useState<boolean>(false)
   const catTag = useRecoilValue(catTagList)
-  const userService = useUserService()
-  const { data, isSuccess } = useQuery({
-    queryKey: ['userCat'],
-    queryFn: () => userService.getUserCat(),
-  })
+  const { data, isSuccess } = useUserCatListQuery()
 
   const HandleToggle = () => {
     setIsToggle((prev) => !prev)
@@ -40,17 +35,22 @@ const CatTagSection = () => {
             >
               <ul className={style.optionList}>
                 {isSuccess &&
-                  data?.map(({ cat }, idx) => (
-                    <CatTagOption key={`${cat.name}_${idx}`} catInfo={cat} />
-                  ))}
+                  data?.map((catInfo, idx) => {
+                    return (
+                      <CatTagOption
+                        key={`${catInfo.catName}_${idx}`}
+                        catInfo={catInfo}
+                      />
+                    )
+                  })}
               </ul>
             </div>
           </div>
         </div>
       </div>
       <div className={style.selectedOptionContainer}>
-        {catTag.map(({ id, name }, idx) => (
-          <CatTag key={`${id}_${idx}`} catTag={name} />
+        {catTag.map(({ catId, catName }, idx) => (
+          <CatTag key={`${catId}_${idx}`} catTag={catName} />
         ))}
       </div>
     </section>

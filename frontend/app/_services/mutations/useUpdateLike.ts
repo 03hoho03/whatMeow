@@ -1,28 +1,27 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useFeedService } from '../feedService'
 import { LikeStateQueryKey } from '../quries/useLike'
+import useLikeService, { Like, UpdateLikeApiResponse } from '../likeService'
+import { useRecentPostListQuery } from '../quries/useRecentPostList'
 
-interface LikeState {
-  count: number
-  isLike: boolean
-}
 interface LikeMutationVariables {
   postId: number
+  version: number
 }
 
 export const useUpdateLikeMutation = () => {
   const queryClient = useQueryClient()
-  const feedService = useFeedService()
+  const likeService = useLikeService()
+  const { refetch } = useRecentPostListQuery()
   const likeMutation = useMutation<
-    LikeState,
+    UpdateLikeApiResponse,
     Error,
     LikeMutationVariables,
-    { previousLike: LikeState | undefined }
+    { previousLike: Like | undefined }
   >({
-    mutationFn: ({ postId }) => feedService.updateLike(postId),
+    mutationFn: ({ postId, version }) => likeService.update(postId, version),
     onMutate: async ({ postId }) => {
       await queryClient.cancelQueries({ queryKey: [LikeStateQueryKey, postId] })
-      const previousLike = queryClient.getQueryData<LikeState>([
+      const previousLike = queryClient.getQueryData<Like>([
         LikeStateQueryKey,
         postId,
       ])
@@ -35,22 +34,21 @@ export const useUpdateLikeMutation = () => {
           isLike: !previousLike.isLike,
         }
 
-        queryClient.setQueryData<LikeState>(
-          [LikeStateQueryKey, postId],
-          nextLike,
-        )
+        queryClient.setQueryData<Like>([LikeStateQueryKey, postId], nextLike)
       }
 
       return { previousLike }
     },
-    onSuccess: () => {},
+    onSuccess: () => {
+      refetch()
+    },
     onError: (
       error: Error,
       { postId }: LikeMutationVariables,
-      context?: { previousLike: LikeState | undefined },
+      context?: { previousLike: Like | undefined },
     ) => {
       if (context?.previousLike) {
-        queryClient.setQueryData<LikeState>(
+        queryClient.setQueryData<Like>(
           [LikeStateQueryKey, postId],
           context.previousLike,
         )

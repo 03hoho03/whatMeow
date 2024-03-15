@@ -7,14 +7,15 @@ import { useLikeQuery } from '@/app/_services/quries/useLike'
 
 interface LikeBtnProps {
   postId: number
+  version: number
 }
 
-const LikeBtn = ({ postId }: LikeBtnProps) => {
+const LikeBtn = ({ postId, version }: LikeBtnProps) => {
   const { likeMutation } = useUpdateLikeMutation()
   const { likeQuery } = useLikeQuery(postId)
 
   const handleClickLikeBtn = () => {
-    likeMutation.mutate({ postId })
+    likeMutation.mutate({ postId, version })
   }
 
   return likeQuery.data?.isLike ? (
