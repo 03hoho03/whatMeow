@@ -2,11 +2,16 @@ import { useFetch } from '../_helpers/client/useFetch'
 import { BASE_URL } from '../_utils/constants'
 
 interface CatService {
-  profileUpload: (form: FormData) => Promise<ProfileUploadApiResponse>
+  profileUpload: (form: FormData) => Promise<AddCatProfileApiResponse>
   getCatProfile: (catId: number) => Promise<GetCatProfileApiResponse>
 }
-export interface ProfileUploadApiResponse {
-  success: boolean
+export interface AddCatProfileApiResponse {
+  catName: string
+  explain: string | null
+  gender: null
+  breed: null
+  ownerId: number
+  id: number
 }
 interface GetCatProfileApiResponse {
   ownerNickname: string

@@ -6,21 +6,13 @@ import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { useMutation } from '@tanstack/react-query'
 import useCatService, {
-  ProfileUploadApiResponse,
+  AddCatProfileApiResponse,
 } from '@/app/_services/catService'
 
 interface CatProfileSubmitFormResponse {
   thumnail: FileList
   name: string
   explain?: string
-}
-interface AddCatProfileApiResponse {
-  catName: string
-  explain: string | null
-  gender: null
-  breed: null
-  ownerId: number
-  id: number
 }
 
 const WriterForm = () => {
@@ -32,7 +24,7 @@ const WriterForm = () => {
     formState: { errors },
   } = useForm<CatProfileSubmitFormResponse>()
   const profileMutation = useMutation<
-    ProfileUploadApiResponse,
+    AddCatProfileApiResponse,
     Error,
     FormData
   >({
