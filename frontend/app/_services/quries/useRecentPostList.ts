@@ -38,6 +38,7 @@ export const useRecentPostListQuery = () => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    refetch,
   } = useInfiniteQuery({
     queryKey: [UseRecentPostListQueryKey],
     queryFn: ({ pageParam }) => feedService.getRecentList(pageParam, FEED_SIZE),
@@ -54,5 +55,13 @@ export const useRecentPostListQuery = () => {
     }),
   })
 
-  return { data, error, status, fetchNextPage, hasNextPage, isFetchingNextPage }
+  return {
+    data,
+    error,
+    status,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    refetch,
+  }
 }
