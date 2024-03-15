@@ -18,6 +18,8 @@ async def make_detailed_post(post, user, images, hashtags, comments, statLike):
                 "comment": comment.comment,
                 "nickname": comment.nickname,
                 "thumnail": f"https://{settings.BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com/thumnail/user/{comment.uploader}/user.jpg",
+                "uploader": comment.uploader,
+                "createdAt": comment.createdAt,
             }
             for comment in comments
         ],
