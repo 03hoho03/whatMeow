@@ -4,17 +4,17 @@ import style from './catTagOption.module.css'
 import cn from 'classnames'
 import { useRecoilState } from 'recoil'
 import { catTagList } from '@/app/_store/atom/writer/catTag'
+import { UserCatApiResponse } from '@/app/_services/userService'
 
-interface CatInfo {
-  id: number
-  name: string
+interface CatTagOptionProps {
+  catInfo: UserCatApiResponse
 }
-const CatTagOption = ({ catInfo }: { catInfo: CatInfo }) => {
+const CatTagOption = ({ catInfo }: CatTagOptionProps) => {
   const [catTag, setCatTag] = useRecoilState(catTagList)
 
   const HandleTagSelect = () => {
-    if (catTag.some((cat) => cat.name.includes(catInfo.name))) {
-      setCatTag(catTag.filter((item) => item.name !== catInfo.name))
+    if (catTag.some((cat) => cat.catName.includes(catInfo.catName))) {
+      setCatTag(catTag.filter((item) => item.catName !== catInfo.catName))
     } else {
       setCatTag((prev) => [...prev, catInfo])
     }
@@ -23,11 +23,13 @@ const CatTagOption = ({ catInfo }: { catInfo: CatInfo }) => {
   return (
     <li
       className={cn(style.option, {
-        [style.selected]: catTag.some((cat) => cat.name.includes(catInfo.name)),
+        [style.selected]: catTag.some((cat) =>
+          cat.catName.includes(catInfo.catName),
+        ),
       })}
       onClick={HandleTagSelect}
     >
-      {catInfo.name}
+      {catInfo.catName}
     </li>
   )
 }

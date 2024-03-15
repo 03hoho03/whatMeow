@@ -10,9 +10,14 @@ import LikeCount from '../LikeCount'
 interface FeedBottomMenuProps {
   postId: number
   createdAt: Date
+  version: number
 }
 
-const FeedBottomMenu = ({ createdAt, postId }: FeedBottomMenuProps) => {
+const FeedBottomMenu = ({
+  createdAt,
+  postId,
+  version,
+}: FeedBottomMenuProps) => {
   const [time, setTime] = useState<string>(createdAt.toLocaleDateString())
 
   useEffect(() => {
@@ -23,7 +28,7 @@ const FeedBottomMenu = ({ createdAt, postId }: FeedBottomMenuProps) => {
     <section className={style.main_wrapper}>
       <div className={style.menu1}>
         <div className={style.menu_btns}>
-          <LikeBtn postId={postId} />
+          <LikeBtn postId={postId} version={version} />
           <CommentLink postId={postId} />
         </div>
         <div className={style.menu_right}>

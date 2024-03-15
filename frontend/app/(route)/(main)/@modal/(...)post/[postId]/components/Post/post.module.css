@@ -4,13 +4,12 @@
   width: 100%;
   height: 100%;
 }
-.noneMediaContainer {
-
-}
 .userInfoContainer {
   display: flex;
   align-items: center;
+  padding-bottom: 12px;
   margin-bottom: 8px;
+  border-bottom: 1px solid #ccc;
 }
 .writerThumnailWrapper {
   width: 32px;

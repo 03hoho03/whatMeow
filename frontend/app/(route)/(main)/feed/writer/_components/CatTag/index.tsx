@@ -11,7 +11,7 @@ const CatTag = ({ catTag }: CatTagProps) => {
   const setCatTag = useSetRecoilState(catTagList)
   const HandleDeleteHashtag = () => {
     setCatTag((prevTagList) =>
-      prevTagList.filter((item) => item.name !== catTag),
+      prevTagList.filter((item) => item.catName !== catTag),
     )
   }
 

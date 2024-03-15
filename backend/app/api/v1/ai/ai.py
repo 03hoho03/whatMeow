@@ -9,8 +9,8 @@ router = APIRouter(tags=["AI"])
 
 @router.post("", status_code=status.HTTP_200_OK)
 async def basic_ai(request: Request, file: UploadFile = File(), db: Session = Depends(get_db)):
-    decoded_dict = request.state.decoded_dict
-    if decoded_dict:
+    access_token = request.state.access_token
+    if access_token:
         cat_breeds = await ai_utils.predict_breed(file, db)
         if cat_breeds:
             return cat_breeds

@@ -2,7 +2,7 @@ import { useFetch } from '../_helpers/client/useFetch'
 import { BASE_URL } from '../_utils/constants'
 
 export interface GetUserProfileResponse {
-  userId?: number
+  userId: number
   nickname: string
   profileThumnail: string
   postCount: number
@@ -18,7 +18,7 @@ interface Post {
 }
 interface Cat {
   catName: string
-  catID: number
+  catId: number
   thumnail: string
 }
 interface Follow {
@@ -26,13 +26,11 @@ interface Follow {
   followingCount: number
   isFollowing: boolean
 }
-interface UserCatApiResponse {
-  cat: CatInfo
+export interface UserCatApiResponse {
+  catName: string
+  catId: number
 }
-interface CatInfo {
-  name: string
-  id: number
-}
+
 interface UserService {
   checkDuplicated: (nickname: string) => Promise<void>
   updateUser: (file: FormData) => Promise<void>
@@ -42,43 +40,51 @@ interface UserService {
 
 function useUserService(): UserService {
   const fetch = useFetch()
-  const baseUrl = `${BASE_URL}/api/v1/user`
+  const baseUrl = `${BASE_URL}/api/v2/users`
   return {
     checkDuplicated: async (nickname) => {
-      const response = await fetch.get(`${baseUrl}/duplicated`, { nickname })
+      const response = await fetch.get(`${baseUrl}/duplicated`, {
+        body: { nickname },
+      })
+
       if (!response.ok) {
         throw new Error('오류가 발생하였습니다.')
       }
+
       return await response.json()
     },
     updateUser: async (file) => {
-      const response = await fetch.put(`${baseUrl}/update`, file, undefined, {
-        credentials: 'include',
+      const response = await fetch.put(`${baseUrl}/update`, {
+        body: file,
+        options: { credentials: 'include' },
       })
+
       if (!response.ok) {
         throw new Error('오류가 발생하였습니다.')
       }
+
       return await response.json()
     },
     getUserProfile: async (nickname) => {
-      const response = await fetch.get(
-        `${baseUrl}/profile/${nickname}`,
-        null,
-        undefined,
-        { credentials: 'include' },
-      )
+      const response = await fetch.get(`${baseUrl}/profile/${nickname}`, {
+        options: { credentials: 'include' },
+      })
+
       if (!response.ok) {
         throw new Error('오류가 발생하였습니다.')
       }
+
       return await response.json()
     },
     getUserCat: async () => {
-      const response = await fetch.get(`${baseUrl}/cat`, null, undefined, {
-        credentials: 'include',
+      const response = await fetch.get(`${baseUrl}/cat`, {
+        options: { credentials: 'include' },
       })
+
       if (!response.ok) {
         throw new Error('오류가 발생하였습니다.')
       }
+
       return await response.json()
     },
   }
