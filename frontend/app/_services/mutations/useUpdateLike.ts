@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { LikeStateQueryKey } from '../quries/useLike'
 import useLikeService, { Like, UpdateLikeApiResponse } from '../likeService'
-import { PostDetail, UsePostDetailKey } from '../quries/usePostDetail'
+import { useRecentPostListQuery } from '../quries/useRecentPostList'
 
 interface LikeMutationVariables {
   postId: number
@@ -11,6 +11,7 @@ interface LikeMutationVariables {
 export const useUpdateLikeMutation = () => {
   const queryClient = useQueryClient()
   const likeService = useLikeService()
+  const { refetch } = useRecentPostListQuery()
   const likeMutation = useMutation<
     UpdateLikeApiResponse,
     Error,
@@ -38,16 +39,8 @@ export const useUpdateLikeMutation = () => {
 
       return { previousLike }
     },
-    onSuccess: (response, { postId }) => {
-      queryClient.setQueryData(
-        [UsePostDetailKey, postId],
-        (prev: PostDetail) => {
-          return {
-            ...prev,
-            version: response.version,
-          }
-        },
-      )
+    onSuccess: () => {
+      refetch()
     },
     onError: (
       error: Error,
