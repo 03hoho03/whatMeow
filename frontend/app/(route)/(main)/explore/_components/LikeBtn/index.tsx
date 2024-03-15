@@ -3,7 +3,7 @@ import style from './likeBtn.module.css'
 import cn from 'classnames'
 import { TbHeart } from 'react-icons/tb'
 import { useLikeQuery } from '@/app/_services/quries/useLike'
-import { useUpdateInfiniteLikeMutation } from '@/app/_services/mutations/useUpdateInfiniteLike'
+import { useUpdateLikeMutation } from '@/app/_services/mutations/useUpdateLike'
 
 interface LikeBtnProps {
   postId: number
@@ -11,7 +11,7 @@ interface LikeBtnProps {
 }
 
 const LikeBtn = ({ postId, version }: LikeBtnProps) => {
-  const { likeMutation } = useUpdateInfiniteLikeMutation()
+  const { likeMutation } = useUpdateLikeMutation()
   const { likeQuery } = useLikeQuery(postId)
 
   const HandleClickLikeBtn = () => {
