@@ -19,17 +19,14 @@ function useAiService(): UseAiService {
 
   return {
     breedAi: async (file) => {
-      const response = await fetch.post(`${baseUrl}`, {
-        body: file,
-        options: { credentials: 'include' },
+      const response = await fetch.post(`${baseUrl}`, file, undefined, {
+        credentials: 'include',
       })
-
       if (!response.ok) {
         const error = new Error('오류가 발생하였습니다.')
         error.cause = response.status
         throw error
       }
-
       return await response.json()
     },
   }

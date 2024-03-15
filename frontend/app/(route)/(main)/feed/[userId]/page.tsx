@@ -5,42 +5,37 @@ import { getQueryClient } from '@/app/getQueryClient'
 import { dehydrate } from '@tanstack/react-query'
 import Hydrate from '@/app/_utils/hydrate.client'
 import { BASE_URL, FEED_SIZE } from '@/app/_utils/constants'
+import { FeedItem } from '@/app/_services/searchService'
 import { cookies } from 'next/headers'
-import { GetFeedListApiResponse } from '@/app/_services/feedService'
 
 const getCookie = async (key: string) => {
   return cookies().get(key)?.value ?? ''
 }
 
-const getAllList = async (
-  page = 0,
-  limit = 3,
-): Promise<GetFeedListApiResponse> => {
+const getAllList = async (page = 0, limit = 3): Promise<FeedItem> => {
   const accessToken = await getCookie('accessToken')
   const param = new URLSearchParams({
-    size: limit.toString(),
+    limit: limit.toString(),
+    start: page.toString(),
   })
-
-  if (page > 0) {
-    param.append('key', page.toString())
-  }
-
-  const response = await fetch(
-    `${BASE_URL}/api/v2/post/search/follow?` + param,
-    {
-      credentials: 'include',
-      cache: 'no-store',
-      headers: {
-        Cookie: `accessToken=${accessToken}`,
-      },
+  const response = await fetch(`${BASE_URL}/api/v1/search/main?` + param, {
+    credentials: 'include',
+    cache: 'no-store',
+    headers: {
+      Cookie: `accessToken=${accessToken}`,
     },
-  )
-
-  if (!response.ok) {
-    throw new Error('오류가 발생하였습니다.')
-  }
-
-  return await response.json()
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      const result = data.map((feed: FeedItem) => {
+        return {
+          ...feed,
+          createdAt: new Date(feed.createdAt),
+        }
+      })
+      return result
+    })
+  return response
 }
 
 const UserFeed = async () => {
@@ -55,9 +50,7 @@ const UserFeed = async () => {
 
   return (
     <Hydrate state={dehydratedState}>
-      <div className={style.main_wrapper}>
-        <FeedList />
-      </div>
+      <div className={style.main_wrapper}>{<FeedList />}</div>
     </Hydrate>
   )
 }

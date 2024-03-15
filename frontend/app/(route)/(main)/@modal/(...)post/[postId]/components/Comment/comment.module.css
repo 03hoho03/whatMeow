@@ -1,11 +1,6 @@
 .commentContainer {
   display: flex;
-  justify-content: space-between;
   margin-bottom: 8px;
-}
-.commentWrapper {
-  display: flex;
-  margin-right: 4px;
 }
 .writerThumnailContainer {
   margin-right: 4px;

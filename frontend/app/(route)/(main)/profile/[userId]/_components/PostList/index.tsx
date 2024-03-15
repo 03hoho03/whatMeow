@@ -27,7 +27,7 @@ const PostList = () => {
                 .slice(rowIdx * 3, (rowIdx + 1) * 3)
                 .map((post, colIdx) => (
                   <Link
-                    href={`/post/${post.postId}`}
+                    href={`https://www.whatmeow.shop/post/${post.postId}`}
                     key={post.thumnail + colIdx}
                     className={style.postThumnail}
                   >

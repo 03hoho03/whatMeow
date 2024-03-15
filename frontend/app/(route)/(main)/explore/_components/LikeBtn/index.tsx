@@ -2,20 +2,67 @@ import React from 'react'
 import style from './likeBtn.module.css'
 import cn from 'classnames'
 import { TbHeart } from 'react-icons/tb'
-import { useLikeQuery } from '@/app/_services/quries/useLike'
-import { useUpdateLikeMutation } from '@/app/_services/mutations/useUpdateLike'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useFeedService } from '@/app/_services/feedService'
 
 interface LikeBtnProps {
   postId: number
-  version: number
+}
+interface Like {
+  count: number
+  isLike: boolean
+}
+interface MutateLikeVariables {
+  postId: number
 }
 
-const LikeBtn = ({ postId, version }: LikeBtnProps) => {
-  const { likeMutation } = useUpdateLikeMutation()
-  const { likeQuery } = useLikeQuery(postId)
+const LikeBtn = ({ postId }: LikeBtnProps) => {
+  const feedService = useFeedService()
+  const queryClient = useQueryClient()
+  const { data } = useQuery<Like>({ queryKey: ['like', postId] })
+  const likeMutation = useMutation<
+    Like,
+    Error,
+    MutateLikeVariables,
+    { previousLike: Like | undefined }
+  >({
+    mutationFn: ({ postId }) => feedService.updateLike(postId),
+    onMutate: async ({ postId }) => {
+      await queryClient.cancelQueries({ queryKey: ['like', postId] })
+      const previousLike = queryClient.getQueryData<Like>(['like', postId])
+
+      if (previousLike) {
+        const nextLike = {
+          count: previousLike.isLike
+            ? previousLike.count - 1
+            : previousLike.count + 1,
+          isLike: !previousLike.isLike,
+        }
+
+        queryClient.setQueryData<Like>(['like', postId], nextLike)
+      }
+      return { previousLike }
+    },
+    onSuccess: (data) => {
+      console.log(data)
+    },
+    onError: (
+      error: Error,
+      variables: MutateLikeVariables,
+      context?: { previousLike: Like | undefined },
+    ) => {
+      if (context?.previousLike) {
+        queryClient.setQueryData<Like>(['like', postId], context.previousLike)
+      }
+      console.log(error)
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['like'] })
+    },
+  })
 
   const HandleClickLikeBtn = () => {
-    likeMutation.mutate({ postId, version })
+    likeMutation.mutate({ postId })
   }
 
   return (
@@ -23,7 +70,7 @@ const LikeBtn = ({ postId, version }: LikeBtnProps) => {
       <TbHeart
         size="1.5rem"
         className={cn(style.btnIcon, style.likeWBtn, {
-          [style.likeBtnActive]: likeQuery.data?.isLike,
+          [style.likeBtnActive]: data?.isLike,
         })}
       />
     </button>

@@ -10,7 +10,7 @@ interface CommentLinkProps {
 const CommentLink = ({ postId }: CommentLinkProps) => {
   return (
     <Link className={style.menuBtn} href={`/post/${postId}`}>
-      <AiOutlineComment size="1.5rem" className={style.commentIcon} />
+      <AiOutlineComment size="1.5rem" className={style.iconBtn} />
     </Link>
   )
 }

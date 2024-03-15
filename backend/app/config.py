@@ -23,13 +23,11 @@ class Settings:
     KAKAO_CLIENT_ID = os.environ.get("KAKAO_CLIENT_ID")
     KAKAO_CLIENT_SECRET = os.environ.get("KAKAO_CLIENT_SECRET")
     KAKAO_REDIRECT_URI = os.environ.get("KAKAO_REDIRECT_URI")
-    KAKAO_REDIRECT_URI_V2 = os.environ.get("KAKAO_REDIRECT_URI_V2")
 
     # Google Settings
     GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
     GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
     GOOGLE_REDIRECT_URI = os.environ.get("GOOGLE_REDIRECT_URI")
-    GOOGLE_REDIRECT_URI_V2 = os.environ.get("GOOGLE_REDIRECT_URI_V2")
 
     # AWS Settings
     BUCKET_NAME = os.environ.get("BUCKET_NAME")

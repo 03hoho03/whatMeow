@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useEffect } from 'react'
 import style from './post.module.css'
 import PostMedia from '../PostMedia'
 import LikeBtn from '../LikeBtn'
@@ -8,14 +8,24 @@ import LikeCount from '../LikeCount'
 import CommentForm from '../CommentForm'
 import WriterInfoHeader from '../WriterInfoHeader'
 import PostContent from '../PostContent'
-import { usePostDetail } from '@/app/_services/quries/usePostDetail'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useFeedService } from '@/app/_services/feedService'
 
 interface PostProps {
   postId: number
 }
 
 const Post = ({ postId }: PostProps) => {
-  const { isSuccess, data, isFetching } = usePostDetail(postId)
+  const feedService = useFeedService()
+  const queryClient = useQueryClient()
+  const { data, isFetching, isSuccess, isFetched } = useQuery({
+    queryKey: ['hydrate-postDetail', postId],
+    queryFn: () => feedService.getPostDetail(postId),
+  })
+
+  useEffect(() => {
+    queryClient.setQueryData(['like', postId], data?.like)
+  }, [isFetched])
 
   if (isFetching) return <p>...로딩중</p>
   if (isSuccess) {
@@ -40,7 +50,7 @@ const Post = ({ postId }: PostProps) => {
           />
           <div className={style.userInteractContainer}>
             <div className={style.userInteractBtnsContainer}>
-              <LikeBtn postId={data?.postId} version={data?.version} />
+              <LikeBtn postId={data?.postId} />
               <BookmarkBtn />
             </div>
             <div className={style.likeCountContainer}>

@@ -26,7 +26,7 @@ const CatProfiles = () => {
         <Swiper slidesPerView={3}>
           {profileQuery?.cats.map((profile, idx) => (
             <SwiperSlide
-              key={`${profile.catId}/${idx}`}
+              key={`${profile.catID}/${idx}`}
               className={style.profile_item}
             >
               <img
@@ -35,7 +35,7 @@ const CatProfiles = () => {
                 className={style.profile_image}
               />
               <Link
-                href={`/catprofile/${profile.catId}`}
+                href={`/catprofile/${profile.catID}`}
                 className={style.profile_name}
               >
                 {profile.catName}

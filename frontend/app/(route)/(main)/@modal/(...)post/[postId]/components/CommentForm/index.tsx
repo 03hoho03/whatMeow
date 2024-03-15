@@ -2,20 +2,34 @@
 import React from 'react'
 import style from './commentForm.module.css'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { useUploadComment } from '@/app/_services/mutations/useUploadComment'
+import useCommentService, {
+  CommentUploadApiResponse,
+} from '@/app/_services/commentService'
+import { useMutation } from '@tanstack/react-query'
 
 interface CommentFormReturn {
+  comment: string
+}
+interface CommentMutationInput {
+  postId: number
   comment: string
 }
 
 const CommentForm = ({ postId }: { postId: number }) => {
   const { register, handleSubmit, reset } = useForm<CommentFormReturn>()
-  const { uploadCommentMutation } = useUploadComment()
+  const commentService = useCommentService()
+  const commentMutation = useMutation<
+    CommentUploadApiResponse,
+    Error,
+    CommentMutationInput
+  >({
+    mutationFn: ({ comment, postId }) => commentService.upload(comment, postId),
+  })
 
   const handleUploadComment: SubmitHandler<CommentFormReturn> = ({
     comment,
   }) => {
-    uploadCommentMutation.mutate(
+    commentMutation.mutate(
       { comment, postId },
       {
         onSuccess: () => {

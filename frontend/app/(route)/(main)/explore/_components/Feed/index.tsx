@@ -5,14 +5,27 @@ import FeedHeader from '../FeedHeader'
 import FeedBody from '../FeedBody'
 import FeedBottomMenu from '../FeedBottomMenu'
 import { useQueryClient } from '@tanstack/react-query'
-import { SelectedPost } from '@/app/_services/quries/useRecentPostList'
+
+interface FeedItem {
+  createdAt: Date
+  content: string
+  images: string[]
+  like: Like
+  nickname: string
+  writerThumnail: string
+  postId: number
+}
+interface Like {
+  count: number
+  isLike: boolean
+}
 
 interface FeedProps {
-  feed: SelectedPost
+  feed: FeedItem
 }
 
 const Feed = ({
-  feed: { nickname, images, createdAt, like, postId, writerThumnail, version },
+  feed: { nickname, images, createdAt, like, postId, writerThumnail },
 }: FeedProps) => {
   const queryClient = useQueryClient()
   queryClient.setQueryData(['like', postId], like)
@@ -21,7 +34,7 @@ const Feed = ({
     <li className={style.main_wrapper}>
       <FeedHeader writerThumnail={writerThumnail} nickname={nickname} />
       <FeedBody images={images} />
-      <FeedBottomMenu createdAt={createdAt} postId={postId} version={version} />
+      <FeedBottomMenu createdAt={createdAt} postId={postId} />
     </li>
   )
 }

@@ -15,7 +15,8 @@ const getProfile = async (
   nickname: string,
 ): Promise<GetUserProfileResponse> => {
   const accessToken = await getCookie('accessToken')
-  const response = await fetch(`${BASE_URL}/api/v2/users/profile/${nickname}`, {
+  const response = await fetch(`${BASE_URL}/api/v1/user/profile/${nickname}`, {
+    method: 'GET',
     credentials: 'include',
     cache: 'no-store',
     headers: {

@@ -34,7 +34,7 @@ const UserInfo = ({ nickname }: { nickname: string }) => {
             </div>
             <div className={style.user_profile_detail_item}>
               <span className={style.detailCountItem}>
-                {followQuery.data ? followQuery.data.follow.followerCount : 0}
+                {followQuery.data?.follow.followerCount}
               </span>
               <span>팔로워</span>
             </div>
@@ -55,7 +55,7 @@ const UserInfo = ({ nickname }: { nickname: string }) => {
         {profileQuery?.owner ? (
           <ProfileEditBtn />
         ) : (
-          <FollowBtn nickname={nickname} userId={profileQuery?.userId} />
+          <FollowBtn nickname={nickname} />
         )}
       </div>
     </div>

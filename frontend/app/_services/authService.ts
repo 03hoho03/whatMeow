@@ -3,60 +3,56 @@ import { BASE_URL } from '../_utils/constants'
 
 export { useAuthService }
 
-interface AuthService {
+interface AuthSerivce {
   register: (email: string, password: string, username: string) => Promise<void>
   login: (username: string, password: string) => Promise<void>
   logout: () => Promise<void>
   kakao: () => Promise<void>
 }
 
-function useAuthService(): AuthService {
+function useAuthService(): AuthSerivce {
   const fetch = useFetch()
-  const baseUrl = `${BASE_URL}/api/v2/users`
+  const baseUrl = `${BASE_URL}/api/v1/auth`
   return {
     register: async (email, password, nickname) => {
-      const sampleName = '장호정'
-      const registerBody = {
-        email,
-        password,
-        nickname,
-        name: sampleName,
-      }
-      const response = await fetch.post(`${baseUrl}/register`, {
-        headers: {
+      const name = '장호정'
+      const response = await fetch.post(
+        `${baseUrl}/register`,
+        {
+          email,
+          name,
+          password,
+          nickname,
+        },
+        {
           'Content-type': 'application/json',
         },
-        body: registerBody,
-      })
-
+      )
       if (!response.ok) {
         throw new Error('오류가 발생했습니다.')
       }
-
       return await response.json()
     },
     login: async (email, password) => {
-      const loginBody = {
-        email,
-        password,
-      }
-      const response = await fetch.post(`${baseUrl}/login`, {
-        headers: {
+      const response = await fetch.post(
+        `${baseUrl}/login`,
+        {
+          email,
+          password,
+        },
+        {
           'Content-type': 'application/json',
         },
-        body: loginBody,
-        options: { credentials: 'include' },
-      })
-
+        { credentials: 'include' },
+      )
       if (!response.ok) {
         throw new Error('오류가 발생했습니다.')
       }
-
       return await response.json()
     },
     logout: async () => {
-      const response = await fetch.get(`${baseUrl}/logout`, {
-        options: { credentials: 'include' },
+      const response = await fetch.get(`${baseUrl}/logout`, null, undefined, {
+        credentials: 'include',
       })
 
       if (!response.ok) {
@@ -69,12 +65,10 @@ function useAuthService(): AuthService {
       return await response.json()
     },
     kakao: async () => {
-      const response = await fetch.get(`${baseUrl}/kakao`, {
-        options: { credentials: 'include' },
+      const response = await fetch.get(`${baseUrl}/kakao`, null, undefined, {
+        credentials: 'include',
       })
-
       const data = await response.json()
-
       return data
     },
   }

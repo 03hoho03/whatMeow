@@ -1,34 +1,40 @@
 'use client'
-import React, { useEffect } from 'react'
+import React from 'react'
 import style from './feedItem.module.css'
 import FeedHeader from '../FeedHeader'
 import FeedBody from '../FeedBody'
 import FeedBottomMenu from '../FeedBottomMenu'
 import { useQueryClient } from '@tanstack/react-query'
-import { SelectedFeed } from '@/app/_services/quries/useFeedList'
+
+interface FeedItem {
+  createdAt: Date
+  content: string
+  images: string[]
+  like: Like
+  nickname: string
+  writerThumnail: string
+  postId: number
+}
+interface Like {
+  count: number
+  isLike: boolean
+}
 
 interface FeedProps {
-  feed: SelectedFeed
+  feed: FeedItem
 }
 
 const Feed = ({
-  feed: { nickname, images, createdAt, like, postId, writerThumnail, version },
+  feed: { nickname, images, createdAt, like, postId, writerThumnail },
 }: FeedProps) => {
   const queryClient = useQueryClient()
-
-  useEffect(() => {
-    const existingLike = queryClient.getQueryData(['like', postId])
-    console.log(existingLike)
-    if (!existingLike) {
-      queryClient.setQueryData(['like', postId], like)
-    }
-  }, [like, postId])
+  queryClient.setQueryData(['like', postId], like)
 
   return (
     <li className={style.main_wrapper}>
       <FeedHeader writerThumnail={writerThumnail} nickname={nickname} />
       <FeedBody images={images} />
-      <FeedBottomMenu createdAt={createdAt} postId={postId} version={version} />
+      <FeedBottomMenu createdAt={createdAt} postId={postId} />
     </li>
   )
 }

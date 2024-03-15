@@ -69,10 +69,11 @@ const WriterForm = () => {
       formData.append('files', file)
     })
     formData.append('content', content)
-    catTag.forEach((tag) => formData.append('cat_ids', tag.catId.toString()))
+    catTag.forEach((tag) => formData.append('cat_ids', tag.id.toString()))
     hashList.forEach((tag) => formData.append('tags', tag))
 
     mutate(formData)
+    // await feedService.upload(formData)
   }
 
   return (

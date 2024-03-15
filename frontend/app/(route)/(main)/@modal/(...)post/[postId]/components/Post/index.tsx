@@ -8,15 +8,20 @@ import LikeCount from '../LikeCount'
 import CommentForm from '../CommentForm'
 import WriterInfoHeader from '../WriterInfoHeader'
 import PostContent from '../PostContent'
-import { usePostDetail } from '@/app/_services/quries/usePostDetail'
-import PostCreatedAt from '../PostCreatedAt'
+import { useQuery } from '@tanstack/react-query'
+import { useFeedService } from '@/app/_services/feedService'
 
 interface PostProps {
   postId: number
 }
 
 const Post = ({ postId }: PostProps) => {
-  const { isSuccess, data, isFetching } = usePostDetail(postId)
+  const feedService = useFeedService()
+  const { data, isFetching, isSuccess } = useQuery({
+    queryKey: ['hydrate-postDetail', postId],
+    queryFn: () => feedService.getPostDetail(postId),
+    staleTime: 0,
+  })
 
   if (isFetching) return <p>...로딩중</p>
   if (isSuccess) {
@@ -35,20 +40,20 @@ const Post = ({ postId }: PostProps) => {
             <div>{data.nickname}</div>
           </header>
           <PostContent
-            postId={postId}
             content={data?.content}
             hashtags={data?.hashtags}
+            comments={data.comments}
           />
           <div className={style.userInteractContainer}>
             <div className={style.userInteractBtnsContainer}>
-              <LikeBtn postId={data?.postId} version={data?.version} />
+              <LikeBtn postId={data?.postId} />
               <BookmarkBtn />
             </div>
             <div className={style.likeCountContainer}>
               <LikeCount postId={data?.postId} />
             </div>
             <div className={style.createdAtContainer}>
-              <PostCreatedAt createdAt={data?.createdAt} />
+              <span>{`${data?.createdAt}`}</span>
             </div>
             <CommentForm postId={data?.postId} />
           </div>
