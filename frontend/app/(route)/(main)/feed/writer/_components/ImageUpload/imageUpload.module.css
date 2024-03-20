@@ -12,12 +12,13 @@
   width: 90px;
   height: 90px;
 }
+.upload_button:hover {
+  cursor: pointer;
+}
 .upload_input {
   width: 0;
   height: 0;
 }
-.upload_label {
-} 
 .upload_img {
   width: 28px;
   height: 28px;

@@ -39,7 +39,7 @@ function ImageUpload() {
 
   return (
     <section className={style.main_wrapper}>
-      <div className={style.upload_button}>
+      <label htmlFor="imageUpload" className={style.upload_button}>
         <input
           id="imageUpload"
           accept="image/*,video/*"
@@ -48,14 +48,14 @@ function ImageUpload() {
           className={style.upload_input}
           onChange={HandleChangeFileInput}
         />
-        <label htmlFor="imageUpload" className={style.upload_label}>
+        <div>
           <AiOutlineCamera className={style.upload_img} />
           <p className={style.preview_length_container}>
             <span className={style.preview_length_now}>{fileList.length}</span>
             <span>{`/${MAX_IMAGE_LENGTH}`}</span>
           </p>
-        </label>
-      </div>
+        </div>
+      </label>
       <Swiper swiperContainer={swiperContainer}>
         <ul className={style.preview_ul} ref={swiperContainer}>
           {fileList.map(({ url }, idx) => (
