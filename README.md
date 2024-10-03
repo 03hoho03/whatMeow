@@ -45,7 +45,15 @@
 고양이 해시태그, 이미지 AWS 업로드 등의 기능은 제외하고 테스트했습니다. <br>
 테스트 데이터에서 팔로워가 가장 많은 유저의 팔로워는 57명, 팔로잉이 가장 많은 유저는 59명으로 통계되었습니다. <br>
 
-- FanOut on Write 로직 적용 후 <br>
+- FanOut on Write 로직 적용 전 <br>
+  게시글 작성 33ms <br>
+  ![image](https://github.com/user-attachments/assets/8d7327bd-2a25-46ba-aa12-9896d70b0ff2)
+
+  게시글 조회 144ms <br>
+  ![image](https://github.com/user-attachments/assets/2b5ccbcf-c543-4745-b70f-6060a99a29c5)
+
+  
+- 로직 적용 후 <br>
   게시글 작성 109ms <br>
   ![image](https://github.com/user-attachments/assets/333557ce-ee49-4bf4-88cd-260d868411ac)
 
@@ -53,9 +61,10 @@
   게시글 조회 65ms <br>
   ![image](https://github.com/user-attachments/assets/6c99658b-d01c-4559-9f7c-f18c9997dd36)
 
-~~ 기존 팔로우 로직 이용 시 데이터 조회 속도 vs FanOut on Write 로직으로 데이터 조회 속도 비교 ~~
-~~ FanOut on Write 로직 그림 삽입 ~~
 
+게시글 작성에 있어서 성능의 손실을 봤지만, 조회에서 약 54%의 속도 향상을 이루어냈습니다. <br>
+생성보다 조회의 경우가 압도적으로 많은 커뮤니티 서비스의 특성을 고려하여 <br>
+Fanout on Write 로직을 적용하는 것이 유리하다는 판단을 내렸습니다. <br>
 
 
 #### 2. 낙관적 락을 활용한 좋아요
