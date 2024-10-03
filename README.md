@@ -40,8 +40,22 @@
 
 #### 1. FanOut on Write 로직으로 팔로우 게시글 조회
 
+테스트 데이터로 유저 10만명, 팔로우 관계 300만개, 게시글 수 10만개를 준비했습니다. <br>
+단순히 게시글을 작성하고 조회하는 로직에 있어서 비교를 보기 위해 <br>
+고양이 해시태그, 이미지 AWS 업로드 등의 기능은 제외하고 테스트했습니다. <br>
+테스트 데이터에서 팔로워가 가장 많은 유저의 팔로워는 57명, 팔로잉이 가장 많은 유저는 59명으로 통계되었습니다. <br>
+
+- FanOut on Write 로직 적용 후 <br>
+  게시글 작성 109ms <br>
+  ![image](https://github.com/user-attachments/assets/333557ce-ee49-4bf4-88cd-260d868411ac)
+
+
+  게시글 조회 65ms <br>
+  ![image](https://github.com/user-attachments/assets/6c99658b-d01c-4559-9f7c-f18c9997dd36)
+
 ~~ 기존 팔로우 로직 이용 시 데이터 조회 속도 vs FanOut on Write 로직으로 데이터 조회 속도 비교 ~~
 ~~ FanOut on Write 로직 그림 삽입 ~~
+
 
 
 #### 2. 낙관적 락을 활용한 좋아요
